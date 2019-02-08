@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
     glClearColor(1,0,0,0);
     glfwSwapInterval(1);
 
-    while(true){
+    while(window.isRunning()){
         window.onRender();
         glfwPollEvents();
     }

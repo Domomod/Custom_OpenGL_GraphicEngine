@@ -10,6 +10,6 @@ include_directories( ${OPENGL_INCLUDE_DIRS}  /usr/local/include)
 
 add_subdirectory(gl3w)
 
-add_executable(GameEngine main.cpp ${SOURCE} ${HEADERS} Window.cpp Window.h)
+add_executable(GameEngine main.cpp ${SOURCE} ${HEADERS} Window.cpp Window.h Shader.cpp Shader.h)
 
 target_link_libraries(GameEngine ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} glfw)
