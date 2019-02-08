@@ -2,24 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-
-const int WIDTH = 1280;
-const int HEIGHT = 960;
-
-void OnShutdown(){
-
-}
-
-void OnResize(int newWidth, int newHeight){
-
-}
-
-void OnRender(){
-}
-
-void OnInit(){
-
-}
+#include "Window.h"
 
 int main(int argc, char* argv[]) {
     //OpenGL Init
@@ -32,12 +15,9 @@ int main(int argc, char* argv[]) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    auto window = glfwCreateWindow(800, 400, "My window", nullptr, nullptr);
-    if(!window){
-        return -1;
-    }
+    Window window("Game Engine", 800, 600);
+    window.makeCurrent();
 
-    glfwMakeContextCurrent(window);
     if(gl3wInit()) {
         std::cerr << "Failed to initialize OpenGl.\n";
         return -1;
@@ -48,7 +28,14 @@ int main(int argc, char* argv[]) {
     std::cout << "\tOpenGL version:\t" << glGetString(GL_VERSION) << std::endl;
     std::cout << "\tGLSL version:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
-    //OnInit();
+    glClearColor(1,0,0,0);
+    glfwSwapInterval(1);
+
+    while(true){
+        window.onRender();
+        glfwPollEvents();
+    }
+
 
     return 0;
 }
