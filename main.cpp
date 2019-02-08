@@ -3,6 +3,19 @@
 #include <iostream>
 
 #include "Window.h"
+#include "Shader.h"
+
+const std::string shadersPath = "../Shaders/";
+Shader shader;
+
+void onInit(){
+    try {
+        shader.loadFromFile(GL_VERTEX_SHADER, shadersPath + "basic.vert");
+        shader.createAndLinkProgram();
+    } catch( MyException* e) {
+        std::cerr << e->getType() << ":\n" << e->getMessage();
+    }
+}
 
 int main(int argc, char* argv[]) {
     //OpenGL Init
@@ -30,6 +43,8 @@ int main(int argc, char* argv[]) {
 
     glClearColor(1,0,0,0);
     glfwSwapInterval(1);
+
+    onInit();
 
     while(window.isRunning()){
         window.onRender();
