@@ -11,10 +11,12 @@ Shader shader;
 
 void onInit(){
     try {
-        shader.loadFromFile(GL_VERTEX_SHADER, shadersPath + "basic.veeert");
+        shader.loadFromFile(GL_VERTEX_SHADER, shadersPath + "basic.vert");
         shader.createAndLinkProgram();
-    } catch( MyException* e) {
-        std::cerr << e->getType() << ":\n" << e->getMessage();
+        shader.addAttribute("vertex");
+    } catch( MyException& e) {
+        std::cerr << e.getType() << ":\n" << e.getMessage();
+        throw e;
     }
 }
 

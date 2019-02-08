@@ -9,12 +9,11 @@ std::string MyException::getType() {
     return exceptionName;
 }
 
-void MyException::setMsg(std::string _msg) {
-    msg = std::move(_msg);
-}
-
 std::string MyException::getMessage() {
     return "Shader compilation was unsuccessful, error message:\n" + msg + "\n";
 }
 
 MyException::MyException(std::string _exceptionName) : exceptionName(std::move(_exceptionName)){}
+
+MyException::MyException(const std::string &exceptionName, const std::string &msg = "No message was set") : exceptionName(exceptionName),
+                                                                                     msg(msg) {}

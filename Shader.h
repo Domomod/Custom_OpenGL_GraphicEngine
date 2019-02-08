@@ -12,12 +12,21 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <memory>
 
-//TODO: move at the bottom of the file, after cleanup
 
 #include "MyExceptions.h"
 
 class Shader {
+    //TODO: move private at the bottom of the class, after cleanup
+private:
+    enum ShaderType {VERTEX, TESSELATION_CONTROL, TESSELATION_EVALUATION, GEOMETRY, FRAGMENT, MAX_SHADERS};
+    GLuint program = 0;
+    int totalShaders = 0;
+    GLuint shaders[MAX_SHADERS];
+
+    std::map<std::string, GLint> attributes;
+    std::map<std::string, GLint> uniforms;
 public:
     Shader();
 
@@ -37,25 +46,18 @@ public:
                 GLint compilationLogSize = 0;
                 glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &compilationLogSize);
 
-                // The maxLength includes the NULL character
                 std::vector<GLchar> compilationLog(compilationLogSize);
                 glGetShaderInfoLog(shader, compilationLogSize, &compilationLogSize, &compilationLog[0]);
 
                 std::string msg(compilationLog.begin(), compilationLog.end());
 
-                auto e = new ShaderCompilationFailedException();
-                if (compilationLogSize != 0) {
-                    e->setMsg(msg);
-                }
-                throw e;
+                throw ShaderCompilationFailedException(msg);
             }
             shaders[totalShaders] = shader;
             totalShaders++;
         }
         else if (sourceCode.size() == 0){
-            auto e = new EmptyFileException();
-            e->setMsg("Empty shader source code");
-            throw e;
+            throw EmptyFileException("Empty shader source code");
         }
     }
 
@@ -68,9 +70,7 @@ public:
             loadFromString(glShaderType, sourceCode);
         }
         else {
-            auto e = new EmptyFileException();
-            e->setMsg(filePath + " is an invalid path (no such file)");
-            throw e;
+            throw EmptyFileException(filePath + " is an invalid path (no such file)");
         }
     }
 
@@ -80,15 +80,30 @@ public:
             for(int i = 0; i < totalShaders; i++){
                 glAttachShader(program, shaders[i]);
             }
+            GLint status;
+            glLinkProgram(program);
+            glGetProgramiv(program, GL_LINK_STATUS, &status);
+            if(status == GL_FALSE){
+                GLint consolidationLogSize;
+
+                glGetProgramiv (program, GL_INFO_LOG_LENGTH, &consolidationLogSize);
+
+                // The maxLength includes the NULL character
+                std::vector<GLchar> consolidationLog(consolidationLogSize);
+                glGetProgramInfoLog(program, consolidationLogSize, &consolidationLogSize, &consolidationLog[0]);
+
+                std::string msg(consolidationLog.begin(), consolidationLog.end());
+
+                throw ProgramConsolidationFailedException(msg);
+            }
+            for(int i = 0; i < totalShaders; i++){
+                glDeleteShader(shaders[i]);
+            }
         }
         else if (program != 0){
-            auto e = new GluintIdAlreadySetException();
-            e->setMsg("Program already created and linked");
-            throw e;
+            throw GluintIdAlreadySetException("Program already created and linked");
         } else if (totalShaders = 0){
-            auto e = new ShadersNotCreatedException();
-            e->setMsg("You schould load at least one shaders before linking program.");
-            throw e;
+            throw ShadersNotCreatedException("You schould load at least one shaders before linking program.");
         }
     }
 
@@ -101,25 +116,35 @@ public:
     }
 
     void addAttribute(const std::string& attributeName){
-
+        if(program != 0) {
+            GLint attributeLocation = glGetAttribLocation(program, attributeName.c_str());
+            if(attributeLocation != - 1) {
+                attributes.emplace(attributeName, attributeLocation);
+            } else{
+                throw NoSuchAttributeException(attributeName + " is not an attribute in this glsl program.");
+            }
+        }
+        else {
+            throw NullProgramException("Can't add an attribute if program is not created and linked\n");
+        }
     }
 
-    void addUniform(const std::string& attributeName){
-
+    void addUniform(const std::string& uniformName){
+        if(program != 0) {
+            GLint uniformLocation = glGetUniformLocation(program, uniformName.c_str());
+            if(uniformLocation != - 1) {
+                uniforms.emplace(uniformName, uniformLocation);
+            } else{
+                throw NoSuchAttributeException(uniformName + " is not an attribute in this glsl program.");
+            }
+        }
+        else {
+            throw NullProgramException("Can't add an attribute if program is not created and linked\n");
+        }
     }
 
     void deleteProgram(){
 
     }
-
-private:
-    enum ShaderType {VERTEX, TESSELATION_CONTROL, TESSELATION_EVALUATION, GEOMETRY, FRAGMENT, MAX_SHADERS};
-    GLuint program = 0;
-    int totalShaders = 0;
-    GLuint shaders[MAX_SHADERS];
-
-    std::map<std::string, GLuint> attributes;
-    std::map<std::string, GLuint> uniforms;
-
 };
 #endif //GAMEENGINE_SHADER_H
