@@ -4,13 +4,14 @@
 
 #include "Window.h"
 #include "Shader.h"
+#include "MyExceptions.h"
 
 const std::string shadersPath = "../Shaders/";
 Shader shader;
 
 void onInit(){
     try {
-        shader.loadFromFile(GL_VERTEX_SHADER, shadersPath + "basic.vert");
+        shader.loadFromFile(GL_VERTEX_SHADER, shadersPath + "basic.veeert");
         shader.createAndLinkProgram();
     } catch( MyException* e) {
         std::cerr << e->getType() << ":\n" << e->getMessage();

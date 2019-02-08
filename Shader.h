@@ -11,48 +11,11 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 //TODO: move at the bottom of the file, after cleanup
 
-class MyException : public std::exception {
-public:
-    void setMsg(std::string _msg){
-        msg = _msg;
-    }
-
-    std::string getType(){
-        return exceptionName;
-    }
-
-    std::string getMessage() {
-        return "Shader compilation was unsuccessful, error message:\n" + msg + "\n";
-    }
-
-    MyException() {
-
-    }
-
-    MyException(std::string _exceptionName) : exceptionName(_exceptionName){}
-
-private:
-    std::string exceptionName;
-    std::string msg = "No message was set";
-};
-
-class ShaderCompilationFailedException : public MyException {
-public:
-    ShaderCompilationFailedException() : MyException("ShaderCompilationFailedException") {}
-};
-class GluintIdAlreadySetException : public MyException {
-public:
-    GluintIdAlreadySetException() : MyException("GluintIdAlreadySetException") {}
-};
-class ShadersNotCreatedException : public MyException {
-public:
-    ShadersNotCreatedException() : MyException("ShadersNotCreatedException") {}
-};
-
-
+#include "MyExceptions.h"
 
 class Shader {
 public:
@@ -61,37 +24,54 @@ public:
     virtual ~Shader();
 
     void loadFromString(GLenum glShaderType, const std::string& sourceCode){
-        GLuint shader = glCreateShader(glShaderType);
+        if(sourceCode.size() != 0) {
+            GLuint shader = glCreateShader(glShaderType);
 
-        const char *source_c_str = sourceCode.c_str();
-        glShaderSource(shader, 1, &source_c_str, NULL);
-        glCompileShader(shader);
+            const char *source_c_str = sourceCode.c_str();
+            glShaderSource(shader, 1, &source_c_str, NULL);
+            glCompileShader(shader);
 
-        GLint success = 0;
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-        if(success == GL_FALSE){
-            GLint compilationLogSize = 0;
-            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &compilationLogSize);
-            GLsizei bytesPassed = 0;
-            GLchar* compilationLog;
-            glGetShaderInfoLog(shader, compilationLogSize, &bytesPassed, compilationLog);
+            GLint success = 0;
+            glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+            if (success == GL_FALSE) {
+                GLint compilationLogSize = 0;
+                glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &compilationLogSize);
 
-            auto e = new ShaderCompilationFailedException();
-            if(compilationLog != NULL){
-                e->setMsg(compilationLog);
+                // The maxLength includes the NULL character
+                std::vector<GLchar> compilationLog(compilationLogSize);
+                glGetShaderInfoLog(shader, compilationLogSize, &compilationLogSize, &compilationLog[0]);
+
+                std::string msg(compilationLog.begin(), compilationLog.end());
+
+                auto e = new ShaderCompilationFailedException();
+                if (compilationLogSize != 0) {
+                    e->setMsg(msg);
+                }
+                throw e;
             }
+            shaders[totalShaders] = shader;
+            totalShaders++;
+        }
+        else if (sourceCode.size() == 0){
+            auto e = new EmptyFileException();
+            e->setMsg("Empty shader source code");
             throw e;
         }
-        shaders[totalShaders] = shader;
-        totalShaders++;
     }
 
     void loadFromFile(GLenum glShaderType, const std::string& filePath){
         std::ifstream file(filePath);
-        std::stringstream fileReader;
-        fileReader << file.rdbuf();
-        std::string sourceCode = fileReader.str();
-        loadFromString(glShaderType, sourceCode);
+        if (file.is_open()) {
+            std::stringstream fileBuffer;
+            fileBuffer << file.rdbuf();
+            std::string sourceCode = fileBuffer.str();
+            loadFromString(glShaderType, sourceCode);
+        }
+        else {
+            auto e = new EmptyFileException();
+            e->setMsg(filePath + " is an invalid path (no such file)");
+            throw e;
+        }
     }
 
     void createAndLinkProgram(){
@@ -100,7 +80,8 @@ public:
             for(int i = 0; i < totalShaders; i++){
                 glAttachShader(program, shaders[i]);
             }
-        } else if (program != 0){
+        }
+        else if (program != 0){
             auto e = new GluintIdAlreadySetException();
             e->setMsg("Program already created and linked");
             throw e;
