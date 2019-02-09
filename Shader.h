@@ -14,13 +14,19 @@
 #include <vector>
 #include <memory>
 
-
 #include "MyExceptions.h"
 
 class Shader {
     //TODO: move private at the bottom of the class, after cleanup
 private:
     enum ShaderType {VERTEX, TESSELATION_CONTROL, TESSELATION_EVALUATION, GEOMETRY, FRAGMENT, MAX_SHADERS};
+    std::map<GLenum, ShaderType> GlenumShaderTypeConvert = {
+            {GL_VERTEX_SHADER, VERTEX},
+            {GL_TESS_CONTROL_SHADER, TESSELATION_CONTROL},
+            {GL_TESS_EVALUATION_SHADER, TESSELATION_EVALUATION},
+            {GL_GEOMETRY_SHADER, GEOMETRY},
+            {GL_FRAGMENT_SHADER, FRAGMENT}
+    };
     GLuint program = 0;
     int totalShaders = 0;
     GLuint shaders[MAX_SHADERS];
@@ -33,7 +39,8 @@ public:
     virtual ~Shader();
 
     void loadFromString(GLenum glShaderType, const std::string& sourceCode){
-        if(sourceCode.size() != 0) {
+        if(sourceCode.size() != 0 ) {
+
             GLuint shader = glCreateShader(glShaderType);
 
             const char *source_c_str = sourceCode.c_str();
@@ -42,7 +49,11 @@ public:
 
             GLint success = 0;
             glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-            if (success == GL_FALSE) {
+            if (success != GL_FALSE) {
+                ShaderType shaderType = GlenumShaderTypeConvert.at(glShaderType);
+                shaders[shaderType] = shader;
+                totalShaders++;
+            } else {
                 GLint compilationLogSize = 0;
                 glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &compilationLogSize);
 
@@ -53,10 +64,8 @@ public:
 
                 throw ShaderCompilationFailedException(msg);
             }
-            shaders[totalShaders] = shader;
-            totalShaders++;
         }
-        else if (sourceCode.size() == 0){
+        else if (sourceCode.size() == 0) {
             throw EmptyFileException("Empty shader source code");
         }
     }
@@ -108,11 +117,11 @@ public:
     }
 
     void use(){
-
+        glUseProgram(program);
     }
 
     void unuse(){
-
+        glUseProgram(0);
     }
 
     void addAttribute(const std::string& attributeName){
@@ -143,8 +152,28 @@ public:
         }
     }
 
-    void deleteProgram(){
+    GLint getAttribute(const std::string& attributeName){
+        GLint attributeId;
+        try{
+            attributeId = attributes[attributeName];
+        } catch (std::out_of_range& e) {
+            throw NoSuchAttributeException(attributeName + "was not added to shader's attributes");
+        }
+        return attributeId;
+    }
 
+    GLint getUniform(const std::string& uniformName){
+        GLint uniformId;
+        try{
+            uniformId = attributes[uniformName];
+        } catch (std::out_of_range& e) {
+            throw NoSuchAttributeException(uniformName + "was not added to shader's attributes");
+        }
+        return uniformId;
+    }
+
+    void deleteProgram(){
+        glDeleteProgram(program);
     }
 };
 #endif //GAMEENGINE_SHADER_H

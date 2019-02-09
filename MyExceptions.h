@@ -25,6 +25,7 @@ private:
     std::string msg = "No message was set";
 };
 
+//GLSL EXCEPTIONS
 class ShaderCompilationFailedException : public MyException {
 public:
     ShaderCompilationFailedException(const std::string &msg = "No message was set") : MyException("ShaderCompilationFailedException", msg) {}
@@ -39,6 +40,12 @@ class ShadersNotCreatedException : public MyException {
 public:
     ShadersNotCreatedException(const std::string &msg = "No message was set") : MyException("ShadersNotCreatedException", msg) {}
 };
+
+class IncorrectShaderTypeException : public MyException {
+public:
+    IncorrectShaderTypeException(const std::string &msg = "No message was set") : MyException("IncorrectShaderTypeException", msg) {}
+};
+
 
 class ProgramConsolidationFailedException : public MyException {
 public:
@@ -64,4 +71,13 @@ class NoSuchAttributeException : public MyException {
 public:
     NoSuchAttributeException(const std::string &msg = "No message was set\nTip: check for misspelling errors.") : MyException("NoSuchAttributeException", msg) {}
 };
+
+
+//OPENGL Exceptions
+class GlfwInitalisationFailedException : public MyException{
+public:
+    GlfwInitalisationFailedException(const std::string &msg = "\n") : MyException("GlfwInitalisationFailedException", msg) {}
+
+};
+
 #endif //GAMEENGINE_MYEXCEPTIONS_H

@@ -1,27 +1,13 @@
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <glm/glm.hpp>
 
-#include "Window.h"
-#include "Shader.h"
+#include "Application.h"
 #include "MyExceptions.h"
 
-const std::string shadersPath = "../Shaders/";
-Shader shader;
-
-void onInit(){
-    try {
-        shader.loadFromFile(GL_VERTEX_SHADER, shadersPath + "basic.vert");
-        shader.createAndLinkProgram();
-        shader.addAttribute("vertex");
-    } catch( MyException& e) {
-        std::cerr << e.getType() << ":\n" << e.getMessage();
-        throw e;
-    }
-}
-
 int main(int argc, char* argv[]) {
-    //OpenGL Init
+    //GLFW Initialisation code, must be completed before window constructor
     if(!glfwInit()){
         std::cout << "Failed to initialize GLFW.\n";
         return -1;
@@ -31,29 +17,9 @@ int main(int argc, char* argv[]) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    Window window("Game Engine", 800, 600);
-    window.makeCurrent();
-
-    if(gl3wInit()) {
-        std::cerr << "Failed to initialize OpenGl.\n";
-        return -1;
-    }
-
-    std::cout << "\tVendor:\t" << glGetString(GL_VENDOR) << std::endl;
-    std::cout << "\tRenderer:\t" << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "\tOpenGL version:\t" << glGetString(GL_VERSION) << std::endl;
-    std::cout << "\tGLSL version:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-
-    glClearColor(1,0,0,0);
-    glfwSwapInterval(1);
-
-    onInit();
-
-    while(window.isRunning()){
-        window.onRender();
-        glfwPollEvents();
-    }
-
+    //Application code
+    Application application;
+    application.start();
 
     return 0;
 }
