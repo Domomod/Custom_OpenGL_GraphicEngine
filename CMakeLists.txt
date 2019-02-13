@@ -9,7 +9,7 @@ find_package(glfw3 REQUIRED)
 find_package(Boost REQUIRED)
 find_package(GLM REQUIRED)
 
-include_directories( ${OPENGL_INCLUDE_DIRS} ${BOOST_INCLUDE_DIRS} /usr/local/include)
+include_directories( ${OPENGL_INCLUDE_DIRS} ${BOOST_INCLUDE_DIRS}s OnChangeListenerTemplate /usr/local/include)
 
 add_subdirectory(gl3w)
 
