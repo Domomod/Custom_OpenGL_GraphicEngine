@@ -19,7 +19,7 @@ private:
     GLFWwindow* window;
 
     //tip: inline static members don't need to be declared in cpp file
-    inline static std::map<GLFWwindow*, OnChangeNotifier<std::pair<int,int>>> onWindowResizeNotifiersMap;
+    inline static std::map<GLFWwindow*, std::shared_ptr<OnChangeNotifier<std::pair<int,int>>>> onWindowResizeNotifiersMap;
 
     static void onShutdown(GLFWwindow* window);
 
@@ -30,13 +30,15 @@ public:
 
     virtual ~Window();
 
-    void onRender();
-
     void makeCurrent();
 
     bool isRunning();
 
-    OnChangeNotifier<std::pair<int,int>>& getResizeNotifier();
+    void swapBuffers() {
+        glfwSwapBuffers(window);
+    }
+
+    std::shared_ptr<OnChangeNotifier<std::pair<int, int>>> & getResizeNotifierPtr();
 
     Window(const Window&) = delete;
 };

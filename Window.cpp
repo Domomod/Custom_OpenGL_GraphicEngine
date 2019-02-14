@@ -12,6 +12,10 @@ Window::Window(std::string title, int width, int height) {
 
     glfwSetWindowSizeCallback(window, onResize);
     glfwSetWindowCloseCallback(window, onShutdown);
+
+
+    auto newNotifier = std::make_shared<OnChangeNotifier<std::pair<int, int>>>();
+    onWindowResizeNotifiersMap.emplace(window, newNotifier);
 }
 
 
@@ -27,13 +31,7 @@ void Window::onShutdown(GLFWwindow *window) {
 
 void Window::onResize(GLFWwindow *window, int newWidth, int newHeight) {
     glViewport(0,0, static_cast<GLsizei>(newWidth), static_cast<GLsizei>(newHeight));
-    Window::onWindowResizeNotifiersMap.at(window).notifyListeners(std::make_pair(newWidth, newHeight));
-}
-
-
-void Window::onRender() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glfwSwapBuffers(window);
+    Window::onWindowResizeNotifiersMap.at(window)->notifyListeners(std::make_pair(newWidth, newHeight));
 }
 
 
@@ -47,6 +45,6 @@ bool Window::isRunning() {
 }
 
 
-OnChangeNotifier<std::pair<int,int>>& Window::getResizeNotifier() {
+std::shared_ptr<OnChangeNotifier<std::pair<int, int>>> & Window::getResizeNotifierPtr() {
     return onWindowResizeNotifiersMap.at(window);
 }
