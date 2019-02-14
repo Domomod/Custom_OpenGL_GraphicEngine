@@ -14,10 +14,9 @@ Shader::~Shader() {
 }
 
 
-void Shader::loadFromString(GLenum glShaderType, const std::string &sourceCode) {
+void Shader::loadFromString(ShaderType shaderType, const std::string &sourceCode) {
     if(sourceCode.size() != 0 ) {
-
-        GLuint shader = glCreateShader(glShaderType);
+        GLuint shader = glCreateShader(GlenumShaderTypeConvert.at(shaderType));
 
         const char *source_c_str = sourceCode.c_str();
         glShaderSource(shader, 1, &source_c_str, NULL);
@@ -26,9 +25,8 @@ void Shader::loadFromString(GLenum glShaderType, const std::string &sourceCode) 
         GLint success = 0;
         glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
         if (success != GL_FALSE) {
-            ShaderType shaderType = GlenumShaderTypeConvert.at(glShaderType);
             shaders[shaderType] = shader;
-            totalShaders++;
+            loadedShaders.set(shaderType);
         } else {
             GLint compilationLogSize = 0;
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &compilationLogSize);
@@ -47,13 +45,13 @@ void Shader::loadFromString(GLenum glShaderType, const std::string &sourceCode) 
 }
 
 
-void Shader::loadFromFile(GLenum glShaderType, const std::string &filePath) {
+void Shader::loadFromFile(ShaderType shaderType, const std::string &filePath) {
     std::ifstream file(filePath);
     if (file.is_open()) {
         std::stringstream fileBuffer;
         fileBuffer << file.rdbuf();
         std::string sourceCode = fileBuffer.str();
-        loadFromString(glShaderType, sourceCode);
+        loadFromString(shaderType, sourceCode);
     }
     else {
         throw EmptyFileException(filePath + " is an invalid path (no such file)");
@@ -62,11 +60,15 @@ void Shader::loadFromFile(GLenum glShaderType, const std::string &filePath) {
 
 
 void Shader::createAndLinkProgram() {
-    if(program == 0 && totalShaders != 0){
+    if(program == 0 && loadedShaders.test(VERTEX)){
         program = glCreateProgram();
-        for(int i = 0; i < totalShaders; i++){
-            glAttachShader(program, shaders[i]);
+        for(int i = 0; i < MAX_SHADERS; i++){
+            if(loadedShaders.test(i))
+                glAttachShader(program, shaders[i]);
         }
+
+        glBindFragDataLocation(program, 0, "fragColor");
+
         GLint status;
         glLinkProgram(program);
         glGetProgramiv(program, GL_LINK_STATUS, &status);
@@ -82,14 +84,15 @@ void Shader::createAndLinkProgram() {
 
             throw ProgramConsolidationFailedException(msg);
         }
-        for(int i = 0; i < totalShaders; i++){
-            glDeleteShader(shaders[i]);
+        for(int i = 0; i < MAX_SHADERS; i++){
+            if(loadedShaders.test(i))
+                glDeleteShader(shaders[i]);
         }
     }
     else if (program != 0){
         throw GluintIdAlreadySetException("Program already created and linked");
-    } else if (totalShaders = 0){
-        throw ShadersNotCreatedException("You schould load at least one shaders before linking program.");
+    } else if (!loadedShaders.test(VERTEX)){
+        throw ShadersNotCreatedException("You schould load at least VERTEX shader before linking program.");
     }
 }
 
