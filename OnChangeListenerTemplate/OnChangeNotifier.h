@@ -46,7 +46,7 @@ public:
 
     void notifyListeners(T x){
         for(auto listener : listenersList){
-            listener->React(this, x);
+            listener->React(x);
         }
     }
 };

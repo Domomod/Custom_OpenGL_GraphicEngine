@@ -5,6 +5,7 @@
 #ifndef OBSERVER_ONCHANGELISTENER_H
 #define OBSERVER_ONCHANGELISTENER_H
 
+#include <functional>
 
 //#include "OnChangeNotifier.h"
 
@@ -13,13 +14,18 @@ class OnChangeNotifier;
 
 template <class T>
 class OnChangeListener {
+    friend class OnChangeNotifier<T>;
 public:
     OnChangeListener(){}
     virtual ~OnChangeListener(){}
 
-    virtual void react(OnChangeNotifier<T>* Notify, T obj) = 0;
+    void setReactionFuncPtr(std::function<void(T obj)> _React){
+        React = _React;
+    }
 
 private:
+    std::function<void(T obj)> React;
+
     OnChangeListener(const OnChangeListener<T>&) = delete;
     OnChangeListener& operator=(const OnChangeListener<T>& onChangeListener);
 };
