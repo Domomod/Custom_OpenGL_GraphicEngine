@@ -62,16 +62,10 @@ public:
     NullProgramException(const std::string &msg = "No message was set") : MyException("NullProgramException", msg) {}
 };
 
-class NoSuchUniformException : public MyException {
+class NoSuchGlslElementException : public MyException {
 public:
-    NoSuchUniformException(const std::string &msg = "No message was set\nTip: check for misspelling errors.") : MyException("NoSuchUniformException", msg) {}
+    NoSuchGlslElementException(const std::string &msg = "No message was set\nTip: check for misspelling errors.") : MyException("NoSuchUniformException", msg) {}
 };
-
-class NoSuchAttributeException : public MyException {
-public:
-    NoSuchAttributeException(const std::string &msg = "No message was set\nTip: check for misspelling errors.") : MyException("NoSuchAttributeException", msg) {}
-};
-
 
 //OPENGL Exceptions
 class GlfwInitalisationFailedException : public MyException{

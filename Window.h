@@ -8,13 +8,18 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <memory>
+#include <map>
 
+#include "OnChangeListenerTemplate/OnChangeNotifier.h"
 class Window {
 
 
 
 private:
     GLFWwindow* window;
+
+    //tip: inline static members don't need to be declared in cpp file
+    inline static std::map<GLFWwindow*, OnChangeNotifier<std::pair<int,int>>> onWindowResizeNotifiersMap;
 
     static void onShutdown(GLFWwindow* window);
 
@@ -30,6 +35,8 @@ public:
     void makeCurrent();
 
     bool isRunning();
+
+    OnChangeNotifier<std::pair<int,int>>& getResizeNotifier();
 
     Window(const Window&) = delete;
 };

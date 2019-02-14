@@ -7,11 +7,13 @@
 #define GAMEENGINE_APPLICATION_H
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <GL/gl3w.h>
 
 #include "Window.h"
 #include "Shader.h"
 #include "MyExceptions.h"
+#include "OnChangeListenerTemplate/OnChangeListener.h"
 
 class Application {
 private:
@@ -39,10 +41,11 @@ private:
             mainWindow.onRender();
             glfwPollEvents();
         }
-        //TODO: Get matrix P from Window onRender()
     }
 
 public:
+    OnChangeListener<std::pair<int,int>> onWindowResizeProjectionUpdater;
+
     Application() : indicies{0,1,2}, mainWindow("Game Engine", 800, 600) {
         verticies[0].position = glm::vec3(-1,-1,0);
         verticies[1].position = glm::vec3(0,1,0);
@@ -51,6 +54,12 @@ public:
         verticies[0].color = glm::vec3(1,0,0);
         verticies[1].color = glm::vec3(0,1,0);
         verticies[2].color = glm::vec3(0,0,1);
+
+        onWindowResizeProjectionUpdater.setReactionFuncPtr([&](std::pair<int,int> newWidthHeight){
+            double width = newWidthHeight.first;
+            double height = newWidthHeight.second;
+            Projection = glm::ortho(0.0, width, 0.0, height, 1.0, -1.0);
+        });
     }
 
     virtual ~Application(){
@@ -60,6 +69,7 @@ public:
     void start(){
         //There must be a current window before OpenGL initialisation
         mainWindow.makeCurrent();
+        mainWindow.getResizeNotifier().addListener(&onWindowResizeProjectionUpdater);
 
         //OpenGL initialisation
         if(gl3wInit()) {
@@ -89,7 +99,7 @@ public:
             throw e;
         }
         //TODO: ask for proper path if sth goes wrong
-        
+
         mainLoop();
     }
 };
