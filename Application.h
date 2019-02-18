@@ -29,9 +29,11 @@ private:
     public:
         glm::vec3 color;
         glm::vec3 position;
+
+        Vertex(const glm::vec3 &color, const glm::vec3 &position) : color(color), position(position) {}
     };
-    Vertex verticies[3];
-    GLushort indicies[3];
+    std::vector<Vertex> verticies;
+    std::vector<GLushort> indicies;
 
     //View
     Window mainWindow;
