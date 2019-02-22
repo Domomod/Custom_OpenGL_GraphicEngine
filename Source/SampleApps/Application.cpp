@@ -3,13 +3,14 @@
 //
 
 #include "Application.h"
+#include "GeometryGenerator.h"
 
-#include <GL/freeglut.h>
 #include <glm/gtc/type_ptr.hpp>
 
 
 Application::Application() : mainWindow("Game Engine", 800, 600) {
-    generateSymetricalRectanuglarMesh(4, 4, 3.f, 3.f, 0.0f, -0.5f, -3.0f);
+    GeometryGenerator::generateSymetricalRectanuglarMesh(verticies, indicies, 4, 4, 3.f, 3.f, 0.0f, -0.5f,
+                                                         -3.0f);
 
     Projection = glm::perspective(FOV, aspect, zNear, zFar);
 
