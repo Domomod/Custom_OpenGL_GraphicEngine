@@ -10,10 +10,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/gl3w.h>
 
-#include "Window.h"
-#include "Shader.h"
-#include "MyExceptions.h"
-#include "OnChangeListenerTemplate/OnChangeListener.h"
+#include "../View/Window.h"
+#include "../View/Shader.h"
+#include "../MyExceptions.h"
+#include "OnChangeListener.h"
 
 class Application {
 public:

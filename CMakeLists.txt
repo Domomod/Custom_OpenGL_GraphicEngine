@@ -13,6 +13,6 @@ include_directories( ${OPENGL_INCLUDE_DIRS} ${BOOST_INCLUDE_DIRS}s OnChangeListe
 
 add_subdirectory(gl3w)
 
-add_executable(GameEngine main.cpp ${SOURCE} ${HEADERS} Window.cpp Window.h Shader.cpp Shader.h MyExceptions.cpp MyExceptions.h Application.cpp Application.h)
+add_executable(GameEngine Source/main.cpp ${SOURCE} ${HEADERS} Source/View/Window.cpp Source/View/Window.h Source/View/Shader.cpp Source/View/Shader.h Source/MyExceptions.cpp Source/MyExceptions.h Source/SampleApps/Application.cpp Source/SampleApps/Application.h)
 
 target_link_libraries(GameEngine ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} glfw)

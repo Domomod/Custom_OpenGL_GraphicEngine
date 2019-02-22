@@ -3,7 +3,7 @@
 #include <iostream>
 #include <glm/glm.hpp>
 
-#include "Application.h"
+#include "SampleApps/Application.h"
 #include "MyExceptions.h"
 
 int main(int argc, char* argv[]) {

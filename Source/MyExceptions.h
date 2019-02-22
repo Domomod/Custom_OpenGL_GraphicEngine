@@ -7,6 +7,7 @@
 #ifndef GAMEENGINE_MYEXCEPTIONS_H
 #define GAMEENGINE_MYEXCEPTIONS_H
 
+#include <GL/freeglut.h>
 #include <string>
 #include <iostream>
 
@@ -72,6 +73,11 @@ class GlfwInitalisationFailedException : public MyException{
 public:
     GlfwInitalisationFailedException(const std::string &msg = "\n") : MyException("GlfwInitalisationFailedException", msg) {}
 
+};
+
+class OpenGlException : public  MyException{
+public:
+    OpenGlException(const std::string &msg = "\n") : MyException("OpenGlException", msg) {}
 };
 
 #endif //GAMEENGINE_MYEXCEPTIONS_H
