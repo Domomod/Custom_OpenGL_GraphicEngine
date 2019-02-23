@@ -26,6 +26,7 @@ public:
 private:
     //Scene
     Mesh mesh;
+    glm::vec3 center = glm::vec3(0.f, -0.5f, -3.f);
 
     //View
     Window mainWindow;

@@ -10,8 +10,8 @@
 
 
 Application::Application() : mainWindow("Game Engine", 800, 600) {
-    mesh = MeshGenerator::generateSymetricalRectanuglarMesh(4, 4, 3.f, 3.f, 0.0f, -0.5f,
-                                                     -3.0f);
+    mesh = MeshGenerator::generateSymetricalRectanuglarMesh(40, 40, 3.f, 3.f, center.x, center.y,
+                                                     center.z);
 
     Projection = glm::perspective(FOV, aspect, zNear, zFar);
 
@@ -56,13 +56,15 @@ void Application::start() {
 
     //Shader loading and consolidation
     try {
-        mainShader.loadFromFile(Shader::VERTEX, shadersPath + "basic.vert");
+        mainShader.loadFromFile(Shader::VERTEX, shadersPath + "sinWave.vert");
         mainShader.loadFromFile(Shader::FRAGMENT, shadersPath + "basic.frag");
         mainShader.createAndLinkProgram();
         mainShader.use();
         mainShader.addAttribute("position");
         mainShader.addAttribute("color");
         mainShader.addUniform("ModelViewProjection");
+        mainShader.addUniform("center");
+        mainShader.addUniform("time");
         mainShader.unuse();
     } catch( MyException& e) {
         std::cerr << e.getType() << ":\n" << e.getMessage();
@@ -123,9 +125,14 @@ void Application::Render() {
 
     GLuint numIndicies = mesh.getNumberIndicies();
     GLboolean transpose = GL_FALSE;
+
+    float time = glfwGetTime();
     glUniformMatrix4fv(mainShader.getUniform("ModelViewProjection"), 1, transpose, glm::value_ptr(Projection * ModelView));
+    glUniform3fv(mainShader.getUniform("center"), 1, glm::value_ptr(center));
+    glUniform1f(mainShader.getUniform("time"), time);
+
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glDrawElements(GL_TRIANGLES, numIndicies, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLES, numIndicies, GL_UNSIGNED_SHORT, nullptr);
 
     mainShader.unuse();
     mainWindow.swapBuffers();
