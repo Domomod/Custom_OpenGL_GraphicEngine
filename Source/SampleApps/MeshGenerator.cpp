@@ -2,10 +2,12 @@
 // Created by dominik on 22.02.19.
 //
 
-#include "GeometryGenerator.h"
+#include "MeshGenerator.h"
 
-void
-GeometryGenerator::generateMoreComplexRectangleMesh(std::vector<Vertex> &verticies, std::vector<GLushort> &indicies) {
+Mesh MeshGenerator::generateMoreComplexRectangleMesh() {
+    std::vector<Vertex> verticies;
+    std::vector<GLushort> indicies;
+
     verticies.emplace_back(
             glm::vec3(0, 1, 1), glm::vec3(-50, -0.7, -50)
     );
@@ -66,9 +68,15 @@ GeometryGenerator::generateMoreComplexRectangleMesh(std::vector<Vertex> &vertici
     indicies.push_back(5);
     indicies.push_back(7);
     indicies.push_back(8);
+
+
+    return Mesh(verticies, indicies);
 }
 
-void GeometryGenerator::generateSimpleRectangleMesh(std::vector<Vertex> &verticies, std::vector<GLushort> &indicies) {
+Mesh MeshGenerator::generateSimpleRectangleMesh() {
+    std::vector<Vertex> verticies;
+    std::vector<GLushort> indicies;
+
     verticies.emplace_back(
             glm::vec3(0, 1, 1), glm::vec3(-50, -0.7, -50)
     );
@@ -89,9 +97,14 @@ void GeometryGenerator::generateSimpleRectangleMesh(std::vector<Vertex> &vertici
     indicies.push_back(1);
     indicies.push_back(2);
     indicies.push_back(3);
+
+    return Mesh(verticies, indicies);
 }
 
-void GeometryGenerator::generateTriangeMesh(std::vector<Vertex> &verticies, std::vector<GLushort> &indicies) {
+Mesh MeshGenerator::generateTriangeMesh() {
+    std::vector<Vertex> verticies;
+    std::vector<GLushort> indicies;
+
     verticies.emplace_back(
             glm::vec3(1, 1, 1), glm::vec3(-1, -0.2, 0)
     );
@@ -105,16 +118,17 @@ void GeometryGenerator::generateTriangeMesh(std::vector<Vertex> &verticies, std:
     indicies.push_back(0);
     indicies.push_back(1);
     indicies.push_back(2);
+
+    return Mesh(verticies, indicies);
 }
 
-void
-GeometryGenerator::generateAsymetricalRectanuglarMesh(std::vector<Vertex> &verticies, std::vector<GLushort> &indicies,
-                                                      GLushort numVerticiesAlongXaxis, GLushort numVerticiesAlongZaxis,
-                                                      GLfloat sizeX, GLfloat sizeZ, GLfloat centerX, GLfloat centerY,
-                                                      GLfloat centerZ) {
-    genereateRectangularGeometry(verticies, indicies, numVerticiesAlongXaxis,
+Mesh
+MeshGenerator::generateAsymetricalRectanuglarMesh(GLushort numVerticiesAlongXaxis, GLushort numVerticiesAlongZaxis, GLfloat sizeX,
+                                                  GLfloat sizeZ, GLfloat centerX, GLfloat centerY, GLfloat centerZ) {
+    std::vector<Vertex> verticies = genereateRectangularGeometry(numVerticiesAlongXaxis,
                                  numVerticiesAlongZaxis, sizeX, sizeZ, centerX, centerY,
                                  centerZ);
+    std::vector<GLushort> indicies;
 
     GLushort numEdgesAlongXaxis = numVerticiesAlongXaxis - short(1);
     GLushort numEdgesAlongZaxis = numVerticiesAlongZaxis - short(1);
@@ -140,16 +154,18 @@ GeometryGenerator::generateAsymetricalRectanuglarMesh(std::vector<Vertex> &verti
             indicies.push_back(bottomRight);
         }
     }
+    return Mesh(verticies, indicies);
 }
 
-void
-GeometryGenerator::generateSymetricalRectanuglarMesh(std::vector<Vertex> &verticies, std::vector<GLushort> &indicies,
-                                                     GLushort numVerticiesAlongXaxis, GLushort numVerticiesAlongZaxis,
-                                                     GLfloat sizeX, GLfloat sizeZ, GLfloat centerX, GLfloat centerY,
-                                                     GLfloat centerZ) {
-    genereateRectangularGeometry(verticies, indicies, numVerticiesAlongXaxis,
-                                 numVerticiesAlongZaxis, sizeX, sizeZ, centerX, centerY,
-                                 centerZ);
+Mesh
+MeshGenerator::generateSymetricalRectanuglarMesh(GLushort numVerticiesAlongXaxis, GLushort numVerticiesAlongZaxis, GLfloat sizeX,
+                                                 GLfloat sizeZ, GLfloat centerX, GLfloat centerY, GLfloat centerZ) {
+    std::vector<Vertex> verticies = genereateRectangularGeometry(numVerticiesAlongXaxis,
+                                                                 numVerticiesAlongZaxis, sizeX, sizeZ, centerX, centerY,
+                                                                 centerZ);
+    std::vector<GLushort> indicies;
+
+
 
     GLushort numEdgesAlongXaxis = numVerticiesAlongXaxis - short(1);
     GLushort numEdgesAlongZaxis = numVerticiesAlongZaxis - short(1);
@@ -185,12 +201,15 @@ GeometryGenerator::generateSymetricalRectanuglarMesh(std::vector<Vertex> &vertic
             }
         }
     }
+
+    return Mesh(verticies, indicies);
 }
 
-void GeometryGenerator::genereateRectangularGeometry(std::vector<Vertex> &verticies, std::vector<GLushort> &indicies,
-                                                     GLushort numVerticiesAlongXaxis, GLushort numVerticiesAlongZaxis,
-                                                     GLfloat sizeX, GLfloat sizeZ, GLfloat centerX, GLfloat centerY,
-                                                     GLfloat centerZ) {
+std::vector<Vertex>
+MeshGenerator::genereateRectangularGeometry(GLushort numVerticiesAlongXaxis, GLushort numVerticiesAlongZaxis, GLfloat sizeX,
+                                            GLfloat sizeZ, GLfloat centerX, GLfloat centerY, GLfloat centerZ) {
+    std::vector<Vertex> verticies;
+
     float halfSizeX = sizeX/2;
     float halfSizeZ = sizeZ/2;
     GLushort numEdgesAlongXaxis = numVerticiesAlongXaxis - short(1);
@@ -210,4 +229,6 @@ void GeometryGenerator::genereateRectangularGeometry(std::vector<Vertex> &vertic
             verticies.emplace_back(color,position);
         }
     }
+
+    return verticies;
 }

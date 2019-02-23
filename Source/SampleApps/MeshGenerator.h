@@ -12,28 +12,44 @@
 #include "../View/Shader.h"
 #include "Application.h"
 
-class GeometryGenerator {
+
+
+class MeshGenerator {
 public:
-    static void generateMoreComplexRectangleMesh(std::vector<Vertex> &verticies, std::vector<GLushort> &indicies);
+    static Mesh generateMoreComplexRectangleMesh();
 
-    static void generateSimpleRectangleMesh(std::vector<Vertex> &verticies, std::vector<GLushort> &indicies);
+    static Mesh generateSimpleRectangleMesh();
 
-    static void generateTriangeMesh(std::vector<Vertex> &verticies, std::vector<GLushort> &indicies);
+    static Mesh generateTriangeMesh();
 
-    static void generateAsymetricalRectanuglarMesh(std::vector<Vertex> &verticies, std::vector<GLushort> &indicies,
-                                            GLushort numVerticiesAlongXaxis = 2, GLushort numVerticiesAlongZaxis = 2,
-                                            GLfloat sizeX = 10.0, GLfloat sizeZ = 10.0, GLfloat centerX = 0.0f,
-                                            GLfloat centerY = 0.0f, GLfloat centerZ = 0.0f);
+    static Mesh generateAsymetricalRectanuglarMesh(
+            GLushort numVerticiesAlongXaxis = 2,
+            GLushort numVerticiesAlongZaxis = 2,
+            GLfloat sizeX = 10.0,
+            GLfloat sizeZ = 10.0,
+            GLfloat centerX = 0.0f,
+            GLfloat centerY = 0.0f,
+            GLfloat centerZ = 0.0f);
 
-    static void generateSymetricalRectanuglarMesh(std::vector<Vertex>& verticies, std::vector<GLushort>& indicies,
-                                                  GLushort numVerticiesAlongXaxis = 2, GLushort numVerticiesAlongZaxis = 2,
-                                                  GLfloat sizeX = 100.0, GLfloat sizeZ = 100.0, GLfloat centerX = 0.0f,
-                                                  GLfloat centerY = 0.0f, GLfloat centerZ = 0.0f);
+    static Mesh generateSymetricalRectanuglarMesh(
+            GLushort numVerticiesAlongXaxis = 2,
+            GLushort numVerticiesAlongZaxis = 2,
+            GLfloat sizeX = 100.0,
+            GLfloat sizeZ = 100.0,
+            GLfloat centerX = 0.0f,
+            GLfloat centerY = 0.0f,
+            GLfloat centerZ = 0.0f);
+
 
 private:
-    static void genereateRectangularGeometry(std::vector<Vertex> &verticies, std::vector<GLushort> &indicies,
-                                             GLushort numVerticiesAlongXaxis, GLushort numVerticiesAlongZaxis, GLfloat sizeX,
-                                             GLfloat sizeZ, GLfloat centerX, GLfloat centerY, GLfloat centerZ);
+    static std::vector<Vertex> genereateRectangularGeometry(
+            GLushort numVerticiesAlongXaxis,
+            GLushort numVerticiesAlongZaxis,
+            GLfloat sizeX,
+            GLfloat sizeZ,
+            GLfloat centerX,
+            GLfloat centerY,
+            GLfloat centerZ);
 
 };
 

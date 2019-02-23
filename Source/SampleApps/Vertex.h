@@ -5,4 +5,18 @@
 #ifndef GAMEENGINE_VERTEX_H
 #define GAMEENGINE_VERTEX_H
 
+#include <glm/glm.hpp>
+
+//Object data
+class Vertex{
+public:
+    glm::vec3 color;
+    glm::vec3 position;
+
+    Vertex(const glm::vec3 &color, const glm::vec3 &position) : color(color), position(position) {}
+};
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #endif //GAMEENGINE_VERTEX_H

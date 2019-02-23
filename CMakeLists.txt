@@ -13,6 +13,13 @@ include_directories( ${OPENGL_INCLUDE_DIRS} ${BOOST_INCLUDE_DIRS}s OnChangeListe
 
 add_subdirectory(gl3w)
 
-add_executable(GameEngine Source/main.cpp ${SOURCE} ${HEADERS} Source/SampleApps/GeometryGenerator.h Source/SampleApps/GeometryGenerator.cpp Source/View/Window.cpp Source/View/Window.h Source/View/Shader.cpp Source/View/Shader.h Source/MyExceptions.cpp Source/MyExceptions.h Source/SampleApps/Application.cpp Source/SampleApps/Application.h)
+add_executable(GameEngine Source/main.cpp ${SOURCE} ${HEADERS}
+        Source/SampleApps/Vertex.h Source/SampleApps/Vertex.cpp
+        Source/SampleApps/MeshGenerator.h Source/SampleApps/MeshGenerator.cpp
+        Source/View/Window.cpp Source/View/Window.h
+        Source/View/Shader.cpp Source/View/Shader.h
+        Source/MyExceptions.cpp Source/MyExceptions.h
+        Source/SampleApps/Application.cpp Source/SampleApps/Application.h
+        Source/SampleApps/Mesh.h Source/SampleApps/Mesh.cpp)
 
 target_link_libraries(GameEngine ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} glfw)

@@ -3,14 +3,15 @@
 //
 
 #include "Application.h"
-#include "GeometryGenerator.h"
+#include "MeshGenerator.h"
+#include "Mesh.h"
 
 #include <glm/gtc/type_ptr.hpp>
 
 
 Application::Application() : mainWindow("Game Engine", 800, 600) {
-    GeometryGenerator::generateSymetricalRectanuglarMesh(verticies, indicies, 4, 4, 3.f, 3.f, 0.0f, -0.5f,
-                                                         -3.0f);
+    mesh = MeshGenerator::generateSymetricalRectanuglarMesh(4, 4, 3.f, 3.f, 0.0f, -0.5f,
+                                                     -3.0f);
 
     Projection = glm::perspective(FOV, aspect, zNear, zFar);
 
@@ -89,31 +90,30 @@ void Application::createBuffers() {
 }
 
 void Application::insertGeometryAndTopologyIntoBuffers() {
-    GLsizei stride = sizeof(verticies[0]);
+    GLsizei stride = mesh.getVerticiesStride();
 
-    size_t indicesSize = indicies.size() * sizeof(indicies[0]);
-    size_t verticesSize = verticies.size() * sizeof(verticies[0]);
-    size_t positionOffset = offsetof(Vertex, position);
-    size_t colorOffset = offsetof(Vertex, color);
+    size_t indicesSize = mesh.getIndiciesSizeInBytes();
+    size_t verticesSize = mesh.getVerticiesSizeInBytes();
+    size_t positionOffset = mesh.getPositionOffset();
+    size_t colorOffset = mesh.getColorOffset();
 
     GLuint positionLocation = static_cast<GLuint>(mainShader.getAttribute("position"));
     GLuint colorLocation = static_cast<GLuint>(mainShader.getAttribute("color"));
-    GLuint numElements = static_cast<GLuint>(verticies.size()); // NOLINT(modernize-use-auto)
 
 
     glBindVertexArray(vaoId);
 
     glBindBuffer(GL_ARRAY_BUFFER, vboVerticesId);
-    glBufferData(GL_ARRAY_BUFFER, verticesSize, &verticies[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, verticesSize, mesh.getVerticiesDataPtr(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(positionLocation);
     glVertexAttribPointer(positionLocation, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(positionOffset));
 
-    glBufferData(GL_ARRAY_BUFFER, verticesSize, &verticies[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, verticesSize, mesh.getVerticiesDataPtr(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(colorLocation);
     glVertexAttribPointer(colorLocation, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(colorOffset));
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndiciesId);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesSize, &indicies[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesSize, mesh.getIndiciesDataPtr(), GL_STATIC_DRAW);
 
 }
 
@@ -121,7 +121,7 @@ void Application::Render() {
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     mainShader.use();
 
-    GLuint numIndicies = static_cast<GLuint>(indicies.size());
+    GLuint numIndicies = mesh.getNumberIndicies();
     GLboolean transpose = GL_FALSE;
     glUniformMatrix4fv(mainShader.getUniform("ModelViewProjection"), 1, transpose, glm::value_ptr(Projection * ModelView));
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

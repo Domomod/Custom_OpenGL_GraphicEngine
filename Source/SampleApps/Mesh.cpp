@@ -3,3 +3,6 @@
 //
 
 #include "Mesh.h"
+
+Mesh::Mesh(const std::vector<Vertex> &verticies, const std::vector<GLushort> &indicies) : verticies(verticies),
+                                                                                          indicies(indicies) {}

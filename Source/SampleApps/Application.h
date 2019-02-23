@@ -14,15 +14,7 @@
 #include "../View/Shader.h"
 #include "../MyExceptions.h"
 #include "OnChangeListener.h"
-
-//Object data
-class Vertex{
-public:
-    glm::vec3 color;
-    glm::vec3 position;
-
-    Vertex(const glm::vec3 &color, const glm::vec3 &position) : color(color), position(position) {}
-};
+#include "Mesh.h"
 
 class Application {
 public:
@@ -32,8 +24,8 @@ public:
 
     void start();
 private:
-    std::vector<Vertex> verticies;
-    std::vector<GLushort> indicies;
+    //Scene
+    Mesh mesh;
 
     //View
     Window mainWindow;
