@@ -43,6 +43,8 @@ private:
     GLuint vboVerticesId;
     GLuint vboIndiciesId;
 
+    GLint maxPatchVerticies = 0;
+
     //Communication
     OnChangeListener<std::pair<int,int>> onWindowResizeProjectionUpdater;
 

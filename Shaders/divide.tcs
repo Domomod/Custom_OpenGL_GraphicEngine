@@ -1,0 +1,23 @@
+#version 420 core
+
+layout(vertices = 3) out;
+
+uniform float OuterTesselationLevel;
+uniform float InnerTesselationLevel;
+
+in vec3 controlPosition[];
+in vec3 controlColor[];
+
+out vec3 evaluationPosition[];
+out vec3 evaluationColor[];
+
+void main() {
+    gl_TessLevelOuter[0] = OuterTesselationLevel;
+    gl_TessLevelOuter[1] = OuterTesselationLevel;
+    gl_TessLevelOuter[2] = OuterTesselationLevel;
+
+    gl_TessLevelInner[0] = InnerTesselationLevel;
+
+    evaluationPosition[gl_InvocationID] = controlPosition[gl_InvocationID];
+    evaluationColor[gl_InvocationID] = controlColor[gl_InvocationID];
+}

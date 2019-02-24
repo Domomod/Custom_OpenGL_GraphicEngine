@@ -16,7 +16,8 @@ Shader::~Shader() {
 
 void Shader::loadFromString(ShaderType shaderType, const std::string &sourceCode) {
     if(sourceCode.size() != 0 ) {
-        GLuint shader = glCreateShader(GlenumShaderTypeConvert.at(shaderType));
+        auto GlenumShaderType = GlenumShaderTypeConvert.at(shaderType);
+        GLuint shader = glCreateShader(GlenumShaderType);
 
         const char *source_c_str = sourceCode.c_str();
         glShaderSource(shader, 1, &source_c_str, NULL);
@@ -26,7 +27,7 @@ void Shader::loadFromString(ShaderType shaderType, const std::string &sourceCode
         glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
         if (success != GL_FALSE) {
             shaders[shaderType] = shader;
-            loadedShaders.set(shaderType);
+            loadedShaders[shaderType] = 1;
         } else {
             GLint compilationLogSize = 0;
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &compilationLogSize);
@@ -60,10 +61,10 @@ void Shader::loadFromFile(ShaderType shaderType, const std::string &filePath) {
 
 
 void Shader::createAndLinkProgram() {
-    if(program == 0 && loadedShaders.test(VERTEX)){
+    if(program == 0 && loadedShaders[VERTEX]){
         program = glCreateProgram();
         for(int i = 0; i < MAX_SHADERS; i++){
-            if(loadedShaders.test(i))
+            if(loadedShaders[i])
                 glAttachShader(program, shaders[i]);
         }
 
@@ -85,13 +86,13 @@ void Shader::createAndLinkProgram() {
             throw ProgramConsolidationFailedException(msg);
         }
         for(int i = 0; i < MAX_SHADERS; i++){
-            if(loadedShaders.test(i))
+            if(loadedShaders[i])
                 glDeleteShader(shaders[i]);
         }
     }
     else if (program != 0){
         throw GluintIdAlreadySetException("Program already created and linked");
-    } else if (!loadedShaders.test(VERTEX)){
+    } else if (!loadedShaders[VERTEX]){
         throw ShadersNotCreatedException("You schould load at least VERTEX shader before linking program.");
     }
 }

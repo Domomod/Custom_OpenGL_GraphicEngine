@@ -50,7 +50,7 @@ private:
 
     GLuint program = 0;
     GLuint shaders[MAX_SHADERS];
-    std::bitset<MAX_SHADERS> loadedShaders;
+    bool loadedShaders[MAX_SHADERS] = {0};
 
 
     std::map<std::string, GLint> attributes;

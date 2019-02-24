@@ -58,8 +58,8 @@ void Application::start() {
 
     //Shader loading and consolidation
     try {
-        mainShader.loadFromFile(Shader::VERTEX, shadersPath + "basic.vert");
-        mainShader.loadFromFile(Shader::FRAGMENT, shadersPath + "basic.frag");
+        mainShader.loadFromFile(Shader::VERTEX, shadersPath + "basic.vs");
+        mainShader.loadFromFile(Shader::FRAGMENT, shadersPath + "basic.fsfs");
         mainShader.createAndLinkProgram();
         mainShader.use();
         mainShader.addAttribute("position");

@@ -10,7 +10,7 @@
 
 
 Application::Application() : mainWindow("Game Engine", 800, 600) {
-    mesh = MeshGenerator::generateSymetricalRectanuglarMesh(40, 40, 3.f, 3.f, center.x, center.y,
+    mesh = MeshGenerator::generateSymetricalRectanuglarMesh(2, 2, 3.f, 3.f, center.x, center.y,
                                                      center.z);
 
     Projection = glm::perspective(FOV, aspect, zNear, zFar);
@@ -47,6 +47,8 @@ void Application::start() {
     std::cout << "\tRenderer:\t" << glGetString(GL_RENDERER) << std::endl;
     std::cout << "\tOpenGL version:\t" << glGetString(GL_VERSION) << std::endl;
     std::cout << "\tGLSL version:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+    glGetIntegerv(GL_MAX_PATCH_VERTICES, &maxPatchVerticies);
+    std::cout << "\tTesselation Shader: Max supported patch verticies " <<  maxPatchVerticies << std::endl;
 
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(MessageCallback, 0);
@@ -56,15 +58,17 @@ void Application::start() {
 
     //Shader loading and consolidation
     try {
-        mainShader.loadFromFile(Shader::VERTEX, shadersPath + "sinWave.vert");
-        mainShader.loadFromFile(Shader::FRAGMENT, shadersPath + "basic.frag");
+        mainShader.loadFromFile(Shader::VERTEX, shadersPath + "divide.vs");
+        mainShader.loadFromFile(Shader::TESSELATION_CONTROL, shadersPath + "divide.tcs");
+        mainShader.loadFromFile(Shader::TESSELATION_EVALUATION, shadersPath + "divide.tes");
+        mainShader.loadFromFile(Shader::FRAGMENT, shadersPath + "divide.fs");
         mainShader.createAndLinkProgram();
         mainShader.use();
         mainShader.addAttribute("position");
         mainShader.addAttribute("color");
         mainShader.addUniform("ModelViewProjection");
-        mainShader.addUniform("center");
-        mainShader.addUniform("time");
+        mainShader.addUniform("OuterTesselationLevel");
+        mainShader.addUniform("InnerTesselationLevel");
         mainShader.unuse();
     } catch( MyException& e) {
         std::cerr << e.getType() << ":\n" << e.getMessage();
@@ -126,13 +130,13 @@ void Application::Render() {
     GLuint numIndicies = mesh.getNumberIndicies();
     GLboolean transpose = GL_FALSE;
 
-    float time = glfwGetTime();
     glUniformMatrix4fv(mainShader.getUniform("ModelViewProjection"), 1, transpose, glm::value_ptr(Projection * ModelView));
-    glUniform3fv(mainShader.getUniform("center"), 1, glm::value_ptr(center));
-    glUniform1f(mainShader.getUniform("time"), time);
+    glUniform1f(mainShader.getUniform("OuterTesselationLevel"), 2.0f);
+    glUniform1f(mainShader.getUniform("InnerTesselationLevel"), 4.0f);
 
+    glPatchParameteri(GL_PATCH_VERTICES, 3);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glDrawElements(GL_TRIANGLES, numIndicies, GL_UNSIGNED_SHORT, nullptr);
+    glDrawElements(GL_PATCHES, numIndicies, GL_UNSIGNED_SHORT, nullptr);
 
     mainShader.unuse();
     mainWindow.swapBuffers();

@@ -1,0 +1,23 @@
+#version 420 core
+
+layout(triangles, equal_spacing) in;
+
+uniform mat4 ModelViewProjection;
+
+in vec3 evaluationPosition[];
+in vec3 evaluationColor[];
+
+out vec3 fragmentPosition;
+out vec3 fragmentColor;
+
+vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
+{
+    return vec3(gl_TessCoord.x) * v0 + vec3(gl_TessCoord.y) * v1 + vec3(gl_TessCoord.z) * v2;
+}
+
+void main() {
+    fragmentPosition = interpolate3D(evaluationPosition[0],evaluationPosition[1],evaluationPosition[2]);
+    fragmentColor = interpolate3D(evaluationColor[0],evaluationColor[1],evaluationColor[2]);
+
+    gl_Position = ModelViewProjection * vec4(fragmentPosition, 1);
+}
