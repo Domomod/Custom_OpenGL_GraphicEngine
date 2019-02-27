@@ -157,3 +157,27 @@ GLint Shader::abstractGet(const std::string &elementName, std::map<std::string, 
 void Shader::deleteProgram() {
     glDeleteProgram(program);
 }
+
+bool Shader::operator<(const Shader &rhs) const {
+    return program < rhs.program;
+}
+
+bool Shader::operator>(const Shader &rhs) const {
+    return rhs < *this;
+}
+
+bool Shader::operator<=(const Shader &rhs) const {
+    return !(rhs < *this);
+}
+
+bool Shader::operator>=(const Shader &rhs) const {
+    return !(*this < rhs);
+}
+
+bool Shader::operator==(const Shader &rhs) const {
+    return program == rhs.program;
+}
+
+bool Shader::operator!=(const Shader &rhs) const {
+    return !(rhs == *this);
+}

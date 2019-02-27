@@ -127,12 +127,13 @@ void Application::Render() {
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     mainShader.use();
 
-    GLuint numIndicies = mesh.getNumberIndicies();
     GLboolean transpose = GL_FALSE;
 
     glUniformMatrix4fv(mainShader.getUniform("ModelViewProjection"), 1, transpose, glm::value_ptr(Projection * ModelView));
     glUniform1f(mainShader.getUniform("OuterTesselationLevel"), 2.0f);
     glUniform1f(mainShader.getUniform("InnerTesselationLevel"), 4.0f);
+
+    GLuint numIndicies = mesh.getNumberIndicies();
 
     glPatchParameteri(GL_PATCH_VERTICES, 3);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

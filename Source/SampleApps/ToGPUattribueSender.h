@@ -11,7 +11,7 @@
 #include "Mesh.h"
 #include "../MyExceptions.h"
 
-class ToGPUdataLoader {
+class ToGPUattribueSender {
 private:
     class AttributeLoadingInfo{
     public:
@@ -28,6 +28,22 @@ private:
                 throw InvalidData("AttributeLoadingInfo vector size value outside of <1,4>");
             glGenBuffers(1, &vbo);
         }
+
+        bool operator<(const AttributeLoadingInfo &rhs) const {
+            return location < rhs.location;
+        }
+
+        bool operator>(const AttributeLoadingInfo &rhs) const {
+            return rhs < *this;
+        }
+
+        bool operator<=(const AttributeLoadingInfo &rhs) const {
+            return !(rhs < *this);
+        }
+
+        bool operator>=(const AttributeLoadingInfo &rhs) const {
+            return !(*this < rhs);
+        }
     };
 
     std::set<AttributeLoadingInfo> attributesLoadingInfo;
@@ -35,7 +51,7 @@ private:
     GLuint vboIndiciesId;
 
 public:
-    ToGPUdataLoader() {
+    ToGPUattribueSender() {
         glGenVertexArrays(1, &vaoId);
         glGenBuffers(1, &vboIndiciesId);
     }

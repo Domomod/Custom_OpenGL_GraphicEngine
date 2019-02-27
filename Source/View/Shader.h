@@ -58,5 +58,17 @@ private:
 
     void abstractAdd(const std::string& elementName, std::map<std::string, GLint>& elementDestination, GLint (*GLgetFunctionPtr)(GLuint, const GLchar *));
 
+public:
+    bool operator==(const Shader &rhs) const;
+
+    bool operator!=(const Shader &rhs) const;
+
+    bool operator<(const Shader &rhs) const;
+
+    bool operator>(const Shader &rhs) const;
+
+    bool operator<=(const Shader &rhs) const;
+
+    bool operator>=(const Shader &rhs) const;
 };
 #endif //GAMEENGINE_SHADER_H
