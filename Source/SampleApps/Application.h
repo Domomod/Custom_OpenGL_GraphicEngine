@@ -15,6 +15,8 @@
 #include "../MyExceptions.h"
 #include "OnChangeListener.h"
 #include "Mesh.h"
+#include "ToGPUattribueSender.h"
+#include "ToGPUniformSender.h"
 
 class Application {
 public:
@@ -47,16 +49,27 @@ private:
 
     //Communication
     OnChangeListener<std::pair<int,int>> onWindowResizeProjectionUpdater;
+    //ToGPUattribueSender toGPUattribueSender; //TODO: Constructor bugged
+    ToGPUniformSender toGPUniformSender;
 
     //Math
     glm::mat4 Projection = glm::mat4(1);
     glm::mat4 ModelView = glm::mat4(1);
 
+    glm::mat4 ModelViewProjection;
+
+    GLfloat OuterTesselationLevel = 2.0f;
+    GLfloat InnerTesselationLevel = 4.0f;
 
     void mainLoop();
     void createBuffers();
 
+    void initialiseGPUSenders();
+
+
     void insertGeometryAndTopologyIntoBuffers();
+    void insertUniforms();
+
     void Render();
 
     static void GLAPIENTRY

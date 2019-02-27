@@ -2,8 +2,8 @@
 
 layout(vertices = 3) out;
 
-uniform float OuterTesselationLevel;
-uniform float InnerTesselationLevel;
+uniform float OuterTesselationLevel = 1.0f;
+uniform float InnerTesselationLevel = 1.0f;
 
 in vec3 controlPosition[];
 in vec3 controlColor[];

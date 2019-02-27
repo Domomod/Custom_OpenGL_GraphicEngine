@@ -8,8 +8,8 @@
 #include <GL/gl3w.h>
 #include <map>
 
-#include "UniformSendingInfo.h"
-#include "View/Shader.h"
+#include "../UniformSendingInfo.h"
+#include "../View/Shader.h"
 
 class ToGPUniformSender {
 private:
@@ -25,6 +25,11 @@ public:
 
     void addUniform(Shader* shader, UniformSendingInfo& info){
         shaderToUniformInfoMap[shader].push_back(info);
+    }
+
+    template <class ... Type>
+    void addUniform(Shader* shader, Type ...  args){
+        shaderToUniformInfoMap[shader].push_back(UniformSendingInfo(args...));
     }
 
     void sendUniforms(Shader* shader){

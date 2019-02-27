@@ -66,18 +66,20 @@ public:
     GLsizei vectorSize;
     GLsizei elementSize;
     GLboolean transpose;
-    GLvoid *value;
+    const GLvoid *value;
     UniformType type;
     MatrixType matrixType;
 
-    UniformSendingInfo(UniformType type, void *value, GLint location, GLsizei elementSize, GLsizei vectorSize = 1
-                       ) : location(location), vectorSize(vectorSize), elementSize(elementSize),
+    //elementSize = 1 ... n will cause invocation of 0-th ... (n-1)-th function in glFunction
+    //thus we are saving elementSize -1 to optimize operations
+    UniformSendingInfo(UniformType type, const void *value, GLint location, GLsizei elementSize, GLsizei vectorSize = 1
+                       ) : location(location), vectorSize(vectorSize), elementSize(elementSize-1),
                                            transpose(GL_FALSE), value(value), type(type), matrixType(MatrixType::NONE) {
         if(type == UniformType::UNIFORM_MATRIX)
             throw InvalidData("Tried to create Matrix UniformSendingInfo, to create Matrix UniformSendingInfo use the other constructor");
     }
 
-    UniformSendingInfo(MatrixType type, void *value, GLint location, GLboolean transpose = GL_FALSE, GLsizei vectorSize = 1
+    UniformSendingInfo(MatrixType type, const void *value, GLint location, GLboolean transpose = GL_FALSE, GLsizei vectorSize = 1
             ) : location(location), vectorSize(vectorSize), elementSize(-1),
                 transpose(transpose), value(value), type(UniformType::UNIFORM_MATRIX), matrixType(type) {
     }
@@ -85,19 +87,19 @@ public:
     void Send(){
         switch(type){
             case UniformType::UNIFORM_INTEGER : {
-                intLoadingFunctions[elementSize](location, vectorSize, reinterpret_cast<GLint*>(value));
+                intLoadingFunctions[elementSize](location, vectorSize, reinterpret_cast<const GLint*>(value));
                 break;
             }
             case UniformType::UNIFORM_UNSIGNED_INTEGER : {
-                unsignedIntLoadingFunctions[elementSize](location, vectorSize, reinterpret_cast<GLuint*>(value));
+                unsignedIntLoadingFunctions[elementSize](location, vectorSize, reinterpret_cast<const GLuint*>(value));
                 break;
             }
             case UniformType::UNIFORM_FLOAT : {
-                floatLoadingFunctions[elementSize](location, vectorSize, reinterpret_cast<GLfloat *>(value));
+                floatLoadingFunctions[elementSize](location, vectorSize, reinterpret_cast<const GLfloat *>(value));
                 break;
             }
             case UniformType::UNIFORM_MATRIX : {
-                matrixLoadingFunctions[static_cast<int>(matrixType)](location, vectorSize, transpose, reinterpret_cast<GLfloat *>(value));
+                matrixLoadingFunctions[static_cast<int>(matrixType)](location, vectorSize, transpose, reinterpret_cast<const GLfloat *>(value));
                 break;
             }
         }

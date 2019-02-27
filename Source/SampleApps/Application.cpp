@@ -76,7 +76,32 @@ void Application::start() {
     }
     //TODO: ask for proper path if sth goes wrong
 
+    initialiseGPUSenders();
+
     mainLoop();
+}
+
+void Application::initialiseGPUSenders() {
+    toGPUniformSender.addShader(&mainShader);
+
+    ModelViewProjection = Projection * ModelView;
+
+    toGPUniformSender.addUniform(&mainShader,
+            UniformSendingInfo::MatrixType::FOUR,
+            glm::value_ptr(ModelViewProjection),
+            mainShader.getUniform("ModelViewProjection"));
+
+    toGPUniformSender.addUniform(&mainShader,
+            UniformSendingInfo::UniformType::UNIFORM_FLOAT,
+            &OuterTesselationLevel,
+            mainShader.getUniform("OuterTesselationLevel"),
+            1);
+
+    toGPUniformSender.addUniform(&mainShader,
+            UniformSendingInfo::UniformType::UNIFORM_FLOAT,
+            &InnerTesselationLevel,
+            mainShader.getUniform("InnerTesselationLevel"),
+            1);
 }
 
 
@@ -88,6 +113,11 @@ void Application::mainLoop() {
         glfwPollEvents();
     }
 }
+
+void Application::insertUniforms() {
+
+}
+
 
 void Application::createBuffers() {
     glGenVertexArrays(1, &vaoId);
@@ -127,11 +157,12 @@ void Application::Render() {
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     mainShader.use();
 
+    toGPUniformSender.sendUniforms(&mainShader);
+
     GLboolean transpose = GL_FALSE;
 
-    glUniformMatrix4fv(mainShader.getUniform("ModelViewProjection"), 1, transpose, glm::value_ptr(Projection * ModelView));
-    glUniform1f(mainShader.getUniform("OuterTesselationLevel"), 2.0f);
-    glUniform1f(mainShader.getUniform("InnerTesselationLevel"), 4.0f);
+    //glUniformMatrix4fv(mainShader.getUniform("ModelViewProjection"), 1, transpose, glm::value_ptr(Projection * ModelView));
+
 
     GLuint numIndicies = mesh.getNumberIndicies();
 
@@ -151,5 +182,3 @@ void Application::MessageCallback(GLenum source, GLenum type, GLuint id, GLenum 
     if(type == GL_DEBUG_TYPE_ERROR)
         throw new OpenGlException();
 }
-
-
