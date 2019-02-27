@@ -80,4 +80,9 @@ public:
     OpenGlException(const std::string &msg = "\n") : MyException("OpenGlException", msg) {}
 };
 
+class InvalidData : public MyException{
+public:
+    InvalidData(const std::string &msg = "\n") : MyException("InvalidData", msg) {}
+
+};
 #endif //GAMEENGINE_MYEXCEPTIONS_H
