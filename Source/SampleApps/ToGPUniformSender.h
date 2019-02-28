@@ -17,22 +17,24 @@ private:
 
     }
 
-    std::map<Shader*, std::vector<UniformSendingInfo>> shaderToUniformInfoMap;
+    //Uniforms are highly associated with shaders that use them,
+    //thus the need to remember all shader's uniforms and their locations
+    std::map<std::shared_ptr<Shader>, std::vector<UniformSendingInfo>> shaderToUniformInfoMap;
 public:
-    void addShader(Shader* shader){
+    void addShader(std::shared_ptr<Shader> shader){
         shaderToUniformInfoMap.emplace(shader,std::vector<UniformSendingInfo>());
     }
 
-    void addUniform(Shader* shader, UniformSendingInfo& info){
+    void addUniform(std::shared_ptr<Shader> shader, UniformSendingInfo& info){
         shaderToUniformInfoMap[shader].push_back(info);
     }
 
     template <class ... Type>
-    void addUniform(Shader* shader, Type ...  args){
+    void addUniform(std::shared_ptr<Shader> shader, Type ...  args){
         shaderToUniformInfoMap[shader].push_back(UniformSendingInfo(args...));
     }
 
-    void sendUniforms(Shader* shader){
+    void sendUniforms(std::shared_ptr<Shader> shader){
         for(auto& info : shaderToUniformInfoMap[shader]){
             info.Send();
         }

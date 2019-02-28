@@ -9,7 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-Application::Application() : mainWindow("Game Engine", 800, 600) {
+Application::Application() : mainShader(new Shader()), mainWindow("Game Engine", 800, 600) {
     mesh = MeshGenerator::generateSymetricalRectanuglarMesh(2, 2, 3.f, 3.f, center.x, center.y,
                                                      center.z);
 
@@ -25,7 +25,7 @@ Application::Application() : mainWindow("Game Engine", 800, 600) {
 
 
 Application::~Application() {
-    mainShader.deleteProgram();
+    mainShader->deleteProgram();
     glDeleteBuffers(1, &vboIndiciesId);
     glDeleteBuffers(1, &vboVerticesId);
     glDeleteVertexArrays(1, &vaoId);
@@ -58,18 +58,18 @@ void Application::start() {
 
     //Shader loading and consolidation
     try {
-        mainShader.loadFromFile(Shader::VERTEX, shadersPath + "divide.vs");
-        mainShader.loadFromFile(Shader::TESSELATION_CONTROL, shadersPath + "divide.tcs");
-        mainShader.loadFromFile(Shader::TESSELATION_EVALUATION, shadersPath + "divide.tes");
-        mainShader.loadFromFile(Shader::FRAGMENT, shadersPath + "divide.fs");
-        mainShader.createAndLinkProgram();
-        mainShader.use();
-        mainShader.addAttribute("position");
-        mainShader.addAttribute("color");
-        mainShader.addUniform("ModelViewProjection");
-        mainShader.addUniform("OuterTesselationLevel");
-        mainShader.addUniform("InnerTesselationLevel");
-        mainShader.unuse();
+        mainShader->loadFromFile(Shader::VERTEX, shadersPath + "divide.vs");
+        mainShader->loadFromFile(Shader::TESSELATION_CONTROL, shadersPath + "divide.tcs");
+        mainShader->loadFromFile(Shader::TESSELATION_EVALUATION, shadersPath + "divide.tes");
+        mainShader->loadFromFile(Shader::FRAGMENT, shadersPath + "divide.fs");
+        mainShader->createAndLinkProgram();
+        mainShader->use();
+        mainShader->addAttribute("position");
+        mainShader->addAttribute("color");
+        mainShader->addUniform("ModelViewProjection");
+        mainShader->addUniform("OuterTesselationLevel");
+        mainShader->addUniform("InnerTesselationLevel");
+        mainShader->unuse();
     } catch( MyException& e) {
         std::cerr << e.getType() << ":\n" << e.getMessage();
         throw e;
@@ -82,25 +82,25 @@ void Application::start() {
 }
 
 void Application::initialiseGPUSenders() {
-    toGPUniformSender.addShader(&mainShader);
+    toGPUniformSender.addShader(mainShader);
 
     ModelViewProjection = Projection * ModelView;
 
-    toGPUniformSender.addUniform(&mainShader,
+    toGPUniformSender.addUniform(mainShader,
             UniformSendingInfo::MatrixType::FOUR,
             glm::value_ptr(ModelViewProjection),
-            mainShader.getUniform("ModelViewProjection"));
+            mainShader->getUniform("ModelViewProjection"));
 
-    toGPUniformSender.addUniform(&mainShader,
+    toGPUniformSender.addUniform(mainShader,
             UniformSendingInfo::UniformType::UNIFORM_FLOAT,
             &OuterTesselationLevel,
-            mainShader.getUniform("OuterTesselationLevel"),
+            mainShader->getUniform("OuterTesselationLevel"),
             1);
 
-    toGPUniformSender.addUniform(&mainShader,
+    toGPUniformSender.addUniform(mainShader,
             UniformSendingInfo::UniformType::UNIFORM_FLOAT,
             &InnerTesselationLevel,
-            mainShader.getUniform("InnerTesselationLevel"),
+            mainShader->getUniform("InnerTesselationLevel"),
             1);
 }
 
@@ -133,8 +133,8 @@ void Application::insertGeometryAndTopologyIntoBuffers() {
     size_t positionOffset = mesh.getPositionOffset();
     size_t colorOffset = mesh.getColorOffset();
 
-    GLuint positionLocation = static_cast<GLuint>(mainShader.getAttribute("position"));
-    GLuint colorLocation = static_cast<GLuint>(mainShader.getAttribute("color"));
+    GLuint positionLocation = static_cast<GLuint>(mainShader->getAttribute("position"));
+    GLuint colorLocation = static_cast<GLuint>(mainShader->getAttribute("color"));
 
 
     glBindVertexArray(vaoId);
@@ -155,14 +155,9 @@ void Application::insertGeometryAndTopologyIntoBuffers() {
 
 void Application::Render() {
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    mainShader.use();
+    mainShader->use();
 
-    toGPUniformSender.sendUniforms(&mainShader);
-
-    GLboolean transpose = GL_FALSE;
-
-    //glUniformMatrix4fv(mainShader.getUniform("ModelViewProjection"), 1, transpose, glm::value_ptr(Projection * ModelView));
-
+    toGPUniformSender.sendUniforms(mainShader);
 
     GLuint numIndicies = mesh.getNumberIndicies();
 
@@ -170,7 +165,7 @@ void Application::Render() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glDrawElements(GL_PATCHES, numIndicies, GL_UNSIGNED_SHORT, nullptr);
 
-    mainShader.unuse();
+    mainShader->unuse();
     mainWindow.swapBuffers();
 }
 

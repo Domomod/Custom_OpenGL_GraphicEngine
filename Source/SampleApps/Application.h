@@ -32,7 +32,7 @@ private:
 
     //View
     Window mainWindow;
-    Shader mainShader;
+    std::shared_ptr<Shader> mainShader;
 
     GLfloat FOV = 45.0;
     GLfloat aspect = 800.f/600.f;
