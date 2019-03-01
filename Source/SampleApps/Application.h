@@ -65,9 +65,6 @@ private:
     void initialiseUniformSender();
     void initialiseAttributeSender();
 
-    void insertGeometryAndTopologyIntoBuffers();
-    void insertUniforms();
-
     void Render();
 
     static void GLAPIENTRY

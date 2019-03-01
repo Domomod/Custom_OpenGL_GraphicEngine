@@ -127,41 +127,11 @@ void Application::initialiseAttributeSender() {
 }
 
 void Application::mainLoop() {
-    insertGeometryAndTopologyIntoBuffers();
+    toGPUattribueSender.sendGeometryAndTopology(mainShader, mesh);
     while(mainWindow.isRunning()){
         Render();
         glfwPollEvents();
     }
-}
-
-void Application::insertGeometryAndTopologyIntoBuffers() {
-
-    toGPUattribueSender.sendGeometryAndTopology(mainShader, mesh);
-
-    /*
-    GLsizei stride = mesh.getVerticiesStride();
-
-    size_t indicesSize = mesh.getIndiciesSizeInBytes();
-    size_t verticesSize = mesh.getVerticiesSizeInBytes();
-    size_t positionOffset = mesh.getPositionOffset();
-    size_t colorOffset = mesh.getColorOffset();
-
-    GLuint positionLocation = static_cast<GLuint>(mainShader->getAttribute("position"));
-    GLuint colorLocation = static_cast<GLuint>(mainShader->getAttribute("color"));
-
-    glBindVertexArray(vaoId);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vboVerticesId);
-    glBufferData(GL_ARRAY_BUFFER, verticesSize, mesh.getVerticiesDataPtr(), GL_STATIC_DRAW);
-    glEnableVertexAttribArray(positionLocation);
-    glVertexAttribPointer(positionLocation, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(positionOffset));
-
-    glBufferData(GL_ARRAY_BUFFER, verticesSize, mesh.getVerticiesDataPtr(), GL_STATIC_DRAW);
-    glEnableVertexAttribArray(colorLocation);
-    glVertexAttribPointer(colorLocation, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(colorOffset));
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndiciesId);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesSize, mesh.getIndiciesDataPtr(), GL_STATIC_DRAW);*/
 }
 
 void Application::Render() {
