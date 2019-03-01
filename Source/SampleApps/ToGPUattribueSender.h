@@ -6,85 +6,80 @@
 #define GAMEENGINE_TOGPUDATALOADER_H
 
 #include <GL/gl3w.h>
-#include <set>
+#include <map>
 
 #include "Mesh.h"
+#include "../View/Shader.h"
 #include "../MyExceptions.h"
+
+class VertexLoadingInfo{
+public:
+    GLuint index;
+    GLint numComponents;
+    GLenum type;
+    size_t offset;
+    GLboolean normalized;
+    GLenum usage;
+
+    VertexLoadingInfo(GLuint index, GLint numComponents, GLenum type, size_t offset, GLenum usage = GL_STATIC_DRAW,
+            GLboolean normalized = GL_FALSE) : index(index), numComponents(numComponents), type(type), offset(offset),
+                                         normalized(normalized), usage(usage) {}
+};
+
 
 class ToGPUattribueSender {
 private:
-    class AttributeLoadingInfo{
-    public:
-        GLuint vbo;
-        GLenum target;
-        GLenum usage;
-        GLuint location;
-        GLint vectorSize;
-        size_t offset;
-
-        AttributeLoadingInfo(GLenum target, GLenum usage, GLuint location, GLint vectorSize, size_t offset)
-                :target(target), usage(usage), location(location), vectorSize(vectorSize), offset(offset) {
-            if(vectorSize > 4 || vectorSize < 1)
-                throw InvalidData("AttributeLoadingInfo vector size value outside of <1,4>");
-            glGenBuffers(1, &vbo);
-        }
-
-        bool operator<(const AttributeLoadingInfo &rhs) const {
-            return location < rhs.location;
-        }
-
-        bool operator>(const AttributeLoadingInfo &rhs) const {
-            return rhs < *this;
-        }
-
-        bool operator<=(const AttributeLoadingInfo &rhs) const {
-            return !(rhs < *this);
-        }
-
-        bool operator>=(const AttributeLoadingInfo &rhs) const {
-            return !(*this < rhs);
-        }
-    };
-
-    std::set<AttributeLoadingInfo> attributesLoadingInfo;
+    std::map<std::shared_ptr<Shader>,std::vector<VertexLoadingInfo>> shaderToAttributeLoadingInfoMap;
     GLuint vaoId;
+    GLuint vboVerticesId;
     GLuint vboIndiciesId;
 
 public:
     ToGPUattribueSender() {
+
+    }
+
+    virtual ~ToGPUattribueSender() {
+        glDeleteBuffers(1, &vboIndiciesId);
+        glDeleteBuffers(1, &vboVerticesId);
+        glDeleteVertexArrays(1, &vaoId);
+    }
+
+    void createBuffers(){
         glGenVertexArrays(1, &vaoId);
+        glGenBuffers(1, &vboVerticesId);
         glGenBuffers(1, &vboIndiciesId);
     }
 
-    void addAttributeWithoutLocationUniquenessChecking(GLuint location, GLenum target, GLenum usage, GLint vectorSize, size_t offset) {
-        attributesLoadingInfo.emplace(target, usage, location, vectorSize, offset);
+    void addShader(std::shared_ptr<Shader> shader){
+        shaderToAttributeLoadingInfoMap.emplace(shader, std::vector<VertexLoadingInfo>());
     }
 
-    void insertGeometry(Mesh& mesh) {
+    template<class ... Type>
+    void addAttribute(std::shared_ptr<Shader> shader, Type ... args) {
+        shaderToAttributeLoadingInfoMap[shader].emplace_back(args...);
+    }
+
+    void sendGeometryAndTopology(const std::shared_ptr<Shader>& shader, Mesh& mesh){
+        glBindVertexArray(vaoId);
+        sendGeometry(shader, mesh);
+        sendTopology(mesh);
+    }
+
+    void sendGeometry(const std::shared_ptr<Shader>& shader, Mesh& mesh) {
         GLsizei stride = mesh.getVerticiesStride();
 
         size_t verticesSize = mesh.getVerticiesSizeInBytes();
-        size_t positionOffset = mesh.getPositionOffset();
-        size_t colorOffset = mesh.getColorOffset();
 
-        glBindVertexArray(vaoId);
-
-        for(auto& info : attributesLoadingInfo){
-
-            GLuint vbo = info.vbo;
-            GLenum target = info.target;
-            GLuint location = info.location;
-            GLint vectorSize = info.vectorSize;
-            size_t offset = info.offset;
-
-            glBindBuffer(info.target, info.vbo);
-            glBufferData(info.target, verticesSize, mesh.getVerticiesDataPtr(), info.usage);
-            glEnableVertexAttribArray(info.location);
-            glVertexAttribPointer(info.location, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(info.usage));
+        glBindBuffer(GL_ARRAY_BUFFER, vboVerticesId);
+        for(auto& info : shaderToAttributeLoadingInfoMap[shader]){
+            glBufferData(GL_ARRAY_BUFFER, mesh.getVerticiesSizeInBytes(), mesh.getVerticiesDataPtr(), info.usage);
+            glEnableVertexAttribArray(info.index);
+            glVertexAttribPointer(info.index, info.numComponents, info.type, info.normalized, stride, reinterpret_cast<void*>(info.offset));
         }
     }
 
-    void insertTopology(Mesh& mesh){
+    void sendTopology(Mesh& mesh){
         size_t indicesSize = mesh.getIndiciesSizeInBytes();
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndiciesId);

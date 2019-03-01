@@ -15,6 +15,8 @@ Application::Application() : mainShader(new Shader()), mainWindow("Game Engine",
 
     Projection = glm::perspective(FOV, aspect, zNear, zFar);
 
+    ModelViewProjection = Projection * ModelView;
+
     onWindowResizeProjectionUpdater.setReactionFuncPtr([&](std::pair<int,int> newWidthHeight){
         int width = newWidthHeight.first;
         int height = newWidthHeight.second;
@@ -26,9 +28,6 @@ Application::Application() : mainShader(new Shader()), mainWindow("Game Engine",
 
 Application::~Application() {
     mainShader->deleteProgram();
-    glDeleteBuffers(1, &vboIndiciesId);
-    glDeleteBuffers(1, &vboVerticesId);
-    glDeleteVertexArrays(1, &vaoId);
 }
 
 
@@ -82,31 +81,52 @@ void Application::start() {
 }
 
 void Application::initialiseGPUSenders() {
-    toGPUniformSender.addShader(mainShader);
-
-    ModelViewProjection = Projection * ModelView;
-
-    toGPUniformSender.addUniform(mainShader,
-            UniformSendingInfo::MatrixType::FOUR,
-            glm::value_ptr(ModelViewProjection),
-            mainShader->getUniform("ModelViewProjection"));
-
-    toGPUniformSender.addUniform(mainShader,
-            UniformSendingInfo::UniformType::UNIFORM_FLOAT,
-            &OuterTesselationLevel,
-            mainShader->getUniform("OuterTesselationLevel"),
-            1);
-
-    toGPUniformSender.addUniform(mainShader,
-            UniformSendingInfo::UniformType::UNIFORM_FLOAT,
-            &InnerTesselationLevel,
-            mainShader->getUniform("InnerTesselationLevel"),
-            1);
+    initialiseAttributeSender();
+    initialiseUniformSender();
 }
 
+void Application::initialiseUniformSender() {
+    toGPUniformSender.addShader(mainShader);
+
+    toGPUniformSender.addUniform(mainShader,
+                                 UniformSendingInfo::MatrixType::FOUR,
+                                 glm::value_ptr(ModelViewProjection),
+                                 mainShader->getUniform("ModelViewProjection"));
+
+    toGPUniformSender.addUniform(mainShader,
+                                 UniformSendingInfo::UniformType::UNIFORM_FLOAT,
+                                 &OuterTesselationLevel,
+                                 mainShader->getUniform("OuterTesselationLevel"),
+                                 1);
+
+    toGPUniformSender.addUniform(mainShader,
+                                 UniformSendingInfo::UniformType::UNIFORM_FLOAT,
+                                 &InnerTesselationLevel,
+                                 mainShader->getUniform("InnerTesselationLevel"),
+                                 1);
+}
+
+void Application::initialiseAttributeSender() {
+    toGPUattribueSender.createBuffers();
+
+    toGPUattribueSender.addShader(mainShader);
+
+    toGPUattribueSender.addAttribute(mainShader,
+            mainShader->getAttribute("position"),
+            3,
+            GL_FLOAT,
+            Vertex::getPositionOffset()
+            );
+
+    toGPUattribueSender.addAttribute(mainShader,
+            mainShader->getAttribute("color"),
+            3,
+            GL_FLOAT,
+            Vertex::getColorOffset()
+            );
+}
 
 void Application::mainLoop() {
-    createBuffers();
     insertGeometryAndTopologyIntoBuffers();
     while(mainWindow.isRunning()){
         Render();
@@ -114,18 +134,11 @@ void Application::mainLoop() {
     }
 }
 
-void Application::insertUniforms() {
-
-}
-
-
-void Application::createBuffers() {
-    glGenVertexArrays(1, &vaoId);
-    glGenBuffers(1, &vboVerticesId);
-    glGenBuffers(1, &vboIndiciesId);
-}
-
 void Application::insertGeometryAndTopologyIntoBuffers() {
+
+    toGPUattribueSender.sendGeometryAndTopology(mainShader, mesh);
+
+    /*
     GLsizei stride = mesh.getVerticiesStride();
 
     size_t indicesSize = mesh.getIndiciesSizeInBytes();
@@ -135,7 +148,6 @@ void Application::insertGeometryAndTopologyIntoBuffers() {
 
     GLuint positionLocation = static_cast<GLuint>(mainShader->getAttribute("position"));
     GLuint colorLocation = static_cast<GLuint>(mainShader->getAttribute("color"));
-
 
     glBindVertexArray(vaoId);
 
@@ -149,8 +161,7 @@ void Application::insertGeometryAndTopologyIntoBuffers() {
     glVertexAttribPointer(colorLocation, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(colorOffset));
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndiciesId);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesSize, mesh.getIndiciesDataPtr(), GL_STATIC_DRAW);
-
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesSize, mesh.getIndiciesDataPtr(), GL_STATIC_DRAW);*/
 }
 
 void Application::Render() {

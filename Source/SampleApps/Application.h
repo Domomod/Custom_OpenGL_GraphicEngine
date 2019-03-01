@@ -41,15 +41,13 @@ private:
 
     std::string shadersPath = "../Shaders/";
 
-    GLuint vaoId;
-    GLuint vboVerticesId;
-    GLuint vboIndiciesId;
-
     GLint maxPatchVerticies = 0;
 
     //Communication
     OnChangeListener<std::pair<int,int>> onWindowResizeProjectionUpdater;
-    //ToGPUattribueSender toGPUattribueSender; //TODO: Constructor bugged
+
+    ToGPUattribueSender toGPUattribueSender; //TODO: Constructor bugged
+
     ToGPUniformSender toGPUniformSender;
 
     //Math
@@ -58,14 +56,14 @@ private:
 
     glm::mat4 ModelViewProjection;
 
-    GLfloat OuterTesselationLevel = 2.0f;
-    GLfloat InnerTesselationLevel = 4.0f;
+    GLfloat OuterTesselationLevel = 1.0f;
+    GLfloat InnerTesselationLevel = 1.0f;
 
     void mainLoop();
-    void createBuffers();
 
     void initialiseGPUSenders();
-
+    void initialiseUniformSender();
+    void initialiseAttributeSender();
 
     void insertGeometryAndTopologyIntoBuffers();
     void insertUniforms();

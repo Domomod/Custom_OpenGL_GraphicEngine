@@ -14,6 +14,14 @@ public:
     glm::vec3 position;
 
     Vertex(const glm::vec3 &color, const glm::vec3 &position) : color(color), position(position) {}
+
+    static auto getPositionOffset(){
+        return offsetof(Vertex, position);
+    }
+
+    static auto getColorOffset(){
+        return offsetof(Vertex, color);
+    }
 };
 
 #include <glm/glm.hpp>
