@@ -9,34 +9,28 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-Application::Application() : mainShader(new Shader()), mainWindow("Game Engine", 800, 600) {
-    mesh = MeshGenerator::generateSymetricalRectanuglarMesh(2, 2, 3.f, 3.f, center.x, center.y,
-                                                     center.z);
+Application::Application() : mainWindow("Game Engine", 800, 600) {
 
-    Projection = glm::perspective(FOV, aspect, zNear, zFar);
-
-    ModelViewProjection = Projection * ModelView;
-
-    onWindowResizeProjectionUpdater.setReactionFuncPtr([&](std::pair<int,int> newWidthHeight){
-        int width = newWidthHeight.first;
-        int height = newWidthHeight.second;
-        aspect = width / height;
-        Projection = glm::perspective(FOV, aspect, zNear, zFar);
-    });
 }
 
 
 Application::~Application() {
-    mainShader->deleteProgram();
 }
 
 
 void Application::start() {
     //There must be a current window before OpenGL initialisation
     mainWindow.makeCurrent();
-    mainWindow.getResizeNotifierPtr()->addListener(&onWindowResizeProjectionUpdater);
 
-    //OpenGL initialisation
+    initialiseOpenGL();
+    renderer.initialize();
+    initialiseCommunication();
+    mesh = MeshGenerator::generateSymetricalRectanuglarMesh(2, 2, 3.f, 3.f, center.x, center.y,
+                                                            center.z);
+    mainLoop();
+}
+
+void Application::initialiseOpenGL() {
     if(gl3wInit()) {
         std::cerr << "Failed to initialize OpenGl.\n";
         throw GlfwInitalisationFailedException();
@@ -54,100 +48,19 @@ void Application::start() {
 
     glClearColor(0.1,0.1,0.1,0);
     glfwSwapInterval(1);
-
-    //Shader loading and consolidation
-    try {
-        mainShader->loadFromFile(Shader::VERTEX, shadersPath + "divide.vs");
-        mainShader->loadFromFile(Shader::TESSELATION_CONTROL, shadersPath + "divide.tcs");
-        mainShader->loadFromFile(Shader::TESSELATION_EVALUATION, shadersPath + "divide.tes");
-        mainShader->loadFromFile(Shader::FRAGMENT, shadersPath + "divide.fs");
-        mainShader->createAndLinkProgram();
-        mainShader->use();
-        mainShader->addAttribute("position");
-        mainShader->addAttribute("color");
-        mainShader->addUniform("ModelViewProjection");
-        mainShader->addUniform("OuterTesselationLevel");
-        mainShader->addUniform("InnerTesselationLevel");
-        mainShader->unuse();
-    } catch( MyException& e) {
-        std::cerr << e.getType() << ":\n" << e.getMessage();
-        throw e;
-    }
-    //TODO: ask for proper path if sth goes wrong
-
-    initialiseGPUSenders();
-
-    mainLoop();
 }
 
-void Application::initialiseGPUSenders() {
-    initialiseAttributeSender();
-    initialiseUniformSender();
+void Application::initialiseCommunication() {
+    mainWindow.getResizeNotifierPtr()->addListener(&(renderer.getOnWindowResizeProjectionUpdater()));
 }
 
-void Application::initialiseUniformSender() {
-    toGPUniformSender.addShader(mainShader);
-
-    toGPUniformSender.addUniform(mainShader,
-                                 UniformSendingInfo::MatrixType::FOUR,
-                                 glm::value_ptr(ModelViewProjection),
-                                 mainShader->getUniform("ModelViewProjection"));
-
-    toGPUniformSender.addUniform(mainShader,
-                                 UniformSendingInfo::UniformType::UNIFORM_FLOAT,
-                                 &OuterTesselationLevel,
-                                 mainShader->getUniform("OuterTesselationLevel"),
-                                 1);
-
-    toGPUniformSender.addUniform(mainShader,
-                                 UniformSendingInfo::UniformType::UNIFORM_FLOAT,
-                                 &InnerTesselationLevel,
-                                 mainShader->getUniform("InnerTesselationLevel"),
-                                 1);
-}
-
-void Application::initialiseAttributeSender() {
-    toGPUattribueSender.createBuffers();
-
-    toGPUattribueSender.addShader(mainShader);
-
-    toGPUattribueSender.addAttribute(mainShader,
-            mainShader->getAttribute("position"),
-            3,
-            GL_FLOAT,
-            Vertex::getPositionOffset()
-            );
-
-    toGPUattribueSender.addAttribute(mainShader,
-            mainShader->getAttribute("color"),
-            3,
-            GL_FLOAT,
-            Vertex::getColorOffset()
-            );
-}
 
 void Application::mainLoop() {
-    toGPUattribueSender.sendGeometryAndTopology(mainShader, mesh);
+    renderer.sendMeshDataToGPU(mesh);
     while(mainWindow.isRunning()){
-        Render();
+        renderer.render(mesh, mainWindow);
         glfwPollEvents();
     }
-}
-
-void Application::Render() {
-    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    mainShader->use();
-
-    toGPUniformSender.sendUniforms(mainShader);
-
-    GLuint numIndicies = mesh.getNumberIndicies();
-
-    glPatchParameteri(GL_PATCH_VERTICES, 3);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glDrawElements(GL_PATCHES, numIndicies, GL_UNSIGNED_SHORT, nullptr);
-
-    mainShader->unuse();
-    mainWindow.swapBuffers();
 }
 
 void Application::MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,

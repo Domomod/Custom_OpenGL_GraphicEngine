@@ -17,6 +17,7 @@
 #include "Mesh.h"
 #include "ToGPUattribueSender.h"
 #include "ToGPUniformSender.h"
+#include "Renderer.h"
 
 class Application {
 public:
@@ -32,40 +33,13 @@ private:
 
     //View
     Window mainWindow;
-    std::shared_ptr<Shader> mainShader;
-
-    GLfloat FOV = 45.0;
-    GLfloat aspect = 800.f/600.f;
-    GLfloat zNear = 1;
-    GLfloat zFar = 1000;
-
-    std::string shadersPath = "../Shaders/";
-
+    Renderer renderer;
     GLint maxPatchVerticies = 0;
 
-    //Communication
-    OnChangeListener<std::pair<int,int>> onWindowResizeProjectionUpdater;
-
-    ToGPUattribueSender toGPUattribueSender; //TODO: Constructor bugged
-
-    ToGPUniformSender toGPUniformSender;
-
-    //Math
-    glm::mat4 Projection = glm::mat4(1);
-    glm::mat4 ModelView = glm::mat4(1);
-
-    glm::mat4 ModelViewProjection;
-
-    GLfloat OuterTesselationLevel = 1.0f;
-    GLfloat InnerTesselationLevel = 1.0f;
+    void initialiseOpenGL();
+    void initialiseCommunication();
 
     void mainLoop();
-
-    void initialiseGPUSenders();
-    void initialiseUniformSender();
-    void initialiseAttributeSender();
-
-    void Render();
 
     static void GLAPIENTRY
     MessageCallback( GLenum source,
