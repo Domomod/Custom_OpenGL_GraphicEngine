@@ -21,6 +21,6 @@ add_executable(GameEngine Source/main.cpp ${SOURCE} ${HEADERS}
         Source/MyExceptions.cpp Source/MyExceptions.h
         Source/SampleApps/Application.cpp Source/SampleApps/Application.h
         Source/SampleApps/Mesh.h Source/SampleApps/Mesh.cpp
-        Source/SampleApps/ToGPUattribueSender.cpp Source/SampleApps/ToGPUattribueSender.h Source/SampleApps/Renderer.cpp Source/SampleApps/Renderer.h Source/SampleApps/ToGPUniformSender.cpp Source/SampleApps/ToGPUniformSender.h Source/UniformSendingInfo.cpp Source/UniformSendingInfo.h)
+        Source/SampleApps/ToGPUattribueSender.cpp Source/SampleApps/ToGPUattribueSender.h Source/SampleApps/AbstractRenderer.cpp Source/SampleApps/AbstractRenderer.h Source/SampleApps/ToGPUniformSender.cpp Source/SampleApps/ToGPUniformSender.h Source/UniformSendingInfo.cpp Source/UniformSendingInfo.h)
 
 target_link_libraries(GameEngine ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} glfw)
