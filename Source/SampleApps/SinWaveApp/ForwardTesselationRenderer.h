@@ -17,40 +17,15 @@
 #include "ToGPUattribueSender.h"
 #include "ToGPUniformSender.h"
 
-class Renderer {
+class ForwardTesselationRenderer {
 private:
-    //Rendering
-    std::shared_ptr<Shader> shader = std::make_shared<Shader>();
-
-    GLenum fillType;
-    GLenum geometryType;
-
-    std::string shadersPath = "../Shaders/";
-
-    //Camera
-    GLfloat FOV = 45.0;
-    GLfloat aspect = 800.f/600.f;
-    GLfloat zNear = 1;
-    GLfloat zFar = 1000;
-
-    //Communication
-    OnChangeListener<std::pair<int,int>> onWindowResizeProjectionUpdater;
-
-    ToGPUattribueSender toGPUattribueSender;
-
-    ToGPUniformSender toGPUniformSender;
-
     //Uniforms
-    glm::mat4 Projection = glm::mat4(1);
-    glm::mat4 ModelView = glm::mat4(1);
-    glm::mat4 ModelViewProjection;
-
     GLfloat OuterTesselationLevel = 1.0f;
     GLfloat InnerTesselationLevel = 1.0f;
 public:
-    Renderer();
+    ForwardTesselationRenderer();
 
-    virtual ~Renderer();
+    virtual ~ForwardTesselationRenderer();
 
     void initialize(){
         Projection = glm::perspective(FOV, aspect, zNear, zFar);

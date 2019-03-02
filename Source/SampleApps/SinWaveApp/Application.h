@@ -17,26 +17,29 @@
 #include "Mesh.h"
 #include "ToGPUattribueSender.h"
 #include "ToGPUniformSender.h"
-#include "AbstractRenderer.h"
+#include "ForwardTesselationRenderer.h"
 
-class AbstractApplication {
+class Application {
 public:
-    AbstractApplication();
+    Application();
 
-    virtual ~AbstractApplication();
+    virtual ~Application();
 
     void start();
 private:
+    //Scene
+    Mesh mesh;
+    glm::vec3 center = glm::vec3(0.f, -0.5f, -3.f);
+
     //View
     Window mainWindow;
-    std::shared_ptr<AbstractRenderer> renderer;
+    Renderer renderer;
     GLint maxPatchVerticies = 0;
 
     void initialiseOpenGL();
+    void initialiseCommunication();
 
-    virtual void initialiseRenderer() = 0;
-    virtual void initialiseCommunication() = 0;
-    virtual void mainLoop() = 0;
+    void mainLoop();
 
     static void GLAPIENTRY
     MessageCallback( GLenum source,

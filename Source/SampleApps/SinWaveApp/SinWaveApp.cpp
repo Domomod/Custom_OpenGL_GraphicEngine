@@ -9,29 +9,28 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-AbstractApplication::AbstractApplication() : mainWindow("Game Engine", 800, 600) {
+Application::Application() : mainWindow("Game Engine", 800, 600) {
 
 }
 
 
-AbstractApplication::~AbstractApplication() {
+Application::~Application() {
 }
 
 
-void AbstractApplication::start() {
+void Application::start() {
     //There must be a current window before OpenGL initialisation
     mainWindow.makeCurrent();
 
     initialiseOpenGL();
-    initialiseRenderer();
-    renderer->initialize();
+    renderer.initialize();
     initialiseCommunication();
     mesh = MeshGenerator::generateSymetricalRectanuglarMesh(2, 2, 3.f, 3.f, center.x, center.y,
                                                             center.z);
     mainLoop();
 }
 
-void AbstractApplication::initialiseOpenGL() {
+void Application::initialiseOpenGL() {
     if(gl3wInit()) {
         std::cerr << "Failed to initialize OpenGl.\n";
         throw GlfwInitalisationFailedException();
@@ -51,7 +50,20 @@ void AbstractApplication::initialiseOpenGL() {
     glfwSwapInterval(1);
 }
 
-void AbstractApplication::MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
+void Application::initialiseCommunication() {
+    mainWindow.getResizeNotifierPtr()->addListener(&(renderer.getOnWindowResizeProjectionUpdater()));
+}
+
+
+void Application::mainLoop() {
+    renderer.sendMeshDataToGPU(mesh);
+    while(mainWindow.isRunning()){
+        renderer.render(mesh, mainWindow);
+        glfwPollEvents();
+    }
+}
+
+void Application::MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
                                   const GLchar *message, const void *userParam) {
     fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
              ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
