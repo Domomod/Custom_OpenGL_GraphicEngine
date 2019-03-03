@@ -13,7 +13,7 @@ include_directories( ${OPENGL_INCLUDE_DIRS} ${BOOST_INCLUDE_DIRS}s OnChangeListe
 
 add_subdirectory(gl3w)
 
-add_executable(GameEngine Source/main.cpp ${SOURCE} ${HEADERS}
+set(    SOURCES_AND_HEADERS
         Source/EntitySystem/Vertex.h Source/EntitySystem/Vertex.cpp
         Source/EntitySystem/MeshGenerator.h Source/EntitySystem/MeshGenerator.cpp
         Source/OpenGL/Window/Window.cpp Source/OpenGL/Window/Window.h
@@ -28,7 +28,15 @@ add_executable(GameEngine Source/main.cpp ${SOURCE} ${HEADERS}
         Source/OpenGL/RenderSystem/Forward/ForwardRenderer.cpp Source/OpenGL/RenderSystem/Forward/ForwardRenderer.h
         Source/SampleApps/SinWaveApp/SinWaveApp.cpp Source/SampleApps/SinWaveApp/SinWaveApp.h
         Source/OpenGL/OpenGLinitializer.cpp Source/OpenGL/OpenGLinitializer.h
-        Source/OpenGL/RenderSystem/Forward/ForwardSinWaveRenderer.cpp Source/OpenGL/RenderSystem/Forward/ForwardSinWaveRenderer.h)
+        Source/OpenGL/RenderSystem/Forward/ForwardSinWaveRenderer.cpp Source/OpenGL/RenderSystem/Forward/ForwardSinWaveRenderer.h
+        Source/SampleApps/TesselationApp/TesselationApp.cpp Source/SampleApps/TesselationApp/TesselationApp.h
+        Source/OpenGL/RenderSystem/Forward/ForwardTesselation.cpp Source/OpenGL/RenderSystem/Forward/ForwardTesselation.h)
 
-target_include_directories(GameEngine PUBLIC ${CMAKE_SOURCE_DIR})
-target_link_libraries(GameEngine ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} glfw)
+add_executable(SinWave Source/SampleApps/SinWaveApp/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS})
+target_include_directories(SinWave PUBLIC ${CMAKE_SOURCE_DIR})
+target_link_libraries(SinWave ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} glfw)
+
+add_executable(Tesselation Source/SampleApps/TesselationApp/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS})
+target_include_directories(Tesselation PUBLIC ${CMAKE_SOURCE_DIR})
+target_link_libraries(Tesselation ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} glfw)
+
