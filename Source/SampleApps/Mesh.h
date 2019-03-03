@@ -5,9 +5,10 @@
 #ifndef GAMEENGINE_MESH_H
 #define GAMEENGINE_MESH_H
 
+#include <vector>
+#include <GL/gl3w.h>
 
-#include "../View/Window.h"
-#include "Vertex.h"
+#include "Source/SampleApps/Vertex.h"
 
 class Mesh {
 private:

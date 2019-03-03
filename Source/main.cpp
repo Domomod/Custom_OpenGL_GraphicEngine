@@ -3,9 +3,9 @@
 #include <iostream>
 #include <glm/glm.hpp>
 
-#include "SampleApps/OpenGLinitializer.h"
-#include "SampleApps/SinWaveApp/SinWaveApp.h"
-#include "MyExceptions.h"
+#include "Source/SampleApps/OpenGLinitializer.h"
+#include "Source/SampleApps/SinWaveApp/SinWaveApp.h"
+#include "Source/MyExceptions.h"
 
 int main(int argc, char* argv[]) {
     //Application code

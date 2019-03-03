@@ -15,7 +15,7 @@
 #include <memory>
 #include <bitset>
 
-#include "../MyExceptions.h"
+#include "Source/MyExceptions.h"
 
 class Shader {
 public:

@@ -9,9 +9,9 @@
 #include <map>
 
 #include "Mesh.h"
-#include "../View/Shader.h"
-#include "../MyExceptions.h"
-#include "VertexLoadingInfo.h"
+#include "Source/View/Shader.h"
+#include "Source/MyExceptions.h"
+#include "Source/SampleApps/VertexLoadingInfo.h"
 
 
 class ToGPUattribueSender {

@@ -11,13 +11,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "../../View/Shader.h"
-#include "../Mesh.h"
-#include "../../View/Window.h"
-#include "../ToGPUattribueSender.h"
-#include "../ToGPUniformSender.h"
-#include "../ForwardRenderer.h"
-#include "../OpenGLinitializer.h"
+#include "Source/View/Shader.h"
+#include "Source/SampleApps/Mesh.h"
+#include "Source/View/Window.h"
+#include "Source/SampleApps/ToGPUattribueSender.h"
+#include "Source/SampleApps/ToGPUniformSender.h"
+#include "Source/SampleApps/ForwardRenderer.h"
+#include "Source/SampleApps/OpenGLinitializer.h"
 
 class ForwardSinWaveRenderer : public ForwardRenderer {
 private:

@@ -10,10 +10,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/gl3w.h>
 
-#include "../../View/Window.h"
-#include "../OpenGLinitializer.h"
-#include "ForwardSinWaveRenderer.h"
-#include "../MeshGenerator.h"
+#include "Source/View/Window.h"
+#include "Source/SampleApps/OpenGLinitializer.h"
+#include "Source/SampleApps/SinWaveApp/ForwardSinWaveRenderer.h"
+#include "Source/SampleApps/MeshGenerator.h"
 class SinWaveApp {
 private:
     std::shared_ptr<Window> window;

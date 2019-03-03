@@ -10,11 +10,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/gl3w.h>
 
-#include "../View/Window.h"
-#include "../View/Shader.h"
-#include "../MyExceptions.h"
-#include "OnChangeListener.h"
-#include "Mesh.h"
+#include "Source/View/Window.h"
+#include "Source/View/Shader.h"
+#include "Source/MyExceptions.h"
+#include "OnChangeListenerTemplate/OnChangeListener.h"
+#include "Source/SampleApps/Mesh.h"
 #include "ToGPUattribueSender.h"
 #include "ToGPUniformSender.h"
 #include "AbstractRenderer.h"

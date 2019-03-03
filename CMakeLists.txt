@@ -30,5 +30,5 @@ add_executable(GameEngine Source/main.cpp ${SOURCE} ${HEADERS}
         Source/SampleApps/OpenGLinitializer.cpp Source/SampleApps/OpenGLinitializer.h
         Source/SampleApps/SinWaveApp/ForwardSinWaveRenderer.cpp Source/SampleApps/SinWaveApp/ForwardSinWaveRenderer.h)
 
-
+target_include_directories(GameEngine PUBLIC ${CMAKE_SOURCE_DIR})
 target_link_libraries(GameEngine ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} glfw)

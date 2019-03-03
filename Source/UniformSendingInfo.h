@@ -7,7 +7,7 @@
 
 #include <GL/gl3w.h>
 
-#include "MyExceptions.h"
+#include "Source/MyExceptions.h"
 
 class UniformSendingInfo {
 public:
