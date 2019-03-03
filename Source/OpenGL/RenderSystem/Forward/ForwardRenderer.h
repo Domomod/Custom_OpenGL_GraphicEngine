@@ -5,7 +5,7 @@
 #ifndef GAMEENGINE_FORWARDRENDERER_H
 #define GAMEENGINE_FORWARDRENDERER_H
 
-#include "Source/SampleApps/AbstractRenderer.h"
+#include "Source/OpenGL/RenderSystem/AbstractRenderer.h"
 
 class ForwardRenderer : public AbstractRenderer{
 public:

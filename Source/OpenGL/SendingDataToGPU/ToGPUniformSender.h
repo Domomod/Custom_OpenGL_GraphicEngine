@@ -8,8 +8,8 @@
 #include <GL/gl3w.h>
 #include <map>
 
-#include "Source/UniformSendingInfo.h"
-#include "Source/View/Shader.h"
+#include "UniformSendingInfo.h"
+#include "Source/OpenGL/ShaderProgram/Shader.h"
 
 class ToGPUniformSender {
 public:

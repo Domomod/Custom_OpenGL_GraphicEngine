@@ -3,7 +3,7 @@
 #include <iostream>
 #include <glm/glm.hpp>
 
-#include "Source/SampleApps/OpenGLinitializer.h"
+#include "Source/OpenGL/OpenGLinitializer.h"
 #include "Source/SampleApps/SinWaveApp/SinWaveApp.h"
 #include "Source/MyExceptions.h"
 

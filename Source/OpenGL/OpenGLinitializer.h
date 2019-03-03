@@ -10,14 +10,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/gl3w.h>
 
-#include "Source/View/Window.h"
-#include "Source/View/Shader.h"
+#include "Source/OpenGL/Window/Window.h"
+#include "Source/OpenGL/ShaderProgram/Shader.h"
 #include "Source/MyExceptions.h"
 #include "OnChangeListenerTemplate/OnChangeListener.h"
-#include "Source/SampleApps/Mesh.h"
-#include "ToGPUattribueSender.h"
-#include "ToGPUniformSender.h"
-#include "AbstractRenderer.h"
+#include "Source/EntitySystem/Mesh.h"
+#include "Source/OpenGL/SendingDataToGPU/ToGPUattribueSender.h"
+#include "Source/OpenGL/SendingDataToGPU/ToGPUniformSender.h"
+#include "Source/OpenGL/RenderSystem/AbstractRenderer.h"
 
 class OpenGlInitalizer {
 public:

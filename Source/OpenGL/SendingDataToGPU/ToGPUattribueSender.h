@@ -8,10 +8,10 @@
 #include <GL/gl3w.h>
 #include <map>
 
-#include "Mesh.h"
-#include "Source/View/Shader.h"
+#include "Source/EntitySystem/Mesh.h"
+#include "Source/OpenGL/ShaderProgram/Shader.h"
 #include "Source/MyExceptions.h"
-#include "Source/SampleApps/VertexLoadingInfo.h"
+#include "VertexLoadingInfo.h"
 
 
 class ToGPUattribueSender {

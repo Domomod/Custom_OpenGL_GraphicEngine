@@ -8,7 +8,7 @@
 #include <vector>
 #include <GL/gl3w.h>
 
-#include "Source/SampleApps/Vertex.h"
+#include "Vertex.h"
 
 class Mesh {
 private:

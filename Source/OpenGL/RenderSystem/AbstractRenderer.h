@@ -11,11 +11,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Source/View/Shader.h"
-#include "Source/SampleApps/Mesh.h"
-#include "Source/View/Window.h"
-#include "Source/SampleApps/ToGPUattribueSender.h"
-#include "Source/SampleApps/ToGPUniformSender.h"
+#include "Source/OpenGL/ShaderProgram/Shader.h"
+#include "Source/EntitySystem/Mesh.h"
+#include "Source/OpenGL/Window/Window.h"
+#include "Source/OpenGL/SendingDataToGPU/ToGPUattribueSender.h"
+#include "Source/OpenGL/SendingDataToGPU/ToGPUniformSender.h"
 
 class AbstractRenderer {
 public:

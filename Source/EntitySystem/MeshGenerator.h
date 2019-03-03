@@ -9,8 +9,8 @@
 #include <glm/glm.hpp>
 #include <GL/gl3w.h>
 
-#include "Source/SampleApps/Mesh.h"
-#include "Source/SampleApps/Vertex.h"
+#include "Mesh.h"
+#include "Vertex.h"
 
 
 
