@@ -39,6 +39,7 @@ public:
             renderer.setTime(static_cast<GLfloat>(glfwGetTime()));
             renderer.render(mesh);
             window->swapBuffers();
+            glfwPollEvents();
         }
     }
 };
