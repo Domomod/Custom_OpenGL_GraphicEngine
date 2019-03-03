@@ -4,8 +4,8 @@
 // Created by dominik on 27.02.19.
 //
 
-#ifndef GAMEENGINE_RENDERER_H
-#define GAMEENGINE_RENDERER_H
+#ifndef GAMEENGINE_FORWARDTESSELATIONRENDERER_H
+#define GAMEENGINE_FORWARDTESSELATIONRENDERER_H
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -17,28 +17,58 @@
 #include "../ToGPUattribueSender.h"
 #include "../ToGPUniformSender.h"
 #include "../ForwardRenderer.h"
+#include "../OpenGLinitializer.h"
 
-class ForwardTesselationRenderer : public ForwardRenderer {
+class ForwardSinWaveRenderer : public ForwardRenderer {
 private:
     //Uniforms
-    //Math
     glm::mat4 Projection = glm::mat4(1);
     glm::mat4 ModelView = glm::mat4(1);
     glm::mat4 ModelViewProjection = glm::mat4(1);
 
-    GLfloat OuterTesselationLevel = 1.0f;
-    GLfloat InnerTesselationLevel = 1.0f;
+    GLfloat time = 1.0f;
+    glm::vec3 center = glm::vec3(0.f, -0.5f, -3.f);
 public:
-    ForwardTesselationRenderer();
+    ForwardSinWaveRenderer() {}
 
-    virtual ~ForwardTesselationRenderer();
+    virtual ~ForwardSinWaveRenderer() {
+    }
 
-    void initialize(){
+    void setTime(GLfloat time) {
+        ForwardSinWaveRenderer::time = time;
+    }
+
+    void setCenter(const glm::vec3 &center) {
+        ForwardSinWaveRenderer::center = center;
+    }
+
+protected:
+    void initShaders() override {
+        try {
+            shader->loadFromFile(Shader::VERTEX, shadersPath + "sinWave.vs");
+            shader->loadFromFile(Shader::FRAGMENT, shadersPath + "basic.fs");
+            shader->createAndLinkProgram();
+            shader->use();
+            shader->addAttribute("position");
+            shader->addAttribute("color");
+            shader->addUniform("ModelViewProjection");
+            shader->addUniform("time");
+            shader->addUniform("center");
+            shader->unuse();
+        } catch( MyException& e) {
+            std::cerr << e.getType() << ":\n" << e.getMessage();
+            throw e;
+            //TODO: ask for proper path if sth goes wrong
+        }
+    };
+
+public:
+
+    void init() override {
+        ForwardRenderer::init();
+
         Projection = glm::perspective(FOV, aspect, zNear, zFar);
         ModelViewProjection = Projection * ModelView;
-
-        initializeShaders();
-        initialiseGPUSenders();
 
         onWindowResizeProjectionUpdater.setReactionFuncPtr([&](std::pair<int,int> newWidthHeight){
             int width = newWidthHeight.first;
@@ -48,66 +78,41 @@ public:
         });
     }
 
-    virtual void initializeShaders(){
-        try {
-            shader->loadFromFile(Shader::VERTEX, shadersPath + "divide.vs");
-            shader->loadFromFile(Shader::TESSELATION_CONTROL, shadersPath + "divide.tcs");
-            shader->loadFromFile(Shader::TESSELATION_EVALUATION, shadersPath + "divide.tes");
-            shader->loadFromFile(Shader::FRAGMENT, shadersPath + "divide.fs");
-            shader->createAndLinkProgram();
-            shader->use();
-            shader->addAttribute("position");
-            shader->addAttribute("color");
-            shader->addUniform("ModelViewProjection");
-            shader->addUniform("OuterTesselationLevel");
-            shader->addUniform("InnerTesselationLevel");
-            shader->unuse();
-        } catch( MyException& e) {
-            std::cerr << e.getType() << ":\n" << e.getMessage();
-            throw e;
-            //TODO: ask for proper path if sth goes wrong
-        }
-    }
+    void initialiseUniformSender() override {
+        toGPUniformSender->addShader(shader);
 
-    void initialiseGPUSenders(){
-        initialiseAttributeSender();
-        initialiseUniformSender();
-    }
-
-    void initialiseUniformSender(){
-        toGPUniformSender.addShader(shader);
-
-        toGPUniformSender.addUniform(shader,
+        toGPUniformSender->addUniform(shader,
                                      UniformSendingInfo::MatrixType::FOUR,
                                      glm::value_ptr(ModelViewProjection),
                                      shader->getUniform("ModelViewProjection"));
 
-        toGPUniformSender.addUniform(shader,
-                                     UniformSendingInfo::UniformType::UNIFORM_FLOAT,
-                                     &OuterTesselationLevel,
-                                     shader->getUniform("OuterTesselationLevel"),
-                                     1);
+        toGPUniformSender->addUniform(shader,
+                                      UniformSendingInfo::UniformType::UNIFORM_FLOAT,
+                                      &time,
+                                      shader->getUniform("time"),
+                                      1);
 
-        toGPUniformSender.addUniform(shader,
-                                     UniformSendingInfo::UniformType::UNIFORM_FLOAT,
-                                     &InnerTesselationLevel,
-                                     shader->getUniform("InnerTesselationLevel"),
-                                     1);
+        toGPUniformSender->addUniform(shader,
+                                      UniformSendingInfo::UniformType::UNIFORM_FLOAT,
+                                      &center,
+                                      shader->getUniform("center"),
+                                      3);
+
     }
 
-    void initialiseAttributeSender(){
-        toGPUattribueSender.createBuffers();
+    void initialiseAttributeSender() override {
+        toGPUattribueSender->createBuffers();
 
-        toGPUattribueSender.addShader(shader);
+        toGPUattribueSender->addShader(shader);
 
-        toGPUattribueSender.addAttribute(shader,
+        toGPUattribueSender->addAttribute(shader,
                                          shader->getAttribute("position"),
                                          3,
                                          GL_FLOAT,
                                          Vertex::getPositionOffset()
         );
 
-        toGPUattribueSender.addAttribute(shader,
+        toGPUattribueSender->addAttribute(shader,
                                          shader->getAttribute("color"),
                                          3,
                                          GL_FLOAT,
@@ -115,29 +120,23 @@ public:
         );
     }
 
-    void sendMeshDataToGPU(Mesh& mesh){
-        toGPUattribueSender.sendGeometryAndTopology(shader,mesh);
+    void sendMeshDataToGPU(Mesh& mesh) override {
+        toGPUattribueSender->sendGeometryAndTopology(shader,mesh);
     }
 
-    virtual void render(Mesh& mesh, Window& window){
+    void render(Mesh &mesh) override {
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
         shader->use();
 
-        toGPUniformSender.sendUniforms(shader);
+        toGPUniformSender->sendUniforms(shader);
 
         GLuint numIndicies = mesh.getNumberIndicies();
 
-        glPatchParameteri(GL_PATCH_VERTICES, 3);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawElements(GL_PATCHES, numIndicies, GL_UNSIGNED_SHORT, nullptr);
+        glDrawElements(GL_TRIANGLES, numIndicies, GL_UNSIGNED_SHORT, nullptr);
 
         shader->unuse();
-        window.swapBuffers();
     };
-
-    OnChangeListener<std::pair<int, int>> &getOnWindowResizeProjectionUpdater() {
-        return onWindowResizeProjectionUpdater;
-    }
 };
 
 

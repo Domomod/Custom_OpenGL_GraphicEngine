@@ -3,3 +3,8 @@
 //
 
 #include "ForwardRenderer.h"
+
+void ForwardRenderer::init() {
+    initShaders();
+    AbstractRenderer::init();
+}

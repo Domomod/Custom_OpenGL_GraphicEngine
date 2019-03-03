@@ -18,9 +18,34 @@
 #include "ToGPUniformSender.h"
 
 class AbstractRenderer {
+public:
+    AbstractRenderer(ToGPUattribueSender* toGPUattribueSender,
+                     ToGPUniformSender* toGPUniformSender) : toGPUattribueSender(
+            toGPUattribueSender), toGPUniformSender(toGPUniformSender) {}
+
+    virtual ~AbstractRenderer() = default;
+
+    virtual void init();
+
+    virtual void fullRender(Mesh& mesh, Window& window);
+
+    void setFillType(GLenum fillType);
+
+    void setGeometryType(GLenum geometryType);
+
+    OnChangeListener<std::pair<int, int>> &getOnWindowResizeProjectionUpdater();
+
 protected:
-    GLenum fillType;
-    GLenum geometryType;
+    virtual void initialiseUniformSender() = 0;
+    virtual void initialiseAttributeSender() = 0;
+
+    virtual void sendMeshDataToGPU(Mesh& mesh) = 0;
+
+    virtual void render(Mesh &mesh) = 0;
+
+    //
+    GLenum fillType = GL_LINE;
+    GLenum geometryType = GL_TRIANGLES;
 
     std::string shadersPath = "../Shaders/";
 
@@ -34,35 +59,6 @@ protected:
     OnChangeListener<std::pair<int,int>> onWindowResizeProjectionUpdater;
     std::shared_ptr<ToGPUattribueSender> toGPUattribueSender;
     std::shared_ptr<ToGPUniformSender> toGPUniformSender;
-
-public:
-    AbstractRenderer();
-
-    virtual ~AbstractRenderer();
-
-    virtual void init() {
-        initializeGLenums();
-        initialiseAttributeSender();
-        initialiseUniformSender();
-
-    }
-
-    virtual void initializeGLenums() = 0;
-    virtual void initialiseUniformSender() = 0;
-    virtual void initialiseAttributeSender() = 0;
-
-    virtual void sendMeshDataToGPU(Mesh& mesh) = 0;
-
-    virtual void render(Mesh& mesh, Window& window) = 0;
-
-    virtual void fullRender(Mesh& mesh, Window& window){
-        sendMeshDataToGPU(mesh);
-
-    };
-
-    OnChangeListener<std::pair<int, int>> &getOnWindowResizeProjectionUpdater() {
-        return onWindowResizeProjectionUpdater;
-    }
 };
 
 

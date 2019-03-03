@@ -8,9 +8,9 @@
 
 #include <glm/glm.hpp>
 #include <GL/gl3w.h>
-#include "../View/Window.h"
-#include "../View/Shader.h"
-#include "Application.h"
+
+#include "Mesh.h"
+#include "Vertex.h"
 
 
 

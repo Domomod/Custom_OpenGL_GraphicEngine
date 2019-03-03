@@ -51,7 +51,7 @@ private:
     GLuint program = 0;
     GLuint shaders[MAX_SHADERS];
     bool loadedShaders[MAX_SHADERS] = {0};
-
+    bool programLinked = false;
 
     std::map<std::string, GLint> attributes;
     std::map<std::string, GLint> uniforms;

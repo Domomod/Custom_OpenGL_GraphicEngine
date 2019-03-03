@@ -7,6 +7,7 @@
 Window::Window(std::string title, int width, int height) {
     window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
     if(!window){
+        //TODO: create a class
         throw std::string("Creating window failed");
     }
 

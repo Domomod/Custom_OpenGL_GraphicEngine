@@ -3,53 +3,45 @@
 // Created by dominik on 09.02.19.
 //
 
-#ifndef GAMEENGINE_APPLICATION_H
-#define GAMEENGINE_APPLICATION_H
+#ifndef GAMEENGINE_SINWAVEAPP_H
+#define GAMEENGINE_SINWAVEAPP_H
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/gl3w.h>
 
-#include "../View/Window.h"
-#include "../View/Shader.h"
-#include "../MyExceptions.h"
-#include "OnChangeListener.h"
-#include "Mesh.h"
-#include "ToGPUattribueSender.h"
-#include "ToGPUniformSender.h"
-#include "ForwardTesselationRenderer.h"
-
-class SinWaveApplication : public  {
-public:
-    Application();
-
-    virtual ~Application();
-
-    void start();
+#include "../../View/Window.h"
+#include "../OpenGLinitializer.h"
+#include "ForwardSinWaveRenderer.h"
+#include "../MeshGenerator.h"
+class SinWaveApp {
 private:
-    //Scene
+    std::shared_ptr<Window> window;
+    ForwardSinWaveRenderer renderer;
+    OpenGlInitalizer openGlInitalizer;
     Mesh mesh;
-    glm::vec3 center = glm::vec3(0.f, -0.5f, -3.f);
+public:
+    SinWaveApp(){
+        openGlInitalizer.initGLFW();
+        window = std::make_shared<Window>();
+        window->getResizeNotifierPtr()->addListener(&renderer.getOnWindowResizeProjectionUpdater());
+        window->makeCurrent();
+        openGlInitalizer.initOpenGL();
+        mesh = MeshGenerator::generateSymetricalRectanuglarMesh(150, 150, 25.f, 25.f, 0.f, -1.f, -5.f);
+        renderer.init();
+    }
+    virtual ~SinWaveApp() = default;
 
-    //View
-    Window mainWindow;
-    Renderer renderer;
-    GLint maxPatchVerticies = 0;
-
-    void initialiseOpenGL();
-    void initialiseCommunication();
-
-    void mainLoop();
-
-    static void GLAPIENTRY
-    MessageCallback( GLenum source,
-                     GLenum type,
-                     GLuint id,
-                     GLenum severity,
-                     GLsizei length,
-                     const GLchar* message,
-                     const void* userParam );
+    void run(){
+        renderer.sendMeshDataToGPU(mesh);
+        renderer.setCenter(glm::vec3(0.f, -0.7f, -5.f));
+        while(window->isRunning()){
+            renderer.setTime(static_cast<GLfloat>(glfwGetTime()));
+            renderer.render(mesh);
+            window->swapBuffers();
+        }
+    }
 };
 
 
-#endif //GAMEENGINE_APPLICATION_H
+#endif //GAMEENGINE_SINWAVEAPP_H

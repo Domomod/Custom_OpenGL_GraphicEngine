@@ -89,6 +89,7 @@ void Shader::createAndLinkProgram() {
             if(loadedShaders[i])
                 glDeleteShader(shaders[i]);
         }
+        programLinked = true;
     }
     else if (program != 0){
         throw GluintIdAlreadySetException("Program already created and linked");
@@ -156,6 +157,7 @@ GLint Shader::abstractGet(const std::string &elementName, std::map<std::string, 
 
 void Shader::deleteProgram() {
     glDeleteProgram(program);
+    programLinked = false;
 }
 
 bool Shader::operator<(const Shader &rhs) const {
