@@ -2,36 +2,9 @@
 // Created by dominik on 09.02.19.
 //
 
-#include "Application.h"
-#include "MeshGenerator.h"
-#include "Mesh.h"
+#include "OpenGLinitializable.h"
 
-#include <glm/gtc/type_ptr.hpp>
-
-
-AbstractApplication::AbstractApplication() : mainWindow("Game Engine", 800, 600) {
-
-}
-
-
-AbstractApplication::~AbstractApplication() {
-}
-
-
-void AbstractApplication::start() {
-    //There must be a current window before OpenGL initialisation
-    mainWindow.makeCurrent();
-
-    initialiseOpenGL();
-    initialiseRenderer();
-    renderer->initialize();
-    initialiseCommunication();
-    mesh = MeshGenerator::generateSymetricalRectanuglarMesh(2, 2, 3.f, 3.f, center.x, center.y,
-                                                            center.z);
-    mainLoop();
-}
-
-void AbstractApplication::initialiseOpenGL() {
+void OpenGlInitalizable::initOpenGL() {
     if(gl3wInit()) {
         std::cerr << "Failed to initialize OpenGl.\n";
         throw GlfwInitalisationFailedException();
@@ -51,11 +24,15 @@ void AbstractApplication::initialiseOpenGL() {
     glfwSwapInterval(1);
 }
 
-void AbstractApplication::MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
-                                  const GLchar *message, const void *userParam) {
+void OpenGlInitalizable::MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
+                                         const GLchar *message, const void *userParam) {
     fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
              ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
              type, severity, message );
     if(type == GL_DEBUG_TYPE_ERROR)
         throw new OpenGlException();
+}
+
+GLfloat OpenGlInitalizable::getMaxPatchVerticies() const {
+    return maxPatchVerticies;
 }

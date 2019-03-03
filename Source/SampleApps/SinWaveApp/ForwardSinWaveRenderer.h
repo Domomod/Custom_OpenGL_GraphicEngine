@@ -11,15 +11,21 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "../View/Shader.h"
-#include "Mesh.h"
-#include "../View/Window.h"
-#include "ToGPUattribueSender.h"
-#include "ToGPUniformSender.h"
+#include "../../View/Shader.h"
+#include "../Mesh.h"
+#include "../../View/Window.h"
+#include "../ToGPUattribueSender.h"
+#include "../ToGPUniformSender.h"
+#include "../ForwardRenderer.h"
 
-class ForwardTesselationRenderer {
+class ForwardTesselationRenderer : public ForwardRenderer {
 private:
     //Uniforms
+    //Math
+    glm::mat4 Projection = glm::mat4(1);
+    glm::mat4 ModelView = glm::mat4(1);
+    glm::mat4 ModelViewProjection = glm::mat4(1);
+
     GLfloat OuterTesselationLevel = 1.0f;
     GLfloat InnerTesselationLevel = 1.0f;
 public:
