@@ -2,9 +2,9 @@
 // Created by dominik on 02.03.19.
 //
 
-#include "ForwardRenderer.h"
+#include "ForwardAbstractRenderer.h"
 
-void ForwardRenderer::init() {
+void ForwardAbstractRenderer::init() {
     initShaders();
     AbstractRenderer::init();
 }

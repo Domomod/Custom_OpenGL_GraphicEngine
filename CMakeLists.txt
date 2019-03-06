@@ -25,7 +25,7 @@ set(    SOURCES_AND_HEADERS
         Source/OpenGL/RenderSystem/AbstractRenderer.cpp Source/OpenGL/RenderSystem/AbstractRenderer.h
         Source/OpenGL/SendingDataToGPU/ToGPUniformSender.cpp Source/OpenGL/SendingDataToGPU/ToGPUniformSender.h
         Source/OpenGL/SendingDataToGPU/UniformSendingInfo.cpp Source/OpenGL/SendingDataToGPU/UniformSendingInfo.h
-        Source/OpenGL/RenderSystem/Forward/ForwardRenderer.cpp Source/OpenGL/RenderSystem/Forward/ForwardRenderer.h
+        Source/OpenGL/RenderSystem/Forward/ForwardAbstractRenderer.cpp Source/OpenGL/RenderSystem/Forward/ForwardAbstractRenderer.h
         Source/SampleApps/SinWaveApp/SinWaveApp.cpp Source/SampleApps/SinWaveApp/SinWaveApp.h
         Source/OpenGL/OpenGLinitializer.cpp Source/OpenGL/OpenGLinitializer.h
         Source/OpenGL/RenderSystem/Forward/ForwardSinWaveRenderer.cpp Source/OpenGL/RenderSystem/Forward/ForwardSinWaveRenderer.h

@@ -16,10 +16,10 @@
 #include "Source/OpenGL/Window/Window.h"
 #include "Source/OpenGL/SendingDataToGPU/ToGPUattribueSender.h"
 #include "Source/OpenGL/SendingDataToGPU/ToGPUniformSender.h"
-#include "ForwardRenderer.h"
+#include "ForwardAbstractRenderer.h"
 #include "Source/OpenGL/OpenGLinitializer.h"
 
-class ForwardSinWaveRenderer : public ForwardRenderer {
+class ForwardSinWaveRenderer : public ForwardAbstractRenderer {
 private:
     //Uniforms
     glm::mat4 Projection = glm::mat4(1);
@@ -29,18 +29,13 @@ private:
     GLfloat time = 1.0f;
     glm::vec3 center = glm::vec3(0.f, -0.5f, -3.f);
 public:
-    ForwardSinWaveRenderer() {}
+    ForwardSinWaveRenderer() = default;
 
-    virtual ~ForwardSinWaveRenderer() {
-    }
+    ~ForwardSinWaveRenderer() override = default;
 
-    void setTime(GLfloat time) {
-        ForwardSinWaveRenderer::time = time;
-    }
+    void setTime(GLfloat time);
 
-    void setCenter(const glm::vec3 &center) {
-        ForwardSinWaveRenderer::center = center;
-    }
+    void setCenter(const glm::vec3 &center);
 
 protected:
     void initShaders() override {
@@ -65,7 +60,7 @@ protected:
 public:
 
     void init() override {
-        ForwardRenderer::init();
+        ForwardAbstractRenderer::init();
 
         Projection = glm::perspective(FOV, aspect, zNear, zFar);
         ModelViewProjection = Projection * ModelView;
@@ -124,19 +119,7 @@ public:
         toGPUattribueSender->sendGeometryAndTopology(shader,mesh);
     }
 
-    void render(Mesh &mesh) override {
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-        shader->use();
-
-        toGPUniformSender->sendUniforms(shader);
-
-        GLuint numIndicies = mesh.getNumberIndicies();
-
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawElements(GL_TRIANGLES, numIndicies, GL_UNSIGNED_SHORT, nullptr);
-
-        shader->unuse();
-    };
+    void render(Mesh &mesh) override;
 };
 
 

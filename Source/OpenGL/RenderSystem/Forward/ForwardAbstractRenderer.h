@@ -7,9 +7,9 @@
 
 #include "Source/OpenGL/RenderSystem/AbstractRenderer.h"
 
-class ForwardRenderer : public AbstractRenderer{
+class ForwardAbstractRenderer : public AbstractRenderer{
 public:
-    ForwardRenderer(
+    ForwardAbstractRenderer(
             ) : AbstractRenderer(new ToGPUattribueSender(), new ToGPUniformSender()){}
 
     void init() override;
