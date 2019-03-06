@@ -30,7 +30,8 @@ set(    SOURCES_AND_HEADERS
         Source/OpenGL/OpenGLinitializer.cpp Source/OpenGL/OpenGLinitializer.h
         Source/OpenGL/RenderSystem/Forward/ForwardSinWaveRenderer.cpp Source/OpenGL/RenderSystem/Forward/ForwardSinWaveRenderer.h
         Source/SampleApps/TesselationApp/TesselationApp.cpp Source/SampleApps/TesselationApp/TesselationApp.h
-        Source/OpenGL/RenderSystem/Forward/ForwardTesselation.cpp Source/OpenGL/RenderSystem/Forward/ForwardTesselation.h)
+        Source/OpenGL/RenderSystem/Forward/ForwardTesselation.cpp Source/OpenGL/RenderSystem/Forward/ForwardTesselation.h
+        Source/OpenGL/RenderSystem/Buffers/UniformBuffer.cpp Source/OpenGL/RenderSystem/Buffers/UniformBuffer.h)
 
 add_executable(SinWave Source/SampleApps/SinWaveApp/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS})
 target_include_directories(SinWave PUBLIC ${CMAKE_SOURCE_DIR})

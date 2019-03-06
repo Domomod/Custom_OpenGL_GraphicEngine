@@ -39,6 +39,8 @@ public:
     GLint getUniform(const std::string& uniformName);
     GLint abstractGet(const std::string &elementName, std::map<std::string, GLint> &elementStorage);
 
+    GLuint getProgram() const;
+
 private:
     std::map<ShaderType, GLenum> GlenumShaderTypeConvert = {
             {VERTEX, GL_VERTEX_SHADER},

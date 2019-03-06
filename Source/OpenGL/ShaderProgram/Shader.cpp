@@ -183,3 +183,7 @@ bool Shader::operator==(const Shader &rhs) const {
 bool Shader::operator!=(const Shader &rhs) const {
     return !(rhs == *this);
 }
+
+GLuint Shader::getProgram() const {
+    return program;
+}
