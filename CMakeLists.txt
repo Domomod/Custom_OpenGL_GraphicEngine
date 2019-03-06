@@ -31,9 +31,10 @@ set(    SOURCES_AND_HEADERS
         Source/OpenGL/RenderSystem/Forward/ForwardSinWaveRenderer.cpp Source/OpenGL/RenderSystem/Forward/ForwardSinWaveRenderer.h
         Source/SampleApps/TesselationApp/TesselationApp.cpp Source/SampleApps/TesselationApp/TesselationApp.h
         Source/OpenGL/RenderSystem/Forward/ForwardTesselation.cpp Source/OpenGL/RenderSystem/Forward/ForwardTesselation.h
-        Source/OpenGL/RenderSystem/Buffers/UniformBuffer.cpp Source/OpenGL/RenderSystem/Buffers/UniformBuffer.h)
+        Source/OpenGL/RenderSystemV2/Buffers/UniformBuffer.cpp Source/OpenGL/RenderSystemV2/Buffers/UniformBuffer.h Source/OpenGL/RenderSystemV2/RenderContentProvider.cpp Source/OpenGL/RenderSystemV2/RenderContentProvider.h
+        Source/OpenGL/RenderSystemV2/Renderer.cpp Source/OpenGL/RenderSystemV2/Renderer.h)
 
-add_executable(SinWave Source/SampleApps/SinWaveApp/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS})
+add_executable(SinWave Source/SampleApps/SinWaveApp/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS} Source/OpenGL/RenderSystemV2/Buffers/AttributeBuffer.cpp Source/OpenGL/RenderSystemV2/Buffers/AttributeBuffer.h Source/OpenGL/RenderSystemV2/Metadata/AttributeMetadata.cpp Source/OpenGL/RenderSystemV2/Metadata/AttributeMetadata.h Source/OpenGL/RenderSystemV2/Buffers/ElementArrayBuffer.cpp Source/OpenGL/RenderSystemV2/Buffers/ElementArrayBuffer.h)
 target_include_directories(SinWave PUBLIC ${CMAKE_SOURCE_DIR})
 target_link_libraries(SinWave ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} glfw)
 
