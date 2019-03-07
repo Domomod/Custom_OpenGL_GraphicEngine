@@ -8,8 +8,8 @@
 #include <memory>
 #include <vector>
 
-#include "RenderContentProvider.h"
-#include "Buffers/UniformBuffer.h"
+#include "Source/OpenGL/RenderSystemV2/ContentProvider/RenderContentProvider.h"
+#include "Source/OpenGL/RenderSystemV2/Buffers/UniformBuffer.h"
 
 /*Renderer cares to send its uniforms
  * */

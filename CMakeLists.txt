@@ -31,14 +31,26 @@ set(    SOURCES_AND_HEADERS
         Source/OpenGL/RenderSystem/Forward/ForwardSinWaveRenderer.cpp Source/OpenGL/RenderSystem/Forward/ForwardSinWaveRenderer.h
         Source/SampleApps/TesselationApp/TesselationApp.cpp Source/SampleApps/TesselationApp/TesselationApp.h
         Source/OpenGL/RenderSystem/Forward/ForwardTesselation.cpp Source/OpenGL/RenderSystem/Forward/ForwardTesselation.h
-        Source/OpenGL/RenderSystemV2/Buffers/UniformBuffer.cpp Source/OpenGL/RenderSystemV2/Buffers/UniformBuffer.h Source/OpenGL/RenderSystemV2/RenderContentProvider.cpp Source/OpenGL/RenderSystemV2/RenderContentProvider.h
-        Source/OpenGL/RenderSystemV2/Renderer.cpp Source/OpenGL/RenderSystemV2/Renderer.h)
+        Source/OpenGL/RenderSystemV2/Buffers/UniformBuffer.cpp Source/OpenGL/RenderSystemV2/Buffers/UniformBuffer.h
+        Source/OpenGL/RenderSystemV2/ContentProvider/RenderContentProvider.h
+        Source/OpenGL/RenderSystemV2/Renderer/Renderer.cpp Source/OpenGL/RenderSystemV2/Renderer/Renderer.h
+        Source/OpenGL/RenderSystemV2/Buffers/AttributeBuffer.h
+        Source/OpenGL/RenderSystemV2/Metadata/AttributeMetadata.cpp Source/OpenGL/RenderSystemV2/Metadata/AttributeMetadata.h
+        Source/OpenGL/RenderSystemV2/Buffers/ElementArrayBuffer.h
+        Source/OpenGL/RenderSystemV2/Buffers/Buffer.h
+        Source/SampleApps/RenderV2Sample/RendererSystemV2Sample.cpp Source/SampleApps/RenderV2Sample/RendererSystemV2Sample.h
+        Source/OpenGL/RenderSystemV2/ContentProvider/SingleTriangleProvider.h
+        Source/OpenGL/RenderSystemV2/Buffers/VertexArrayObject.cpp Source/OpenGL/RenderSystemV2/Buffers/VertexArrayObject.h)
 
-add_executable(SinWave Source/SampleApps/SinWaveApp/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS} Source/OpenGL/RenderSystemV2/Buffers/AttributeBuffer.cpp Source/OpenGL/RenderSystemV2/Buffers/AttributeBuffer.h Source/OpenGL/RenderSystemV2/Metadata/AttributeMetadata.cpp Source/OpenGL/RenderSystemV2/Metadata/AttributeMetadata.h Source/OpenGL/RenderSystemV2/Buffers/ElementArrayBuffer.cpp Source/OpenGL/RenderSystemV2/Buffers/ElementArrayBuffer.h)
+add_executable(SinWave Source/SampleApps/SinWaveApp/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS})
 target_include_directories(SinWave PUBLIC ${CMAKE_SOURCE_DIR})
 target_link_libraries(SinWave ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} glfw)
 
 add_executable(Tesselation Source/SampleApps/TesselationApp/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS})
 target_include_directories(Tesselation PUBLIC ${CMAKE_SOURCE_DIR})
 target_link_libraries(Tesselation ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} glfw)
+
+add_executable(RenderV2 Source/SampleApps/RenderV2Sample/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS})
+target_include_directories(RenderV2 PUBLIC ${CMAKE_SOURCE_DIR})
+target_link_libraries(RenderV2 ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} glfw)
 

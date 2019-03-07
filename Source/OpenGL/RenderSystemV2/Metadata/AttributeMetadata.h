@@ -13,9 +13,11 @@ struct AttributeMetadata {
     GLint numberOfGenericValuesInSingleAttribute;
     GLenum dataType;
     size_t offset;
+    size_t stride;
     GLboolean normalized;
 
-    AttributeMetadata(GLuint index, GLint numberOfGenericValuesInSingleAttribute, GLenum dataType, size_t offset, GLboolean normalized = GL_FALSE);
+    AttributeMetadata(GLuint index, GLint numberOfGenericValuesInSingleAttribute, GLenum dataType, size_t offset,
+                          size_t stride, GLboolean normalized = GL_FALSE);
     virtual ~AttributeMetadata();
 };
 

@@ -10,19 +10,36 @@
 
 #include "Source/EntitySystem/Mesh.h"
 #include "Source/OpenGL/RenderSystemV2/Metadata/AttributeMetadata.h"
+#include "Buffer.h"
 
-class AttributeBuffer {
+class AttributeBuffer : public Buffer {
 public:
-    template<class VertexClass>
-    void sendIfVaoEnabled(GLuint verticesVbo, std::vector<VertexClass> vertices){
-        glBindBuffer(GL_ARRAY_BUFFER, verticesVbo);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), vertices.data(), GL_STATIC_DRAW);
+    void bind() override {
+        glBindBuffer(GL_ARRAY_BUFFER, Buffer::vbo);
+
+    }
+
+    void unbind() override {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    }
+
+    void addAttributeMetadata(const AttributeMetadata& attributeMetadata){
+        attributeMetadataTable.push_back(attributeMetadata);
+    }
+
+    void enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded(){
         for(const auto& metadata : attributeMetadataTable){
             glEnableVertexAttribArray(metadata.index);
-            glVertexAttribPointer(metadata.index, metadata.numberOfGenericValuesInSingleAttribute, metadata.dataType, metadata.normalized, sizeof(vertices[0]),
+            glVertexAttribPointer(metadata.index, metadata.numberOfGenericValuesInSingleAttribute, metadata.dataType, metadata.normalized,
+                                  static_cast<GLsizei>(metadata.stride),
                                   reinterpret_cast<void*>(metadata.offset));
         }
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    template<class VertexClass>
+    void sendBufferToGPUifVaoBinded(std::vector<VertexClass> vertices){
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), vertices.data(), GL_STATIC_DRAW);
 
     }
 private:

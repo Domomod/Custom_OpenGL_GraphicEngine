@@ -106,13 +106,13 @@ Mesh MeshGenerator::generateTriangeMesh() {
     std::vector<GLushort> indicies;
 
     verticies.emplace_back(
-            glm::vec3(1, 1, 1), glm::vec3(-1, -0.2, 0)
+            glm::vec3(1, 1, 1), glm::vec3(-1, -1, 0)
     );
     verticies.emplace_back(
-            glm::vec3(1, 1, 1), glm::vec3(0, -0.2, -20)
+            glm::vec3(1, 1, 1), glm::vec3(0, 0, 0)
     );
     verticies.emplace_back(
-            glm::vec3(1, 1, 1), glm::vec3(1, -0.2, 0)
+            glm::vec3(1, 1, 1), glm::vec3(1, 0, 0)
     );
 
     indicies.push_back(0);

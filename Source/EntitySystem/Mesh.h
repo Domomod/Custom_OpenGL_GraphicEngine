@@ -53,6 +53,10 @@ public:
     auto getIndiciesDataPtr() {
         return indicies.data();
     }
+
+    const std::vector<Vertex> &getVerticies() const;
+
+    const std::vector<GLushort> &getIndicies() const;
 };
 
 

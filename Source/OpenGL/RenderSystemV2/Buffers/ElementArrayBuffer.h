@@ -7,13 +7,22 @@
 
 #include <GL/gl3w.h>
 #include <vector>
+#include "Buffer.h"
 
-class ElementArrayBuffer {
+class ElementArrayBuffer : public Buffer {
 public:
-    void sendIfVaoEnabled(GLuint indiciesVbo, const std::vector<GLushort> indicies){
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indiciesVbo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicies.size() * sizeof(indicies[0]), indicies.data(), GL_STATIC_DRAW);
+    void bind() override {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffer::vbo);
+
+    }
+
+    void unbind() override {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    }
+
+    void sendIfVaoEnabled(const std::vector<GLushort> indicies){
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicies.size() * sizeof(indicies[0]), indicies.data(), GL_STATIC_DRAW);
     }
 };
 
