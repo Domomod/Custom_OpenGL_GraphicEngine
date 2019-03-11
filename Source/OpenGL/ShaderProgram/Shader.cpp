@@ -134,8 +134,8 @@ void Shader::abstractAdd(const std::string& elementName, std::map<std::string, G
 }
 
 
-GLint Shader::getAttribute(const std::string &attributeName) {
-    return abstractGet(attributeName, attributes);
+GLuint Shader::getAttribute(const std::string &attributeName) {
+    return static_cast<GLuint>(abstractGet(attributeName, attributes));
 }
 
 

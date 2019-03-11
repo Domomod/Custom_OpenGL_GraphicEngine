@@ -15,9 +15,6 @@
 #include "Source/MyExceptions.h"
 #include "OnChangeListenerTemplate/OnChangeListener.h"
 #include "Source/EntitySystem/Mesh.h"
-#include "Source/OpenGL/SendingDataToGPU/ToGPUattribueSender.h"
-#include "Source/OpenGL/SendingDataToGPU/ToGPUniformSender.h"
-#include "Source/OpenGL/RenderSystem/AbstractRenderer.h"
 
 class OpenGlInitalizer {
 public:

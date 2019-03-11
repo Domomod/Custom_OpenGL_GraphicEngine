@@ -55,19 +55,21 @@ int main(){
     }
 
     VertexArrayObject vao;
-    ElementArrayBuffer elementArrayBuffer;
-    AttributeBuffer attributeBuffer;
 
     shader.use();
     vao.bind();
 
+    AttributeBuffer attributeBuffer = AttributeBufferFactory()
+                                        .insert( AttributeMetadata(
+                                                shader.getAttribute("position"), 3,
+                                                GL_FLOAT, 0, sizeof(positions[0])))
+                                        .make();
+
     attributeBuffer.bind();
-    attributeBuffer.addAttributeMetadata(
-            AttributeMetadata(static_cast<GLuint>(shader.getAttribute("position")), 3, GL_FLOAT,0,
-                              sizeof(positions[0]))
-    );
     attributeBuffer.enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded();
     attributeBuffer.sendBufferToGPUifVaoBinded(positions);
+
+    ElementArrayBuffer elementArrayBuffer;
 
     elementArrayBuffer.bind();
     elementArrayBuffer.sendIfVaoEnabled(indicies);
@@ -80,7 +82,6 @@ int main(){
     uniformBuffer.bind();
     uniformBuffer.bakeData();
     uniformBuffer.sendBufferToGPU();
-    uniformBuffer.unbind();
 
     while(window.isRunning()){
         glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, nullptr);

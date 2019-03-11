@@ -35,7 +35,7 @@ public:
     void addAttribute(const std::string& attributeName);
     void addUniform(const std::string& uniformName);
 
-    GLint getAttribute(const std::string& attributeName);
+    GLuint getAttribute(const std::string& attributeName);
     GLint getUniform(const std::string& uniformName);
     GLint abstractGet(const std::string &elementName, std::map<std::string, GLint> &elementStorage);
 

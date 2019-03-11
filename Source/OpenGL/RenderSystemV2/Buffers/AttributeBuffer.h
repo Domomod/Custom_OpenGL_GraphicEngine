@@ -13,29 +13,13 @@
 #include "Buffer.h"
 
 class AttributeBuffer : public Buffer {
+    friend class AttributeBufferFactory;
 public:
-    void bind() override {
-        glBindBuffer(GL_ARRAY_BUFFER, Buffer::vbo);
+    void bind() override;
 
-    }
+    void unbind() override;
 
-    void unbind() override {
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    }
-
-    void addAttributeMetadata(const AttributeMetadata& attributeMetadata){
-        attributeMetadataTable.push_back(attributeMetadata);
-    }
-
-    void enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded(){
-        for(const auto& metadata : attributeMetadataTable){
-            glEnableVertexAttribArray(metadata.index);
-            glVertexAttribPointer(metadata.index, metadata.numberOfGenericValuesInSingleAttribute, metadata.dataType, metadata.normalized,
-                                  static_cast<GLsizei>(metadata.stride),
-                                  reinterpret_cast<void*>(metadata.offset));
-        }
-    }
+    void enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded();
 
     template<class VertexClass>
     void sendBufferToGPUifVaoBinded(std::vector<VertexClass> vertices){
@@ -43,6 +27,16 @@ public:
 
     }
 private:
+    std::vector<AttributeMetadata> attributeMetadataTable;
+    AttributeBuffer(const std::vector<AttributeMetadata> &attributeMetadataTable);
+};
+
+class AttributeBufferFactory{
+public:
+    AttributeBuffer make();
+    AttributeBufferFactory& insert(const AttributeMetadata &attributeMetadata);
+private:
+    bool attributesAdded = false;
     std::vector<AttributeMetadata> attributeMetadataTable;
 };
 
