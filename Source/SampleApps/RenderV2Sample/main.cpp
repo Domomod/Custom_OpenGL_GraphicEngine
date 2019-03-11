@@ -15,6 +15,8 @@
 #include "Source/OpenGL/RenderSystemV2/Buffers/AttributeBuffer.h"
 #include "Source/OpenGL/RenderSystemV2/Buffers/ElementArrayBuffer.h"
 #include "Source/OpenGL/RenderSystemV2/Metadata/AttributeMetadata.h"
+#include "Source/OpenGL/RenderSystemV2/Buffers/UniformBuffer.h"
+
 #include "Source/OpenGL/ShaderProgram/Shader.h"
 #include "Source/EntitySystem/Mesh.h"
 #include "Source/EntitySystem/MeshGenerator.h"
@@ -26,6 +28,18 @@ int main(){
     window.makeCurrent();
     openGlInitalizer.initOpenGL();
     Shader shader;
+
+    std::vector<glm::vec3> positions = {
+            glm::vec3(-1,-1,0),
+            glm::vec3(0,1,0),
+            glm::vec3(1,-1,0)
+    };
+
+    glm::vec4 color = glm::vec4(1,0,0,1);
+
+    std::vector<GLushort> indicies = {
+            0, 1, 2
+    };
 
     try {
         shader.loadFromFile(Shader::VERTEX, "../Shaders/basic.vs");
@@ -40,17 +54,6 @@ int main(){
         //TODO: ask for proper path if sth goes wrong
     }
 
-    std::vector<glm::vec3> positions = {
-            glm::vec3(-1,-1,0),
-            glm::vec3(0,1,0),
-            glm::vec3(1,-1,0)
-    };
-
-    std::vector<GLushort> indicies = {
-            0, 1, 2
-    };
-
-
     VertexArrayObject vao;
     ElementArrayBuffer elementArrayBuffer;
     AttributeBuffer attributeBuffer;
@@ -60,7 +63,7 @@ int main(){
 
     attributeBuffer.bind();
     attributeBuffer.addAttributeMetadata(
-            AttributeMetadata(static_cast<GLuint>(shader.getAttribute("position")), 3, GL_FLOAT, 0,
+            AttributeMetadata(static_cast<GLuint>(shader.getAttribute("position")), 3, GL_FLOAT,0,
                               sizeof(positions[0]))
     );
     attributeBuffer.enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded();
@@ -69,6 +72,15 @@ int main(){
     elementArrayBuffer.bind();
     elementArrayBuffer.sendIfVaoEnabled(indicies);
 
+    UniformBuffer uniformBuffer = UniformBufferFactory()
+                                    .setBinding(0)
+                                    .insert( UniformMetadata( &color, GL_FLOAT_VEC4 ) )
+                                    .make();
+
+    uniformBuffer.bind();
+    uniformBuffer.bakeData();
+    uniformBuffer.sendBufferToGPU();
+    uniformBuffer.unbind();
 
     while(window.isRunning()){
         glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, nullptr);

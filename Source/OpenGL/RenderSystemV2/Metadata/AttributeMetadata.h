@@ -6,7 +6,8 @@
 #define GAMEENGINE_ATTRIBUTEMETADATA_H
 
 #include <GL/gl3w.h>
-#include <cstdio>
+#include <cstddef>
+
 
 struct AttributeMetadata {
     GLuint index;

@@ -1,54 +1,52 @@
 //
-// Created by dominik on 06.03.19.
+// Created by dominik on 10.03.19.
 //
 
 #ifndef GAMEENGINE_UNIFORMBUFFER_H
 #define GAMEENGINE_UNIFORMBUFFER_H
 
-
-#include <cstdio>
-#include <GL/gl3w.h>
-#include <map>
 #include <vector>
 
-#include "Source/OpenGL/ShaderProgram/Shader.h"
+#include "Buffer.h"
+#include "Source/OpenGL/RenderSystemV2/Metadata/UniformMetadata.h"
 
-/*Class is not checking validity of passed ptrs, their type has
- * to match the type of uniforms in shader codes*/
+/* To work properly, uniform block in a shader schould have
+ * a layout std140 and binding point specified by programmer
+ * */
 
-class UniformBuffer {
+class UniformBuffer : public Buffer{
+friend class UniformBufferFactory;
 public:
-    void acquire(std::string& bufferName, Shader& shader);
-    void acquire(GLuint _binding, Shader& shader);
-    void release();
-    void addUniform(std::string name, void *data, size_t size);
+    void bind() override;
 
-    GLubyte* getBakedData();
+    void unbind() override;
 
-    UniformBuffer() = default;
-    virtual ~UniformBuffer();
-private:
-    void retrieveBlockSizeFromProgram(GLuint program);
-    void retrieveUniformOrderFromProgram(GLuint program);
-    void retrieveUniformOffsetsFromProgram(GLuint program);
-    void allocateBytesTable();
-    void releaseBytesTable();
+    void sendBufferToGPU();
     void bakeData();
-
+private:
     GLuint binding;
-    GLint blockSize;
-    std::vector<GLchar*> uniformNames;
+    size_t bakedDataSize;
+    std::vector<GLubyte> bakedData;
+    std::vector<UniformMetadata> uniformsMetadata;
 
-    //This can be an outer class
-    std::vector<void*> uniformData;
-    std::vector<size_t> uniformSizes;
-    std::vector<GLuint> uniformOrder;
-    std::vector<GLint> uniformOffsets;
-    // For example UniformMetadata
-
-    GLubyte* bytesTable;
-    bool isAcquired = false;
+public:
+    UniformBuffer(GLuint binding, size_t bakedDataSize, const std::vector<GLubyte> &bakedData,
+                  const std::vector<UniformMetadata> &uniformsMetadata);
 };
 
+class UniformBufferFactory{
+public:
+    UniformBuffer make();
+    UniformBufferFactory& setBinding(GLuint binding);
+    UniformBufferFactory& insert(const UniformMetadata &uniformMetadata);
+private:
+    bool uniformsAdded = false;
+    bool bindingSet = false;
+
+    GLuint binding;
+    size_t bakedDataSize;
+    std::vector<GLubyte> bakedData;
+    std::vector<UniformMetadata> uniformsMetadata;
+};
 
 #endif //GAMEENGINE_UNIFORMBUFFER_H
