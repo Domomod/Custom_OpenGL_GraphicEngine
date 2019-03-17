@@ -29,7 +29,7 @@ set(    SOURCES_AND_HEADERS
         Source/OpenGL/RenderSystemV2/Buffers/ElementArrayBuffer.h
         Source/OpenGL/RenderSystemV2/Buffers/Buffer.h
         Source/OpenGL/RenderSystemV2/ContentProvider/SingleTriangleProvider.h
-        Source/OpenGL/RenderSystemV2/Buffers/VertexArrayObject.cpp Source/OpenGL/RenderSystemV2/Buffers/VertexArrayObject.h Source/OpenGL/RenderSystemV2/Buffers/AttributeBuffer.cpp)
+        Source/OpenGL/RenderSystemV2/Buffers/VertexArrayObject.cpp Source/OpenGL/RenderSystemV2/Buffers/VertexArrayObject.h Source/OpenGL/RenderSystemV2/Buffers/AttributeBuffer.cpp Source/SampleApps/RenderV2Sample/Application.cpp Source/SampleApps/RenderV2Sample/Application.h)
 
 add_executable(RenderV2 Source/SampleApps/RenderV2Sample/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS} Source/OpenGL/RenderSystemV2/Metadata/UniformMetadata.cpp Source/OpenGL/RenderSystemV2/Metadata/UniformMetadata.h Source/OpenGL/RenderSystemV2/Buffers/UniformBuffer.cpp Source/OpenGL/RenderSystemV2/Buffers/UniformBuffer.h)
 target_include_directories(RenderV2 PUBLIC ${CMAKE_SOURCE_DIR})

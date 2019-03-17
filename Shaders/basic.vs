@@ -5,9 +5,8 @@ smooth out vec4 smoothColor;
 
 layout (std140, binding = 0) uniform testBlock{
 vec4 color;
+mat4 ModelViewProjection;
 };
-
-uniform mat4 ModelViewProjection = mat4(1);
 
 void main(){
     smoothColor = color;

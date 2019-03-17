@@ -21,6 +21,9 @@ void AttributeBuffer::enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded() {
         glVertexAttribPointer(metadata.index, metadata.numberOfGenericValuesInSingleAttribute, metadata.dataType, metadata.normalized,
                               static_cast<GLsizei>(metadata.stride),
                               reinterpret_cast<void*>(metadata.offset));
+        if (metadata.divisor!= 0){
+            glVertexAttribDivisor(metadata.index, metadata.divisor);
+        }
     }
 }
 

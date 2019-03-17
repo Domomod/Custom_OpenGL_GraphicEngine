@@ -22,10 +22,15 @@ public:
     void enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded();
 
     template<class VertexClass>
-    void sendBufferToGPUifVaoBinded(std::vector<VertexClass> vertices){
+    void sendBufferToGPUifVaoBinded(const std::vector<VertexClass>& vertices){
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), vertices.data(), GL_STATIC_DRAW);
-
     }
+
+    template<class VertexClass>
+    void sendBufferToGPUifVaoBinded(const VertexClass& vertices){
+        glBufferData(GL_ARRAY_BUFFER, sizeof(VertexClass), &vertices, GL_STATIC_DRAW);
+    }
+
 private:
     std::vector<AttributeMetadata> attributeMetadataTable;
     AttributeBuffer(const std::vector<AttributeMetadata> &attributeMetadataTable);
