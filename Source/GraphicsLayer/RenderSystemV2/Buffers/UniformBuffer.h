@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "Buffer.h"
-#include "Source/OpenGL/RenderSystemV2/Metadata/UniformMetadata.h"
+#include "Source/GraphicsLayer/RenderSystemV2/Metadata/UniformMetadata.h"
 
 /* To work properly, uniform block in a shader schould have
  * a layout std140 and binding point specified by programmer

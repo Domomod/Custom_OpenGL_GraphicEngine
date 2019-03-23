@@ -80,9 +80,15 @@ public:
     OpenGlException(const std::string &msg = "\n") : MyException("OpenGlException", msg) {}
 };
 
-class InvalidData : public MyException{
+class InvalidData : public MyException {
 public:
     InvalidData(const std::string &msg = "\n") : MyException("InvalidData", msg) {}
+};
+
+//EntitySystemExceptions
+class MeshNotFound : public MyException{
+public:
+    MeshNotFound(const std::string &msg = "\n") : MyException("Tried to find an unexisting mesh, are you sure you have loaded it.", msg) {}
 
 };
 #endif //GAMEENGINE_MYEXCEPTIONS_H

@@ -8,9 +8,11 @@
 #include <memory>
 #include <vector>
 
-#include "Source/OpenGL/Window/Window.h"
-#include "Source/OpenGL/OpenGLinitializer.h"
-#include "Source/OpenGL/ShaderProgram/Shader.h"
+#include "Source/GraphicsLayer/Window/Window.h"
+#include "Source/GraphicsLayer/OpenGLinitializer.h"
+#include "Source/GraphicsLayer/ShaderProgram/Shader.h"
+
+#include "Source/DataLayer/StorageManagment/EntitySystem.h"
 
 class Application {
 public:
@@ -31,29 +33,7 @@ private:
     glm::mat4 Projection;
     OnChangeListener<std::pair<int,int>> windowResizeListener;
 
-
-
-    std::vector<GLushort> indicies = {
-            0, 1, 2
-    };
-
-    struct InstancedModels{
-        std::vector<glm::vec3> positions = {
-                glm::vec3(-1,-1,0),
-                glm::vec3(0,1,0),
-                glm::vec3(1,-1,0)
-        };
-
-        std::vector<glm::mat4> ModelMatrixes = {
-                glm::mat4(1),
-                glm::translate(glm::mat4(1), glm::vec3(-1.f, 0.f, -1.f)),
-                glm::translate(glm::mat4(1), glm::vec3(1.f, 1.f, -4.f)),
-                glm::translate(glm::mat4(1), glm::vec3(0.f, 0.f, -5.f))
-        };
-
-        } instancedModels;
-
-    glm::vec4 color = glm::vec4(1,0,0,1);
+    EntitySystem entitySystem;
 };
 
 

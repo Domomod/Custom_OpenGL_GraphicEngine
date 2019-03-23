@@ -10,8 +10,8 @@
 //Object data
 class Vertex{
 public:
-    glm::vec3 color;
     glm::vec3 position;
+    glm::vec3 color;
 
     Vertex(const glm::vec3 &color, const glm::vec3 &position) : color(color), position(position) {}
 

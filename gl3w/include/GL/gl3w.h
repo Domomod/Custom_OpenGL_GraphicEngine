@@ -719,7 +719,7 @@ union GL3WProcs {
 
 extern union GL3WProcs gl3wProcs;
 
-/* OpenGL functions */
+/* GraphicsLayer functions */
 #define glActiveShaderProgram                            gl3wProcs.gl.ActiveShaderProgram
 #define glActiveTexture                                  gl3wProcs.gl.ActiveTexture
 #define glAttachShader                                   gl3wProcs.gl.AttachShader

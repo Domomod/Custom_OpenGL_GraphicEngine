@@ -28,7 +28,7 @@ extern "C" {
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 /*
-** This header is generated from the Khronos OpenGL / OpenGL ES XML
+** This header is generated from the Khronos GraphicsLayer / GraphicsLayer ES XML
 ** API Registry. The current version of the Registry, generator scripts
 ** used to make the header, and the header can be found at
 **   https://github.com/KhronosGroup/OpenGL-Registry
@@ -51,11 +51,11 @@ extern "C" {
 #define GLAPI extern
 #endif
 
-/* glcorearb.h is for use with OpenGL core profile implementations.
+/* glcorearb.h is for use with GraphicsLayer core profile implementations.
 ** It should should be placed in the same directory as gl.h and
 ** included as <GL/glcorearb.h>.
 **
-** glcorearb.h includes only APIs in the latest OpenGL core profile
+** glcorearb.h includes only APIs in the latest GraphicsLayer core profile
 ** implementation together with APIs in newer ARB extensions which 
 ** can be supported by the core profile. It does not, and never will
 ** include functionality removed from the core profile, such as

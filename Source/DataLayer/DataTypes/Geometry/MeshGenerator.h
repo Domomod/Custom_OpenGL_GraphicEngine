@@ -8,6 +8,7 @@
 
 #include <glm/glm.hpp>
 #include <GL/gl3w.h>
+#include <memory>
 
 #include "Mesh.h"
 #include "Vertex.h"
@@ -16,13 +17,13 @@
 
 class MeshGenerator {
 public:
-    static Mesh generateMoreComplexRectangleMesh();
+    static std::shared_ptr<Mesh> generateMoreComplexRectangleMesh();
 
-    static Mesh generateSimpleRectangleMesh();
+    static std::shared_ptr<Mesh> generateSimpleRectangleMesh();
 
-    static Mesh generateTriangeMesh();
+    static std::shared_ptr<Mesh> generateTriangeMesh();
 
-    static Mesh generateAsymetricalRectanuglarMesh(
+    static std::shared_ptr<Mesh> generateAsymetricalRectanuglarMesh(
             GLushort numVerticiesAlongXaxis = 2,
             GLushort numVerticiesAlongZaxis = 2,
             GLfloat sizeX = 10.0,
@@ -31,7 +32,7 @@ public:
             GLfloat centerY = 0.0f,
             GLfloat centerZ = 0.0f);
 
-    static Mesh generateSymetricalRectanuglarMesh(
+    static std::shared_ptr<Mesh> generateSymetricalRectanuglarMesh(
             GLushort numVerticiesAlongXaxis = 2,
             GLushort numVerticiesAlongZaxis = 2,
             GLfloat sizeX = 100.0,

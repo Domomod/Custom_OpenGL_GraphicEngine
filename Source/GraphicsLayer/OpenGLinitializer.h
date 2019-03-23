@@ -10,11 +10,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/gl3w.h>
 
-#include "Source/OpenGL/Window/Window.h"
-#include "Source/OpenGL/ShaderProgram/Shader.h"
+#include "Source/GraphicsLayer/Window/Window.h"
+#include "Source/GraphicsLayer/ShaderProgram/Shader.h"
 #include "Source/MyExceptions.h"
 #include "OnChangeListenerTemplate/OnChangeListener.h"
-#include "Source/EntitySystem/Mesh.h"
+#include "Source/DataLayer/DataTypes/Geometry/Mesh.h"
 
 class OpenGlInitalizer {
 public:

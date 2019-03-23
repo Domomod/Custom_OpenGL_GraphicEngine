@@ -8,8 +8,8 @@
 #include <GL/gl3w.h>
 #include <vector>
 
-#include "Source/EntitySystem/Mesh.h"
-#include "Source/OpenGL/RenderSystemV2/Metadata/AttributeMetadata.h"
+#include "Source/DataLayer/DataTypes/Geometry/Mesh.h"
+#include "Source/GraphicsLayer/RenderSystemV2/Metadata/AttributeMetadata.h"
 #include "Buffer.h"
 
 class AttributeBuffer : public Buffer {
