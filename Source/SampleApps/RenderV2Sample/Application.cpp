@@ -21,27 +21,29 @@ Application::Application() {
     window->makeCurrent();
     openGlInitalizer->initOpenGL();
     shader = std::make_shared<Shader>();
+    waterShader = std::make_shared<Shader>();
 
     try {
         shader->loadFromFile(Shader::VERTEX, "../Shaders/basic_instanced.vs");
         shader->loadFromFile(Shader::FRAGMENT, "../Shaders/basic.fs");
         shader->createAndLinkProgram();
-        shader->use();
-        shader->unuse();
+
+        waterShader->loadFromFile(Shader::VERTEX, "../Shaders/WaterShader/water_instanced.vs");
+        waterShader->loadFromFile(Shader::TESSELATION_CONTROL, "../Shaders/WaterShader/water.tcs");
+        waterShader->loadFromFile(Shader::TESSELATION_EVALUATION, "../Shaders/WaterShader/water.tes");
+        waterShader->loadFromFile(Shader::FRAGMENT, "../Shaders/WaterShader/water.fs");
+        waterShader->createAndLinkProgram();
     } catch( MyException& e) {
         std::cerr << e.getType() << ":\n" << e.getMessage();
         throw e;
         //TODO: ask for proper path if sth goes wrong
     }
 
-    Model = glm::mat4(1);
     View = glm::lookAt(glm::vec3(0.f,0.f,3.f), glm::vec3(0.f,0.f,0.f), glm::vec3(0.f,1.f,0.f));
     Projection = glm::perspective(glm::radians(45.f),8.f/4.f, 1.f, 30.f);
-    ModelViewProjection = Projection * View * Model;
 
     windowResizeListener.setReactionFuncPtr([&](std::pair<int,int> size){
        Projection =  glm::perspective(glm::radians(45.f),(float)size.first / (float)size.second, 1.f, 30.f);
-        ModelViewProjection = Projection * View * Model;
     });
 
     window->getResizeNotifierPtr()->addListener(&windowResizeListener);
@@ -51,16 +53,17 @@ Application::Application() {
     entitySystem.addEntity("T2", entitySystem.entityFactory.make("Triangle", glm::vec3(1.f,0.f,0.f)));
     entitySystem.addEntity("T3", entitySystem.entityFactory.make("Triangle", glm::vec3(-1.f,0.f,0.f)));
     entitySystem.addEntity("T4", entitySystem.entityFactory.make("Triangle", glm::vec3(2.f,2.f,0.f)));
+
+    entitySystem.addMesh("Quad", MeshGenerator::generateSimpleRectangleMesh(10,-1,10));
+    entitySystem.addEntity("Q1", entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, -20)));
+    entitySystem.addEntity("Q2", entitySystem.entityFactory.make("Quad", glm::vec3(10 , -1.7, -20)));
+    entitySystem.addEntity("Q3", entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, 0  )));
+    entitySystem.addEntity("Q4", entitySystem.entityFactory.make("Quad", glm::vec3(10 , -1.7, 0  )));
 }
 
 void Application::main() {
-    shader->use();
-
     VertexArrayObject vao;
     vao.bind();
-
-    const std::shared_ptr<Mesh> mesh = entitySystem.getMesh("Triangle");
-    const std::vector<glm::mat4>* models = entitySystem.getAllModelsForMesh("Triangle");
 
     AttributeBuffer attributeBuffer = AttributeBufferFactory()
             .insert( AttributeMetadata(0, 3, GL_FLOAT, 0, 2*sizeof(glm::vec3)))
@@ -81,35 +84,64 @@ void Application::main() {
 
     ElementArrayBuffer elementArrayBuffer;
 
-    UniformBuffer uniformBuffer = UniformBufferFactory()
+    UniformBuffer instancedUniformBuffer = UniformBufferFactory()
             .setBinding(0)
-            .insert( UniformMetadata( &View, GL_FLOAT_MAT4 ) )
+            .insert( UniformMetadata( &View,       GL_FLOAT_MAT4 ) )
             .insert( UniformMetadata( &Projection, GL_FLOAT_MAT4 ) )
             .make();
 
-    attributeBuffer.bind();
-    attributeBuffer.enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded();
-    attributeBuffer.sendBufferToGPUifVaoBinded(mesh->getVerticies());
+    UniformBuffer waterUniformBuffer = UniformBufferFactory()
+            .setBinding(1)
+            .insert( UniformMetadata( &center,     GL_FLOAT_VEC4 ) )
+            .insert( UniformMetadata( &time,       GL_FLOAT      ) )
+            .insert( UniformMetadata( &amplitude,  GL_FLOAT      ) )
+            .insert( UniformMetadata( &frequency,  GL_FLOAT      ) )
+            .make();
 
-    modelBuffer.bind();
-    modelBuffer.enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded();
-    modelBuffer.sendBufferToGPUifVaoBinded(*models);
+    const std::shared_ptr<Mesh> triangle = entitySystem.getMesh("Triangle");
+    const std::vector<glm::mat4>* triangle_models = entitySystem.getAllModelsForMesh("Triangle");
 
-    elementArrayBuffer.bind();
-    elementArrayBuffer.sendIfVaoEnabled(mesh->getIndicies());
+    const std::shared_ptr<Mesh> quad = entitySystem.getMesh("Quad");
+    const std::vector<glm::mat4>* quad_models = entitySystem.getAllModelsForMesh("Quad");
 
-    uniformBuffer.bind();
-    uniformBuffer.bakeData();
-    uniformBuffer.sendBufferToGPU();
-
+    glEnable(GL_DEPTH_TEST);
     while(window->isRunning()){
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-        glDrawElementsInstanced(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, nullptr, 4);
-        glfwPollEvents();
+        //DRAW TRIANGLES
+        waterShader->use();
+
+        attributeBuffer.bind();
+        attributeBuffer.enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded();
+        attributeBuffer.sendBufferToGPUifVaoBinded( quad->getVerticies() );
+
+        modelBuffer.bind();
+        modelBuffer.enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded();
+        modelBuffer.sendBufferToGPUifVaoBinded( *quad_models );
+
+        elementArrayBuffer.bind();
+        elementArrayBuffer.sendIfVaoEnabled( quad->getIndicies() );
+
+        instancedUniformBuffer.bind();
+        instancedUniformBuffer.bakeData();
+        instancedUniformBuffer.sendBufferToGPU();
+
+        time = glfwGetTime();
+
+        waterUniformBuffer.bind();
+        waterUniformBuffer.bakeData();
+        waterUniformBuffer.sendBufferToGPU();
+
+        glPatchParameteri(GL_PATCH_VERTICES, 3);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDrawElementsInstanced(GL_PATCHES, quad->getIndicies().size(), GL_UNSIGNED_SHORT, nullptr, quad_models->size());
+
         window->swapBuffers();
+        glfwPollEvents();
     }
-    shader->unuse();
+
+    waterShader->unuse();
+
     elementArrayBuffer.unbind();
     attributeBuffer.unbind();
     vao.unbind();

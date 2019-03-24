@@ -48,7 +48,7 @@ UniformBuffer UniformBufferFactory::make() {
 }
 
 UniformBufferFactory& UniformBufferFactory::setBinding(GLuint binding) {
-    binding = binding;
+    this->binding = binding;
     return *this;
 }
 

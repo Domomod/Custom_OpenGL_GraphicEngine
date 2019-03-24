@@ -1,0 +1,23 @@
+#version 420
+
+layout (vertices = 3) out;
+
+in  vec3 vPosition[];
+in  vec3 vColor[];
+in  mat4 vM[];
+
+out vec3 tPosition[];
+out vec3 tColor[];
+patch out mat4 tM;
+
+void main() {
+    gl_TessLevelOuter[0] = 25;
+    gl_TessLevelOuter[1] = 25;
+    gl_TessLevelOuter[2] = 25;
+
+    gl_TessLevelInner[0] = 25;
+
+    tPosition[gl_InvocationID] = vPosition[gl_InvocationID];
+    tColor[gl_InvocationID]    = vColor[gl_InvocationID];
+    tM                         = vM[0];
+}

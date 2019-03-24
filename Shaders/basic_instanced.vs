@@ -12,5 +12,5 @@ mat4 Projection;
 
 void main(){
     smoothColor = vec4(color,1);
-    gl_Position = Projection * View * Model * vec4(position, 1);
+    gl_Position = (Projection * View * Model) * vec4(position, 1);
 }

@@ -19,7 +19,7 @@ class MeshGenerator {
 public:
     static std::shared_ptr<Mesh> generateMoreComplexRectangleMesh();
 
-    static std::shared_ptr<Mesh> generateSimpleRectangleMesh();
+    static std::shared_ptr<Mesh> generateSimpleRectangleMesh(float x, float y, float z);
 
     static std::shared_ptr<Mesh> generateTriangeMesh();
 

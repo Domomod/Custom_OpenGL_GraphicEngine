@@ -25,12 +25,21 @@ public:
 private:
     std::shared_ptr<OpenGlInitalizer> openGlInitalizer;
     std::shared_ptr<Window> window;
-    std::shared_ptr<Shader> shader;
 
-    glm::mat4 ModelViewProjection;
-    glm::mat4 Model;
+    std::shared_ptr<Shader> shader;
+    std::shared_ptr<Shader> waterShader;
+
     glm::mat4 View;
     glm::mat4 Projection;
+
+    float OutsideTesselation = 1.0f;
+    float InsideTesselation = 1.0f;
+
+    glm::vec4 center = glm::vec4(0.f,0.f,-10.f,1.f);
+    float time = 0.0f;
+    float amplitude = 0.5f;
+    float frequency = 0.4;
+
     OnChangeListener<std::pair<int,int>> windowResizeListener;
 
     EntitySystem entitySystem;

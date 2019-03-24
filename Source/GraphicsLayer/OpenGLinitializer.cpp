@@ -27,7 +27,9 @@ void OpenGlInitalizer::initOpenGL() {
     std::cout << "\tOpenGL version:\t" << glGetString(GL_VERSION) << std::endl;
     std::cout << "\tGLSL version:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
     glGetIntegerv(GL_MAX_PATCH_VERTICES, &maxPatchVertices);
-    std::cout << "\tTesselation Shader: Max supported patch verticies " <<  maxPatchVertices << std::endl;
+    glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &maxUniformBufferBindings);
+    std::cout << "\tMax supported patch verticies " <<  maxPatchVertices << std::endl;
+    std::cout << "\tMax supported uniform buffer bindings " <<  maxUniformBufferBindings << std::endl;
 
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(MessageCallback, 0);

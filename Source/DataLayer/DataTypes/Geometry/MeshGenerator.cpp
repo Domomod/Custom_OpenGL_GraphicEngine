@@ -73,21 +73,21 @@ std::shared_ptr<Mesh> MeshGenerator::generateMoreComplexRectangleMesh() {
     return std::make_shared<Mesh>(verticies, indicies);
 }
 
-std::shared_ptr<Mesh> MeshGenerator::generateSimpleRectangleMesh() {
+std::shared_ptr<Mesh> MeshGenerator::generateSimpleRectangleMesh(float x, float y, float z) {
     std::vector<Vertex> verticies;
     std::vector<GLushort> indicies;
 
     verticies.emplace_back(
-            glm::vec3(0, 1, 1), glm::vec3(-50, -0.7, -50)
+            glm::vec3(0, 0, 1), glm::vec3(-x, y, -z)
     );
     verticies.emplace_back(
-            glm::vec3(1, 0, 1), glm::vec3(50, -0.7, -50)
+            glm::vec3(0, 1, 0), glm::vec3(x, y, -z)
     );
     verticies.emplace_back(
-            glm::vec3(1, 1, 0), glm::vec3(-50, -0.7, 50)
+            glm::vec3(0, 1, 1), glm::vec3(-x, y, z)
     );
     verticies.emplace_back(
-            glm::vec3(1, 1, 1), glm::vec3(50, -0.7, 50)
+            glm::vec3(1, 0, 0), glm::vec3(x, y, z)
     );
 
     indicies.push_back(0);

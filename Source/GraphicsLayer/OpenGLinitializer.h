@@ -32,6 +32,7 @@ private:
                                            const GLchar *message, const void *userParam);
 
     GLint maxPatchVertices;
+    GLint maxUniformBufferBindings;
 };
 
 #endif //GAMEENGINE_APPLICATION_H

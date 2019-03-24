@@ -3,7 +3,7 @@
 layout( location = 0 ) in vec3 position;
 smooth out vec4 smoothColor;
 
-layout (std140, binding = 0) uniform testBlock{
+layout (std140, binding = 0) uniform block{
 vec4 color;
 mat4 ModelViewProjection;
 };

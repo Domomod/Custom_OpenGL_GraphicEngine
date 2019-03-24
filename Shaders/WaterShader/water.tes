@@ -1,0 +1,41 @@
+#version 420
+
+layout(triangles, equal_spacing) in;
+
+in  vec3 tPosition[];
+in  vec3 tColor[];
+
+patch in  mat4 tM;
+
+layout (std140, binding = 0) uniform data{
+mat4 View;
+mat4 Projection;
+};
+
+layout (std140, binding = 1) uniform water{
+vec4 center;
+float time;
+float amplitude;
+float frequency;
+};
+
+out vec3 color;
+const float PI = 3.14159;
+
+vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
+{
+    return vec3(gl_TessCoord.x) * v0 + vec3(gl_TessCoord.y) * v1 + vec3(gl_TessCoord.z) * v2;
+}
+
+void main() {
+    vec3 pos = interpolate3D(tPosition[0] ,tPosition[1] ,tPosition[2]);
+    color    = interpolate3D(tColor[0]    ,tColor[1]    ,tColor[2]   );
+
+    vec4 pos4 = tM * vec4(pos,1);
+
+    float distance = length(pos4 - center);
+    float waveHeight = amplitude * sin(-PI * distance * frequency + time);
+    pos4.y += waveHeight;
+
+    gl_Position = Projection * View * pos4;
+}
