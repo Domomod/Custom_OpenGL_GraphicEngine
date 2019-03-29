@@ -88,7 +88,13 @@ public:
 //EntitySystemExceptions
 class MeshNotFound : public MyException{
 public:
-    MeshNotFound(const std::string &msg = "\n") : MyException("Tried to find an unexisting mesh, are you sure you have loaded it.", msg) {}
+    MeshNotFound(const std::string &msg = "\n") : MyException("MeshNotFound", msg) {}
+};
+
+
+class MeshLoadingException : public MyException{
+public:
+    MeshLoadingException(const std::string &msg = "\n") : MyException("MeshLoadingException", msg) {}
 
 };
 #endif //GAMEENGINE_MYEXCEPTIONS_H

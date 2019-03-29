@@ -2,12 +2,12 @@
 
 layout (vertices = 3) out;
 
-in  vec3 vPosition[];
-in  vec3 vColor[];
+in  vec4 vPosition[];
+in  vec4 vColor[];
 in  mat4 vM[];
 
-out vec3 tPosition[];
-out vec3 tColor[];
+out vec4 tPosition[];
+out vec4 tColor[];
 patch out mat4 tM;
 
 void main() {

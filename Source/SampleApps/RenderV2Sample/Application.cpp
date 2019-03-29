@@ -12,6 +12,7 @@
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/UniformBuffer.h"
 
 #include "Source/DataLayer/DataTypes/Geometry/MeshGenerator.h"
+#include "Source/DataLayer/DataTypes/Geometry/MeshLoader.h"
 
 
 Application::Application() {
@@ -59,15 +60,21 @@ Application::Application() {
     entitySystem.addEntity("Q2", entitySystem.entityFactory.make("Quad", glm::vec3(10 , -1.7, -20)));
     entitySystem.addEntity("Q3", entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, 0  )));
     entitySystem.addEntity("Q4", entitySystem.entityFactory.make("Quad", glm::vec3(10 , -1.7, 0  )));
+
+    entitySystem.addMesh("Barrel", MeshLoader::loadMesh("Meshes/barrel.obj"));
+    entitySystem.addEntity("B1", entitySystem.entityFactory.make("Barrel", glm::vec3(0,0,-10)));
 }
 
 void Application::main() {
     VertexArrayObject vao;
     vao.bind();
 
-    AttributeBuffer attributeBuffer = AttributeBufferFactory()
-            .insert( AttributeMetadata(0, 3, GL_FLOAT, 0, 2*sizeof(glm::vec3)))
-            .insert( AttributeMetadata(1, 3, GL_FLOAT, sizeof(glm::vec3), 2*sizeof(glm::vec3)) )
+    AttributeBuffer posBuffer = AttributeBufferFactory()
+            .insert( AttributeMetadata(0, 3, GL_FLOAT, 0, sizeof(glm::vec4)))
+            .make();
+
+    AttributeBuffer colBuffer = AttributeBufferFactory()
+            .insert( AttributeMetadata(1, 3, GL_FLOAT, 0, sizeof(glm::vec4)))
             .make();
 
     AttributeBuffer modelBuffer = AttributeBufferFactory()
@@ -104,23 +111,32 @@ void Application::main() {
     const std::shared_ptr<Mesh> quad = entitySystem.getMesh("Quad");
     const std::vector<glm::mat4>* quad_models = entitySystem.getAllModelsForMesh("Quad");
 
+    const std::shared_ptr<Mesh> barrel = entitySystem.getMesh("Barrel");
+    const std::vector<glm::mat4>* barrel_models = entitySystem.getAllModelsForMesh("Barrel");
+
+
+
     glEnable(GL_DEPTH_TEST);
+    glPatchParameteri(GL_PATCH_VERTICES, 3);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     while(window->isRunning()){
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         //DRAW TRIANGLES
         waterShader->use();
 
-        attributeBuffer.bind();
-        attributeBuffer.enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded();
-        attributeBuffer.sendBufferToGPUifVaoBinded( quad->getVerticies() );
+        posBuffer.bind();
+        posBuffer.sendBufferToGPUifVaoBinded( quad->positions );
+
+        colBuffer.bind();
+        colBuffer.sendBufferToGPUifVaoBinded( quad->colors );
 
         modelBuffer.bind();
-        modelBuffer.enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded();
         modelBuffer.sendBufferToGPUifVaoBinded( *quad_models );
 
         elementArrayBuffer.bind();
-        elementArrayBuffer.sendIfVaoEnabled( quad->getIndicies() );
+        elementArrayBuffer.sendIfVaoEnabled( quad->indicies );
 
         instancedUniformBuffer.bind();
         instancedUniformBuffer.bakeData();
@@ -132,9 +148,23 @@ void Application::main() {
         waterUniformBuffer.bakeData();
         waterUniformBuffer.sendBufferToGPU();
 
-        glPatchParameteri(GL_PATCH_VERTICES, 3);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawElementsInstanced(GL_PATCHES, quad->getIndicies().size(), GL_UNSIGNED_SHORT, nullptr, quad_models->size());
+        glDrawElementsInstanced(GL_PATCHES, quad->indicies.size(), GL_UNSIGNED_SHORT, nullptr, quad_models->size());
+
+        shader->use();
+
+        posBuffer.bind();
+        posBuffer.sendBufferToGPUifVaoBinded( barrel->positions );
+
+        colBuffer.bind();
+        colBuffer.sendBufferToGPUifVaoBinded( barrel->colors );
+
+        modelBuffer.bind();
+        modelBuffer.sendBufferToGPUifVaoBinded( *barrel_models );
+
+        elementArrayBuffer.bind();
+        elementArrayBuffer.sendIfVaoEnabled( barrel->indicies );
+
+        glDrawElementsInstanced(GL_TRIANGLES, barrel->indicies.size(), GL_UNSIGNED_SHORT, nullptr, barrel_models->size());
 
         window->swapBuffers();
         glfwPollEvents();
@@ -143,7 +173,7 @@ void Application::main() {
     waterShader->unuse();
 
     elementArrayBuffer.unbind();
-    attributeBuffer.unbind();
+    posBuffer.unbind();
     vao.unbind();
 }
 

@@ -8,14 +8,6 @@
 void AttributeBuffer::bind() {
     glBindBuffer(GL_ARRAY_BUFFER, Buffer::vbo);
 
-}
-
-void AttributeBuffer::unbind() {
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-}
-
-void AttributeBuffer::enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded() {
     for(const auto& metadata : attributeMetadataTable){
         glEnableVertexAttribArray(metadata.index);
         glVertexAttribPointer(metadata.index, metadata.numberOfGenericValuesInSingleAttribute, metadata.dataType, metadata.normalized,
@@ -25,6 +17,11 @@ void AttributeBuffer::enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded() {
             glVertexAttribDivisor(metadata.index, metadata.divisor);
         }
     }
+}
+
+void AttributeBuffer::unbind() {
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
 
 AttributeBuffer::AttributeBuffer(const std::vector<AttributeMetadata> &attributeMetadataTable) : attributeMetadataTable(

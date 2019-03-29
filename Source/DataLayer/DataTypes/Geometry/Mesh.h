@@ -11,52 +11,14 @@
 #include "Vertex.h"
 
 class Mesh {
-private:
-    std::vector<Vertex> verticies;
-    std::vector<GLushort> indicies;
 public:
+    std::vector<glm::vec4> positions;
+    std::vector<glm::vec4> colors;
+    std::vector<glm::vec2> uv;
+    std::vector<glm::vec4> normals;
+    std::vector<GLushort> indicies;
+
     Mesh() = default;
-    Mesh(const std::vector<Vertex> &verticies, const std::vector<GLushort> &indicies);
-
-    GLsizei getVerticiesStride() {
-        return sizeof(verticies[0]);
-    }
-
-    GLuint getNumberIndicies(){
-        return static_cast<GLuint>(indicies.size());
-    }
-
-    GLuint getNumberVerticies(){
-        return static_cast<GLuint>(verticies.size());
-    }
-
-    size_t getIndiciesSizeInBytes(){
-        return indicies.size() * sizeof(indicies[0]);
-    }
-
-    size_t getVerticiesSizeInBytes(){
-        return verticies.size() * sizeof(verticies[0]);
-    }
-
-    size_t getPositionOffset(){
-        return offsetof(Vertex, position);
-    }
-
-    size_t getColorOffset(){
-        return offsetof(Vertex, color);
-    }
-
-    auto getVerticiesDataPtr() {
-        return verticies.data();
-    }
-
-    auto getIndiciesDataPtr() {
-        return indicies.data();
-    }
-
-    const std::vector<Vertex> &getVerticies() const;
-
-    const std::vector<GLushort> &getIndicies() const;
 };
 
 

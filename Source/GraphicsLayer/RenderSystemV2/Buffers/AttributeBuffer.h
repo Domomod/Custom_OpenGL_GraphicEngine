@@ -19,8 +19,6 @@ public:
 
     void unbind() override;
 
-    void enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded();
-
     template<class VertexClass>
     void sendBufferToGPUifVaoBinded(const std::vector<VertexClass>& vertices){
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), vertices.data(), GL_STATIC_DRAW);

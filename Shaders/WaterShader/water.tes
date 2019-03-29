@@ -2,8 +2,8 @@
 
 layout(triangles, equal_spacing) in;
 
-in  vec3 tPosition[];
-in  vec3 tColor[];
+in  vec4 tPosition[];
+in  vec4 tColor[];
 
 patch in  mat4 tM;
 
@@ -19,19 +19,19 @@ float amplitude;
 float frequency;
 };
 
-out vec3 color;
+out vec4 color;
 const float PI = 3.14159;
 
-vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
+vec4 interpolate3D(vec4 v0, vec4 v1, vec4 v2)
 {
-    return vec3(gl_TessCoord.x) * v0 + vec3(gl_TessCoord.y) * v1 + vec3(gl_TessCoord.z) * v2;
+    return gl_TessCoord.x * v0 + gl_TessCoord.y * v1 + gl_TessCoord.z * v2;
 }
 
 void main() {
-    vec3 pos = interpolate3D(tPosition[0] ,tPosition[1] ,tPosition[2]);
+    vec4 pos = interpolate3D(tPosition[0] ,tPosition[1] ,tPosition[2]);
     color    = interpolate3D(tColor[0]    ,tColor[1]    ,tColor[2]   );
 
-    vec4 pos4 = tM * vec4(pos,1);
+    vec4 pos4 = tM * pos;
 
     float distance = length(pos4 - center);
     float waveHeight = amplitude * sin(-PI * distance * frequency + time);

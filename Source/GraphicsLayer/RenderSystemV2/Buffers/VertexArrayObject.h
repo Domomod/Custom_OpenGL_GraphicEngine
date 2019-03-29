@@ -13,10 +13,6 @@ class VertexArrayObject {
 private:
     GLuint vao;
 public:
-    void associateWithAttributeBuffer(AttributeBuffer& attributeBuffer){
-        attributeBuffer.enableAllAttribsAndSpecifyTheirOffsetsIfVaoBinded();
-    }
-
     void bind(){
         glBindVertexArray(vao);
     }
