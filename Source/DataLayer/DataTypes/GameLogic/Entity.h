@@ -9,8 +9,9 @@
 
 #include <memory>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
-#include "Source/DataLayer/DataTypes/Geometry/Mesh.h"
+#include "Source/DataLayer/DataTypes/Assets/Mesh.h"
 
 /*This class stores the most basic object in Game Logic an Entity.
  * An entity represents an in game object in both the physics system and render system.

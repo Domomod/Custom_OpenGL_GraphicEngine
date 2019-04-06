@@ -6,7 +6,7 @@
 #define GAMEENGINE_MESHSTORAGEMANAGER_H
 
 #include "StorageManagerTemplate.h"
-#include "Source/DataLayer/DataTypes/Geometry/Mesh.h"
+#include "Source/DataLayer/DataTypes/Assets/Mesh.h"
 
 /*This class stores Meshes which can be later accesed via a shared pointers, thus preventing storing the same Mesh in two
  * places in memory.

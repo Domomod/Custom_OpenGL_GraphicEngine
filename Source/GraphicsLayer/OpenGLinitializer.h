@@ -14,7 +14,7 @@
 #include "Source/GraphicsLayer/ShaderProgram/Shader.h"
 #include "Source/MyExceptions.h"
 #include "OnChangeListenerTemplate/OnChangeListener.h"
-#include "Source/DataLayer/DataTypes/Geometry/Mesh.h"
+#include "Source/DataLayer/DataTypes/Assets/Mesh.h"
 
 class OpenGlInitalizer {
 public:

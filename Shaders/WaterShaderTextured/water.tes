@@ -1,0 +1,46 @@
+#version 420
+
+layout(triangles, equal_spacing) in;
+
+in  vec4 tPosition[];
+in  vec2 tTexCord[];
+
+patch in  mat4 tM;
+
+layout (std140, binding = 0) uniform data{
+mat4 View;
+mat4 Projection;
+};
+
+layout (std140, binding = 1) uniform water{
+vec4 center;
+float time;
+float amplitude;
+float frequency;
+};
+
+out vec2 texCord;
+const float PI = 3.14159;
+
+vec4 interpolate3D(vec4 v0, vec4 v1, vec4 v2)
+{
+    return gl_TessCoord.x * v0 + gl_TessCoord.y * v1 + gl_TessCoord.z * v2;
+}
+
+vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2)
+{
+    return gl_TessCoord.x * v0 + gl_TessCoord.y * v1 + gl_TessCoord.z * v2;
+}
+
+void main() {
+    vec4 pos = interpolate3D(tPosition[0] ,tPosition[1] ,tPosition[2]);
+    texCord    = interpolate2D(tTexCord[0]    ,tTexCord[1]    ,tTexCord[2]   );
+
+    vec4 pos4 = tM * pos;
+
+    float distance = length(pos4 - center);
+    float waveHeight = amplitude * sin(-PI * distance * frequency + time);
+    pos4.y += waveHeight;
+
+    gl_Position = Projection * View * pos4;
+}

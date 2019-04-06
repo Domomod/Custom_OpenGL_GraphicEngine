@@ -1,0 +1,23 @@
+#version 420
+
+layout (vertices = 3) out;
+
+in  vec4 vPosition[];
+in  vec2 vTexCord[];
+in  mat4 vM[];
+
+out vec4 tPosition[];
+out vec2 tTexCord[];
+patch out mat4 tM;
+
+void main() {
+    gl_TessLevelOuter[0] = 25;
+    gl_TessLevelOuter[1] = 25;
+    gl_TessLevelOuter[2] = 25;
+
+    gl_TessLevelInner[0] = 25;
+
+    tPosition[gl_InvocationID] = vPosition[gl_InvocationID];
+    tTexCord[gl_InvocationID]  = vTexCord[gl_InvocationID];
+    tM                         = vM[0];
+}

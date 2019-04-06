@@ -11,9 +11,6 @@
 #include <memory>
 
 #include "Mesh.h"
-#include "Vertex.h"
-
-
 
 class MeshGenerator {
 public:

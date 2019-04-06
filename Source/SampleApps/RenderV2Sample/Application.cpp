@@ -11,9 +11,10 @@
 #include "Source/GraphicsLayer/RenderSystemV2/Metadata/AttributeMetadata.h"
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/UniformBuffer.h"
 
-#include "Source/DataLayer/DataTypes/Geometry/MeshGenerator.h"
-#include "Source/DataLayer/DataTypes/Geometry/MeshLoader.h"
-
+#include "Source/DataLayer/DataTypes/Assets/MeshGenerator.h"
+#include "Source/DataLayer/DataTypes/Assets/MeshLoader.h"
+#include "Source/DataLayer/DataTypes/Assets/Textures/Texture.h"
+#include "Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.h"
 
 Application::Application() {
     openGlInitalizer = std::make_shared<OpenGlInitalizer>();
@@ -25,8 +26,8 @@ Application::Application() {
     waterShader = std::make_shared<Shader>();
 
     try {
-        shader->loadFromFile(Shader::VERTEX, "../Shaders/basic_instanced.vs");
-        shader->loadFromFile(Shader::FRAGMENT, "../Shaders/basic.fs");
+        shader->loadFromFile(Shader::VERTEX, "../Shaders/BasicTextured/basic_instanced.vs");
+        shader->loadFromFile(Shader::FRAGMENT, "../Shaders/BasicTextured/basic.fs");
         shader->createAndLinkProgram();
 
         waterShader->loadFromFile(Shader::VERTEX, "../Shaders/WaterShader/water_instanced.vs");
@@ -70,11 +71,15 @@ void Application::main() {
     vao.bind();
 
     AttributeBuffer posBuffer = AttributeBufferFactory()
-            .insert( AttributeMetadata(0, 3, GL_FLOAT, 0, sizeof(glm::vec4)))
+            .insert( AttributeMetadata(0, 4, GL_FLOAT, 0, sizeof(glm::vec4)))
             .make();
 
     AttributeBuffer colBuffer = AttributeBufferFactory()
-            .insert( AttributeMetadata(1, 3, GL_FLOAT, 0, sizeof(glm::vec4)))
+            .insert( AttributeMetadata(1, 4, GL_FLOAT, 0, sizeof(glm::vec4)))
+            .make();
+
+    AttributeBuffer texCoordBuffer = AttributeBufferFactory()
+            .insert( AttributeMetadata(1, 2, GL_FLOAT, 0, sizeof(glm::vec2)))
             .make();
 
     AttributeBuffer modelBuffer = AttributeBufferFactory()
@@ -115,10 +120,13 @@ void Application::main() {
     const std::vector<glm::mat4>* barrel_models = entitySystem.getAllModelsForMesh("Barrel");
 
 
+    std::shared_ptr<Texture> barrelTexture = TextureLoader::loadTexture("Textures/barrel.png");
+
+    barrelTexture->bind();
 
     glEnable(GL_DEPTH_TEST);
     glPatchParameteri(GL_PATCH_VERTICES, 3);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     while(window->isRunning()){
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -155,8 +163,8 @@ void Application::main() {
         posBuffer.bind();
         posBuffer.sendBufferToGPUifVaoBinded( barrel->positions );
 
-        colBuffer.bind();
-        colBuffer.sendBufferToGPUifVaoBinded( barrel->colors );
+        texCoordBuffer.bind();
+        texCoordBuffer.sendBufferToGPUifVaoBinded( barrel->uv );
 
         modelBuffer.bind();
         modelBuffer.sendBufferToGPUifVaoBinded( *barrel_models );

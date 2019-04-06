@@ -11,7 +11,7 @@
 #include "EntityStorageManager.h"
 #include "MeshStorageManager.h"
 #include "MeshToModelMap.h"
-#include "Source/DataLayer/DataTypes/Geometry/MeshGenerator.h"
+#include "Source/DataLayer/DataTypes/Assets/MeshGenerator.h"
 
 /*  Initial purpose of entity system was to behave like a smart database of loaded game objects, meshes etc.
  *  Also to store them in such a manner that it's fast to draw them instanced or not, and to modify them

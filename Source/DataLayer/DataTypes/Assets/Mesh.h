@@ -7,8 +7,7 @@
 
 #include <vector>
 #include <GL/gl3w.h>
-
-#include "Vertex.h"
+#include <glm/glm.hpp>
 
 class Mesh {
 public:
