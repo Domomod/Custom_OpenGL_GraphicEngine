@@ -50,3 +50,7 @@ bool Window::isRunning() {
 std::shared_ptr<OnChangeNotifier<std::pair<int, int>>> & Window::getResizeNotifierPtr() {
     return onWindowResizeNotifiersMap.at(window);
 }
+
+GLFWwindow *Window::getWindowHandle() const {
+    return window;
+}

@@ -45,7 +45,7 @@ set(    SOURCES_AND_HEADERS
         Source/DataLayer/DataTypes/GameLogic/EntityFactory.h
         Source/DataLayer/DataTypes/Assets/MeshLoader.cpp Source/DataLayer/DataTypes/Assets/MeshLoader.h
         Source/DataLayer/DataTypes/Assets/Textures/Texture.cpp Source/DataLayer/DataTypes/Assets/Textures/Texture.h
-        Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.cpp Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.h )
+        Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.cpp Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.h Source/GraphicsLayer/Window/InputSystem.cpp Source/GraphicsLayer/Window/InputSystem.h)
 
 add_executable(RenderV2 Source/SampleApps/RenderV2Sample/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS} Source/GraphicsLayer/RenderSystemV2/Metadata/UniformMetadata.cpp Source/GraphicsLayer/RenderSystemV2/Metadata/UniformMetadata.h Source/GraphicsLayer/RenderSystemV2/Buffers/UniformBuffer.cpp Source/GraphicsLayer/RenderSystemV2/Buffers/UniformBuffer.h)
 target_include_directories(RenderV2 PUBLIC ${CMAKE_SOURCE_DIR})

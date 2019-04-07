@@ -12,9 +12,6 @@
 
 #include "OnChangeListenerTemplate/OnChangeNotifier.h"
 class Window {
-
-
-
 private:
     GLFWwindow* window;
 
@@ -39,6 +36,8 @@ public:
     }
 
     std::shared_ptr<OnChangeNotifier<std::pair<int, int>>> & getResizeNotifierPtr();
+
+    GLFWwindow *getWindowHandle() const;
 
     Window(const Window&) = delete;
 };
