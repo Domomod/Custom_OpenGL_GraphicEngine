@@ -11,6 +11,8 @@
 #include "Source/GraphicsLayer/Window/Window.h"
 #include "Source/GraphicsLayer/OpenGLinitializer.h"
 #include "Source/GraphicsLayer/ShaderProgram/Shader.h"
+#include "Source/GraphicsLayer/Window/InputSystem.h"
+#include "Source/GraphicsLayer/FreeCamera.h"
 
 #include "Source/DataLayer/StorageManagment/EntitySystem.h"
 
@@ -25,6 +27,8 @@ public:
 private:
     std::shared_ptr<OpenGlInitalizer> openGlInitalizer;
     std::shared_ptr<Window> window;
+    std::shared_ptr<WindowInputSystem> windowInputSystem;
+    std::shared_ptr<FreeCamera> freeCamera;
 
     std::shared_ptr<Shader> shader;
     std::shared_ptr<Shader> waterShader;

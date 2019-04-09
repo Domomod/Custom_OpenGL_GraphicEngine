@@ -7,89 +7,54 @@
 
 #include "Window.h"
 #include "OnChangeNotifier.h"
+#include "InputMetadata.h"
 
-struct KeyInfo{
-    int key;
-    int scancode;
-    int action;
-    int mods;
-
-    KeyInfo(int key, int scancode, int action, int mods) : key(key), scancode(scancode), action(action), mods(mods) {}
-};
-
-struct MouseMovementInfo{
-    double xPosition;
-    double yPosition;
-    double xMovement;
-    double yMovement;
-
-    MouseMovementInfo(double xPosition, double yPosition, double xMovement, double yMovement) : xPosition(xPosition),
-                                                                                                yPosition(yPosition),
-                                                                                                xMovement(xMovement),
-                                                                                                yMovement(yMovement) {}
-};
-
-struct MouseClickInfo{
-    int button;
-    int acction;
-    int mods;
-    double xPosition;
-    double yPosition;
-
-    MouseClickInfo(int button, int acction, int mods, double xPosition, double yPosition) : button(button),
-                                                                                              acction(acction),
-                                                                                              mods(mods),
-                                                                                              xPosition(xPosition),
-                                                                                              yPosition(yPosition) {}
-};
-
+/* WindowInputSystem works as an input interface for GLFW window, one Input System may connect to
+ * multiple GLFW windows. GLFW is a c API so only c style function pointers can be assigned to handle
+ * input actions, WindowInputSystem object is accesed via a void* pointer stored in GLFWwindow (so called
+ * window user).
+ * System reacts to the input (fe. to change mouse state), and also notifies all interested listeners about
+ * an event via a notifier-listener interface.
+ * */
 class WindowInputSystem {
 public:
-    static void onKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods){
-        auto * windowsInputSystem = reinterpret_cast<WindowInputSystem*>(glfwGetWindowUserPointer(window));
-        windowsInputSystem->OnKeyPressedNotifier.notifyListeners( KeyInfo(key, scancode, action, mods) );
-    }
+    void connectToWindow(Window& window);
 
-    static void onMouseMovementAction(GLFWwindow* window, double xPos, double yPos){
-        auto * windowsInputSystem = reinterpret_cast<WindowInputSystem*>(glfwGetWindowUserPointer(window));
-        double xMovement = 0;
-        double yMovement = 0;
-        if(windowsInputSystem->xPreviousMosePosition != -1 && windowsInputSystem->yPreviousMosePosition != -1){
-            xMovement = xPos - windowsInputSystem->xPreviousMosePosition;
-            yMovement = yPos - windowsInputSystem->yPreviousMosePosition;
-        }
-        windowsInputSystem->xPreviousMosePosition = xPos;
-        windowsInputSystem->yPreviousMosePosition = yPos;
+    void connectToKeyPressedListener(OnChangeListener<KeyInfo>& onChangeListener);
 
-        windowsInputSystem->OnMoseMovedNotifier.notifyListeners( MouseMovementInfo(xPos, yPos, xMovement, yMovement) );
-    }
+    void connectToKeyboardStateListener(OnChangeListener<char*>& onChangeListener);
 
-    static void onMousePressedAction(GLFWwindow* window, int button, int action, int mods){
-        auto * windowsInputSystem = reinterpret_cast<WindowInputSystem*>(glfwGetWindowUserPointer(window));
-        double xPosition;
-        double yPosition;
-        glfwGetCursorPos(window, &xPosition, &yPosition);
+    void connectToMouseMovedListener(OnChangeListener<MouseMovementInfo>& onChangeListener);
 
-        windowsInputSystem->OnMouseClickedNotifier.notifyListeners( MouseClickInfo(button, action, mods, xPosition, yPosition) );
-    }
+    void connectToMouseClickedListener(OnChangeListener<MouseClickInfo>& onChangeListener);
 
-
-    void connectToWindow(Window& window){
-        auto windowHandle = window.getWindowHandle();
-        glfwSetWindowUserPointer(windowHandle, this);
-
-        glfwSetKeyCallback        ( windowHandle, onKeyAction           );
-        glfwSetCursorPosCallback  ( windowHandle, onMouseMovementAction );
-        glfwSetMouseButtonCallback( windowHandle, onMousePressedAction  );
-    }
+    void keyboardStateNotify();;
 
 private:
-    OnChangeNotifier<KeyInfo>           OnKeyPressedNotifier;
-    OnChangeNotifier<MouseMovementInfo> OnMoseMovedNotifier;
-    OnChangeNotifier<MouseClickInfo> OnMouseClickedNotifier;
+    static void onKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-    double xPreviousMosePosition = -1;
-    double yPreviousMosePosition = -1;
+    static void onMouseMovementAction(GLFWwindow* window, double xPos, double yPos);
+
+    static void onMousePressedAction(GLFWwindow* window, int button, int action, int mods);
+
+    static void onWindowFocusRecheckKeyStates(GLFWwindow* window, int focused);
+
+    static void setMouseStateFocused(GLFWwindow *window, WindowInputSystem *windowsInputSystem);
+
+    static void setMouseStateUnfocused(GLFWwindow *window, WindowInputSystem *windowsInputSystem);
+
+
+    OnChangeNotifier<KeyInfo>           OnKeyPressedNotifier;
+    OnChangeNotifier<char*>             KeyboardStateNotifier;
+    OnChangeNotifier<MouseMovementInfo> OnMoseMovedNotifier;
+    OnChangeNotifier<MouseClickInfo>    OnMouseClickedNotifier;
+
+    char pressedKeys[GLFW_KEY_LAST + 1] = {false};
+
+    bool mouseFocused = false;
+
+    double xPreviousMosePosition = 0;
+    double yPreviousMosePosition = 0;
 };
 
 

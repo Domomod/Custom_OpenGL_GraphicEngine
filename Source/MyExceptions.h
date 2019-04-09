@@ -71,30 +71,30 @@ public:
 //OPENGL Exceptions
 class GlfwInitalisationFailedException : public MyException{
 public:
-    GlfwInitalisationFailedException(const std::string &msg = "\n") : MyException("GlfwInitalisationFailedException", msg) {}
+    GlfwInitalisationFailedException(const std::string &msg = "No message was set\n") : MyException("GlfwInitalisationFailedException", msg) {}
 
 };
 
 class OpenGlException : public  MyException{
 public:
-    OpenGlException(const std::string &msg = "\n") : MyException("OpenGlException", msg) {}
+    OpenGlException(const std::string &msg = "No message was set\n") : MyException("OpenGlException", msg) {}
 };
 
 class InvalidData : public MyException {
 public:
-    InvalidData(const std::string &msg = "\n") : MyException("InvalidData", msg) {}
+    InvalidData(const std::string &msg = "No message was set\n") : MyException("InvalidData", msg) {}
 };
 
 //EntitySystemExceptions
 class MeshNotFound : public MyException{
 public:
-    MeshNotFound(const std::string &msg = "\n") : MyException("MeshNotFound", msg) {}
+    MeshNotFound(const std::string &msg = "No message was set\n") : MyException("MeshNotFound", msg) {}
 };
 
 
 class MeshLoadingException : public MyException{
 public:
-    MeshLoadingException(const std::string &msg = "\n") : MyException("MeshLoadingException", msg) {}
+    MeshLoadingException(const std::string &msg = "No message was set\n") : MyException("MeshLoadingException", msg) {}
 
 };
 #endif //GAMEENGINE_MYEXCEPTIONS_H

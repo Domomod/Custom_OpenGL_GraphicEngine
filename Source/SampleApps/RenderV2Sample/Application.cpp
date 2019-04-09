@@ -22,6 +22,15 @@ Application::Application() {
     window = std::make_shared<Window>();
     window->makeCurrent();
     openGlInitalizer->initOpenGL();
+
+    freeCamera = std::make_shared<FreeCamera>();
+
+
+    windowInputSystem = std::make_shared<WindowInputSystem>();
+    windowInputSystem->connectToWindow(*window);
+    windowInputSystem->connectToKeyboardStateListener(freeCamera->getKeyboardStateListener());
+    windowInputSystem->connectToMouseMovedListener(freeCamera->getMouseMovementListener());
+
     shader = std::make_shared<Shader>();
     waterShader = std::make_shared<Shader>();
 
@@ -129,6 +138,9 @@ void Application::main() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     while(window->isRunning()){
+        time = static_cast<float>(glfwGetTime());
+        View = freeCamera->calculateViewMatrix();
+
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         //DRAW TRIANGLES
@@ -149,8 +161,6 @@ void Application::main() {
         instancedUniformBuffer.bind();
         instancedUniformBuffer.bakeData();
         instancedUniformBuffer.sendBufferToGPU();
-
-        time = glfwGetTime();
 
         waterUniformBuffer.bind();
         waterUniformBuffer.bakeData();
@@ -176,6 +186,7 @@ void Application::main() {
 
         window->swapBuffers();
         glfwPollEvents();
+        windowInputSystem->keyboardStateNotify();
     }
 
     waterShader->unuse();
