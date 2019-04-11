@@ -11,11 +11,18 @@
 
 class Mesh {
 public:
-    std::vector<glm::vec4> positions;
-    std::vector<glm::vec4> colors;
-    std::vector<glm::vec2> uv;
-    std::vector<glm::vec4> normals;
-    std::vector<GLushort> indicies;
+    std::vector<glm::vec4>  positions;
+    std::vector<glm::vec4>  colors;
+    std::vector<glm::vec2>  uv;
+    std::vector<glm::vec4>  normals;
+    std::vector<glm::ivec4> boneIds;
+    std::vector<glm::vec4>  boneWeights;
+    std::vector<GLushort>   indicies;
+
+    bool hasColors;
+    bool hasUvs;
+    bool hasNormals;
+    bool hasBones;
 
     Mesh() = default;
 };
