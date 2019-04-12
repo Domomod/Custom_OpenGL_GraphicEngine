@@ -11,7 +11,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "Source/DataLayer/DataTypes/Assets/Mesh.h"
+#include "Source/DataLayer/DataTypes/Assets/Model.h"
 
 /*This class stores the most basic object in Game Logic an Entity.
  * An entity represents an in game object in both the physics system and render system.
@@ -19,22 +19,22 @@
 
 class Entity {
 public:
-    Entity(std::shared_ptr<Mesh> mesh, glm::mat4 **modelMatrixPtrPtr, glm::vec3 position) : mesh(std::move(mesh)),
+    Entity(std::shared_ptr<Model> model, glm::mat4 **modelMatrixPtrPtr, glm::vec3 position) : model(std::move(model)),
                                                                                             modelMatrixPtrPtr(modelMatrixPtrPtr),
                                                                                             position(position){
         **modelMatrixPtrPtr = glm::translate(**modelMatrixPtrPtr, position);
     }
 
-    const Mesh getMesh() const {
-        return *mesh;
+    const std::shared_ptr<Model> getModel() const {
+        return model;
     }
 
-    const glm::mat4 getModelMatrixPtrPtr() const {
+    const glm::mat4 getModelSpaceMatrixPtrPtr() const {
         return **modelMatrixPtrPtr;
     }
 
-    void setMesh(const Mesh &mesh) {
-        *Entity::mesh = mesh;
+    void setModel(const std::shared_ptr<Model> &model) {
+        Entity::model = model;
     }
 
     void setModelMatrixPtrPtr(glm::mat4 modelMatrixPtrPtr) {
@@ -42,7 +42,7 @@ public:
     }
 
 private:
-    std::shared_ptr<Mesh> mesh;
+    std::shared_ptr<Model> model;
     glm::mat4** modelMatrixPtrPtr;
     glm::vec3 position;
 };

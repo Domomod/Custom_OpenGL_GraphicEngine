@@ -12,7 +12,8 @@
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/UniformBuffer.h"
 
 #include "Source/DataLayer/DataTypes/Assets/MeshGenerator.h"
-#include "Source/DataLayer/DataTypes/Assets/MeshLoader.h"
+#include "Source/DataLayer/DataTypes/Assets/ModelLoader.h"
+#include "Source/DataLayer/DataTypes/Assets/Model.h"
 #include "Source/DataLayer/DataTypes/Assets/Textures/Texture.h"
 #include "Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.h"
 
@@ -59,19 +60,26 @@ Application::Application() {
 
     window->getResizeNotifierPtr()->addListener(&windowResizeListener);
 
-    entitySystem.addMesh("Triangle", MeshGenerator::generateTriangeMesh());
+    entitySystem.addModel("Triangle",   ModelFactory()
+                                          .addMesh( MeshGenerator::generateTriangeMesh() )
+                                          .make()
+                                          );
     entitySystem.addEntity("T1", entitySystem.entityFactory.make("Triangle", glm::vec3(0.f,0.f,0.f)));
     entitySystem.addEntity("T2", entitySystem.entityFactory.make("Triangle", glm::vec3(1.f,0.f,0.f)));
     entitySystem.addEntity("T3", entitySystem.entityFactory.make("Triangle", glm::vec3(-1.f,0.f,0.f)));
     entitySystem.addEntity("T4", entitySystem.entityFactory.make("Triangle", glm::vec3(2.f,2.f,0.f)));
 
-    entitySystem.addMesh("Quad", MeshGenerator::generateSimpleRectangleMesh(10,-1,10));
+    entitySystem.addModel("Quad",       ModelFactory()
+                                          .addMesh( MeshGenerator::generateSimpleRectangleMesh(10, -1, 10) )
+                                          .make()
+                                          );
+
     entitySystem.addEntity("Q1", entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, -20)));
     entitySystem.addEntity("Q2", entitySystem.entityFactory.make("Quad", glm::vec3(10 , -1.7, -20)));
     entitySystem.addEntity("Q3", entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, 0  )));
     entitySystem.addEntity("Q4", entitySystem.entityFactory.make("Quad", glm::vec3(10 , -1.7, 0  )));
 
-    entitySystem.addMesh("Barrel", MeshLoader::loadMesh("Meshes/barrel.obj"));
+    entitySystem.addModel("Barrel", ModelLoader::loadModel("Meshes/barrel.obj"));
     entitySystem.addEntity("B1", entitySystem.entityFactory.make("Barrel", glm::vec3(0,0,-10)));
 }
 
@@ -119,14 +127,14 @@ void Application::main() {
             .insert( UniformMetadata( &frequency,  GL_FLOAT      ) )
             .make();
 
-    const std::shared_ptr<Mesh> triangle = entitySystem.getMesh("Triangle");
-    const std::vector<glm::mat4>* triangle_models = entitySystem.getAllModelsForMesh("Triangle");
+    const std::shared_ptr<Model> triangle = entitySystem.getModel("Triangle");
+    const std::vector<glm::mat4>* triangle_models = entitySystem.getAllFromModelSpaceMatricesForModel("Triangle");
 
-    const std::shared_ptr<Mesh> quad = entitySystem.getMesh("Quad");
-    const std::vector<glm::mat4>* quad_models = entitySystem.getAllModelsForMesh("Quad");
+    const std::shared_ptr<Model> quad = entitySystem.getModel("Quad");
+    const std::vector<glm::mat4>* quad_models = entitySystem.getAllFromModelSpaceMatricesForModel("Quad");
 
-    const std::shared_ptr<Mesh> barrel = entitySystem.getMesh("Barrel");
-    const std::vector<glm::mat4>* barrel_models = entitySystem.getAllModelsForMesh("Barrel");
+    const std::shared_ptr<Model> barrel = entitySystem.getModel("Barrel");
+    const std::vector<glm::mat4>* barrel_models = entitySystem.getAllFromModelSpaceMatricesForModel("Barrel");
 
 
     std::shared_ptr<Texture> barrelTexture = TextureLoader::loadTexture("Textures/barrel.png");
@@ -147,16 +155,16 @@ void Application::main() {
         waterShader->use();
 
         posBuffer.bind();
-        posBuffer.sendBufferToGPUifVaoBinded( quad->positions );
+        posBuffer.sendBufferToGPUifVaoBinded( quad->mesh->positions );
 
         colBuffer.bind();
-        colBuffer.sendBufferToGPUifVaoBinded( quad->colors );
+        colBuffer.sendBufferToGPUifVaoBinded( quad->mesh->colors );
 
         modelBuffer.bind();
         modelBuffer.sendBufferToGPUifVaoBinded( *quad_models );
 
         elementArrayBuffer.bind();
-        elementArrayBuffer.sendIfVaoEnabled( quad->indicies );
+        elementArrayBuffer.sendIfVaoEnabled( quad->mesh->indicies );
 
         instancedUniformBuffer.bind();
         instancedUniformBuffer.bakeData();
@@ -166,23 +174,23 @@ void Application::main() {
         waterUniformBuffer.bakeData();
         waterUniformBuffer.sendBufferToGPU();
 
-        glDrawElementsInstanced(GL_PATCHES, quad->indicies.size(), GL_UNSIGNED_SHORT, nullptr, quad_models->size());
+        glDrawElementsInstanced(GL_PATCHES, quad->mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr, quad_models->size());
 
         shader->use();
 
         posBuffer.bind();
-        posBuffer.sendBufferToGPUifVaoBinded( barrel->positions );
+        posBuffer.sendBufferToGPUifVaoBinded( barrel->mesh->positions );
 
         texCoordBuffer.bind();
-        texCoordBuffer.sendBufferToGPUifVaoBinded( barrel->uv );
+        texCoordBuffer.sendBufferToGPUifVaoBinded( barrel->mesh->uv );
 
         modelBuffer.bind();
         modelBuffer.sendBufferToGPUifVaoBinded( *barrel_models );
 
         elementArrayBuffer.bind();
-        elementArrayBuffer.sendIfVaoEnabled( barrel->indicies );
+        elementArrayBuffer.sendIfVaoEnabled( barrel->mesh->indicies );
 
-        glDrawElementsInstanced(GL_TRIANGLES, barrel->indicies.size(), GL_UNSIGNED_SHORT, nullptr, barrel_models->size());
+        glDrawElementsInstanced(GL_TRIANGLES, barrel->mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr, barrel_models->size());
 
         window->swapBuffers();
         glfwPollEvents();

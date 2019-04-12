@@ -9,8 +9,8 @@
 #include <Source/DataLayer/DataTypes/GameLogic/EntityFactory.h>
 
 #include "EntityStorageManager.h"
-#include "MeshStorageManager.h"
-#include "MeshToModelMap.h"
+#include "ModelStorageManager.h"
+#include "ModelToModelSpaceMatricesMap.h"
 #include "Source/DataLayer/DataTypes/Assets/MeshGenerator.h"
 
 /*  Initial purpose of entity system was to behave like a smart database of loaded game objects, meshes etc.
@@ -20,7 +20,7 @@
  *  It consists of samller classes that do the actual storing, sorting, acquiring.
  *
  *  TODO: fix those:
- *  TODO: acquiring an entity or mesh is not ideal yet as it's an O(log n) op.
+ *  TODO: acquiring an entity or model is not ideal yet as it's an O(log n) op.
  *  TODO: not baking data requires the user to refer to pointer to a pointer to modify model data.
  * */
 
@@ -34,18 +34,17 @@ public:
 
     void removeEntity(const std::string& entityName);
 
-    void addMesh(const std::string &meshName, const std::shared_ptr<Mesh> & meshPtr);
+    void addModel(const std::string &modelName, const std::shared_ptr<Model> &modelPtr);
 
-    std::shared_ptr<Mesh> getMesh(const std::string &meshName);
+    std::shared_ptr<Model> getModel(const std::string &modelName);
 
-    const std::vector<glm::mat4> * getAllModelsForMesh(const std::string& meshName) const;
+    const std::vector<glm::mat4> * getAllFromModelSpaceMatricesForModel(const std::string &meshName) const;
 
-    MeshGenerator meshGenerator;
     EntityFactory entityFactory;
 private:
     EntityStorageManager entityStorageManager;
-    MeshStorageManager meshStorageManager;
-    MeshToModelMap meshToModelMap;
+    ModelStorageManager modelStorageManager;
+    ModelToModelSpaceMatricesMap modelToModelSpaceMatriceslMap;
 };
 
 

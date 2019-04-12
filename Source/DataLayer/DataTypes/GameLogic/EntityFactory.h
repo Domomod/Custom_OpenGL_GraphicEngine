@@ -8,24 +8,24 @@
 #include <memory>
 #include <string>
 #include "Entity.h"
-#include "Source/DataLayer/StorageManagment/MeshStorageManager.h"
-#include "Source/DataLayer/StorageManagment/MeshToModelMap.h"
+#include "Source/DataLayer/StorageManagment/ModelStorageManager.h"
+#include "Source/DataLayer/StorageManagment/ModelToModelSpaceMatricesMap.h"
 
 class EntityFactory {
     friend class EntitySystem;
 public:
-    std::shared_ptr<Entity> make(const std::string &meshName, const glm::vec3 &position) const;
+    std::shared_ptr<Entity> make(const std::string &modelName, const glm::vec3 &position) const;
 
 private:
-    void setAssociatedMeshStorageManager(MeshStorageManager &associatedMeshStorageManager);
+    void setAssociatedMeshStorageManager(ModelStorageManager &associatedMeshStorageManager);
 
 public:
-    void setAssociatedMeshToModelMap(MeshToModelMap &associatedMeshToModelMap);
+    void setAssociatedMeshToModelMap(ModelToModelSpaceMatricesMap &associatedMeshToModelMap);
 
 private:
 
-    MeshStorageManager* associatedMeshStorageManager;
-    MeshToModelMap* associatedMeshToModelMap;
+    ModelStorageManager* associatedMeshStorageManager;
+    ModelToModelSpaceMatricesMap* associatedMeshToModelMap;
 
 };
 

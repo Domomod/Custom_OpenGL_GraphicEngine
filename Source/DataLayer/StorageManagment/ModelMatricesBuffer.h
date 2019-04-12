@@ -15,9 +15,9 @@
  * motivated by the ability of an outer object to own the matrix as it's own. The amount of objects pointing to a single
  * elements is unrestricted.
  * */
-class ModelsBuffer {
+class ModelMatricesBuffer {
 public:
-    glm::mat4** addModel(const glm::mat4 &mat4){
+    glm::mat4** addModelMatrix(const glm::mat4 &mat4){
         matrices.push_back(mat4);
         proxy.push_back( &*std::prev(matrices.end()) );
         proxyId.push_back(matrices.size());

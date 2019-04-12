@@ -11,23 +11,23 @@ void EntitySystem::addEntity(const std::string &entityName, const std::shared_pt
 void EntitySystem::removeEntity(const std::string &entityName) {
 }
 
-void EntitySystem::addMesh(const std::string &meshName, const std::shared_ptr<Mesh> & meshPtr) {
-    meshStorageManager.addObject(meshName, meshPtr);
-    meshToModelMap.addMesh(meshName);
+void EntitySystem::addModel(const std::string &modelName, const std::shared_ptr<Model> &modelPtr) {
+    modelStorageManager.addObject(modelName, modelPtr);
+    modelToModelSpaceMatriceslMap.addModel(modelName);
 }
 
-std::shared_ptr<Mesh> EntitySystem::getMesh(const std::string &meshName) {
-    return meshStorageManager.getObject(meshName);
+std::shared_ptr<Model> EntitySystem::getModel(const std::string &modelName) {
+    return modelStorageManager.getObject(modelName);
 }
 
 
-const std::vector<glm::mat4> * EntitySystem::getAllModelsForMesh(const std::string &meshName) const {
-    return &meshToModelMap.getModelsByReference(meshName);
+const std::vector<glm::mat4> * EntitySystem::getAllFromModelSpaceMatricesForModel(const std::string &meshName) const {
+    return &modelToModelSpaceMatriceslMap.getModelsByReference(meshName);
 }
 
 EntitySystem::EntitySystem() {
-    entityFactory.setAssociatedMeshStorageManager(meshStorageManager);
-    entityFactory.setAssociatedMeshToModelMap(meshToModelMap);
+    entityFactory.setAssociatedMeshStorageManager(modelStorageManager);
+    entityFactory.setAssociatedMeshToModelMap(modelToModelSpaceMatriceslMap);
 }
 
 EntitySystem::~EntitySystem() {

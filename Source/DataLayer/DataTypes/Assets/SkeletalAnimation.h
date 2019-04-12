@@ -7,6 +7,7 @@
 
 #include "Skeleton.h"
 
+#include <map>
 #include <vector>
 
 namespace Skeleton {
@@ -29,7 +30,7 @@ namespace Skeleton {
         std::string animationName;
         double durationInTicks;
         double ticksPerSecond;
-        std::vector<boneAnimation> boneAnimations;
+        std::map<std::string, boneAnimation> boneNameToAnimationMap;
     };
 }
 

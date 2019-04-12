@@ -4,19 +4,19 @@
 
 #include "EntityFactory.h"
 
-std::shared_ptr<Entity> EntityFactory::make(const std::string &meshName, const glm::vec3 &position) const {
-    std::shared_ptr<Mesh> mesh = associatedMeshStorageManager->getObject(meshName);
+std::shared_ptr<Entity> EntityFactory::make(const std::string &modelName, const glm::vec3 &position) const {
+    std::shared_ptr<Model> model = associatedMeshStorageManager->getObject(modelName);
     return std::make_shared<Entity>(
-            mesh,
-            associatedMeshToModelMap->allocateModel(meshName),
+            model,
+            associatedMeshToModelMap->allocateModel(modelName),
             position
             );
 }
 
-void EntityFactory::setAssociatedMeshStorageManager(MeshStorageManager &associatedMeshStorageManager) {
+void EntityFactory::setAssociatedMeshStorageManager(ModelStorageManager &associatedMeshStorageManager) {
     EntityFactory::associatedMeshStorageManager = &associatedMeshStorageManager;
 }
 
-void EntityFactory::setAssociatedMeshToModelMap(MeshToModelMap &associatedMeshToModelMap) {
+void EntityFactory::setAssociatedMeshToModelMap(ModelToModelSpaceMatricesMap &associatedMeshToModelMap) {
     EntityFactory::associatedMeshToModelMap = &associatedMeshToModelMap;
 }
