@@ -16,7 +16,8 @@
  * I decided the Game Engine will only load single Models, and leave the scene making
  * to the engine. Therefore my engine is assuming loaded model is a single model.
  *
- * Model Loader works as a state-machine.
+ * Model Loader works as a state-machine. It's not thread-safe, and schould only load a single model at a time.
+ * I decided it's ok because assimp's aiScene object is a global variable anyway.
  * */
 class ModelLoader {
 public:
@@ -38,8 +39,14 @@ private:
 
     inline static std::map<std::string, NodeNecessityRecord> nodesNeededForSkeleton;
 
+    inline static std::map<std::string, int> boneNameToboneIdMap;
+
+    inline static int nextBoneIndexToBeAssigned;
+
     /* Loading Mesh */
     static std::shared_ptr<Mesh> loadMesh();
+
+    static void addBoneInfoToMesh(std::shared_ptr<Mesh>& mesh);
 
     /*Loading SkeletalSystem*/
     static std::shared_ptr<SkeletalSystem::Skeleton> loadSkeleton();

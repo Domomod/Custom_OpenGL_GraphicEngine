@@ -51,11 +51,14 @@ std::shared_ptr<Model> ModelLoader::loadModel(const std::string &path) {
 
     if(assimpMesh->HasBones()){
         thisModel->skeleton = loadSkeleton();
+        addBoneInfoToMesh(thisModel->mesh);
     }
 
-    /* Clean up no
+    /* Clean up.
      * */
     nodesNeededForSkeleton.clear();
+    boneNameToboneIdMap.clear();
+    nextBoneIndexToBeAssigned = 0;
 
     return thisModel;
 }
@@ -129,6 +132,36 @@ std::shared_ptr<Mesh> ModelLoader::loadMesh() {//At this moment we are only load
     return thisMesh;
 }
 
+void ModelLoader::addBoneInfoToMesh(std::shared_ptr<Mesh> &mesh) {
+    /* At this point Model Loader has already filled the
+     * basic mesh info (positions, color, etc...). Bone info
+     * will be added in a very chaotic way (because of the way
+     * assimp stores bone weights) therefore we need resize boneInfo
+     * vectors right now (to avoid SIGABRT :<).
+     * */
+    auto vertexCount = mesh->positions.size();
+    assert(vertexCount!=0);
+    mesh->boneIds.resize(vertexCount, glm::ivec4(0));
+    mesh->boneWeights.resize(vertexCount, glm::vec4(0.f));
+    /* For each bone in mesh;
+     * */
+    for(int i = 0; i < assimpMesh->mNumBones; i++){
+        aiBone* bone = assimpMesh->mBones[i];
+        std::string boneName = assimpToStdString(bone->mName);
+        int boneIdx = boneNameToboneIdMap[boneName];
+        /* For each vertex the bone affects
+         * */
+        for(int j = 0; j < bone->mNumWeights; j++){
+            aiVertexWeight weight =  bone->mWeights[j];
+            mesh->addBoneData(
+                    weight.mVertexId,
+                    boneIdx,
+                    weight.mWeight
+                    );
+        }
+    }
+}
+
 
 std::shared_ptr<SkeletalSystem::Skeleton> ModelLoader::loadSkeleton() {
     /* Assimp node hierarchy may contains nodes for many meshes, we will check which nodes
@@ -155,7 +188,7 @@ std::shared_ptr<SkeletalSystem::Skeleton> ModelLoader::loadSkeleton() {
                 boneNode,
                 meshRootNode,
                 meshRootParentNode
-        );
+                );
     }
 
     aiNode* skeletonRoot = findSkeletonRootNode(scene->mRootNode);
@@ -264,6 +297,13 @@ std::shared_ptr<SkeletalSystem::Bone> ModelLoader::assimpNodeToEngineBone(aiNode
 
         thisBone->toParentSpaceMatrix = assmipMatToGlmMat( node->mTransformation );
 
+        /* Bones are assigned an index in order they are visited using
+        * depth search.
+        * */
+        boneNameToboneIdMap.emplace(nodeName, nextBoneIndexToBeAssigned);
+        thisBone->idx = nextBoneIndexToBeAssigned;
+        nextBoneIndexToBeAssigned++;
+
         /* Link all children to the hierarchy.
          * */
         aiNode** Children = node->mChildren;
@@ -307,4 +347,3 @@ glm::mat4 ModelLoader::assmipMatToGlmMat(aiMatrix4x4 matrix) {
 std::string ModelLoader::assimpToStdString(const aiString &assimpString) {
     return std::string(assimpString.C_Str());
 }
-

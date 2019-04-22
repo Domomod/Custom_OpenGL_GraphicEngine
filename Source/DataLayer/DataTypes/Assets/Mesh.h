@@ -24,6 +24,8 @@ public:
     bool hasNormals;
     bool hasBones;
 
+    void addBoneData(int vertId, int boneId, float weight);
+
     Mesh() = default;
 };
 

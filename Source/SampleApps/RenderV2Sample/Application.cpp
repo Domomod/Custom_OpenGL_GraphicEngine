@@ -88,6 +88,7 @@ Application::Application() {
 
     } catch (MeshLoadingException& e){
         std::cerr << e.getMessage();
+        exit(1);
     }
 }
 

@@ -23,6 +23,7 @@ namespace SkeletalSystem {
          * and it was only used by the artist for easier rigging of the model.
          * By using a bone name we can find corresponding animation's transformation.
          * */
+        int idx;
         std::string name;
         glm::mat4 toParentSpaceMatrix;
         std::shared_ptr<Bone> Parent;
