@@ -12,7 +12,9 @@
 
 #include "SkeletonConstants.h"
 
-namespace Skeleton {
+class ModelLoader;
+
+namespace SkeletalSystem {
 
 /* A bone represents a transformation
  * */
@@ -28,13 +30,14 @@ namespace Skeleton {
     };
 
 
-/* By traversing a Skeleton (also called a bone hierarchy/ bone tree), we can calculate the final transformations
+/* By traversing a SkeletalSystem (also called a bone hierarchy/ bone tree), we can calculate the final transformations
  * that we will load into the shader.
  * */
     class Skeleton {
+        friend class ::ModelLoader;
     public:
     private:
-        Bone rootBone;
+        std::shared_ptr<Bone> rootBone;
         glm::mat4 finalTransformations[MAX_BONES];
     };
 

@@ -10,14 +10,13 @@
 #include <map>
 #include <vector>
 
-namespace Skeleton {
+namespace SkeletalSystem {
 /* Each bone Animation stores transformation info for each keyframe (instead of keyframes storing transformation
  * for each bone). That's the way assimp stores it's animations so I decided it's best not to change the format as
  * it doesn't really matter much.
  * */
     class boneAnimation {
     public:
-    private:
         Bone* corespondingBone;
         std::vector<glm::vec3> postions;
         std::vector<glm::quat> rotation;
@@ -26,7 +25,6 @@ namespace Skeleton {
 
     class SkeletalAnimation {
     public:
-    private:
         std::string animationName;
         double durationInTicks;
         double ticksPerSecond;

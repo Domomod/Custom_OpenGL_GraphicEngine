@@ -81,6 +81,14 @@ Application::Application() {
 
     entitySystem.addModel("Barrel", ModelLoader::loadModel("Meshes/barrel.obj"));
     entitySystem.addEntity("B1", entitySystem.entityFactory.make("Barrel", glm::vec3(0,0,-10)));
+
+    try {
+        entitySystem.addModel("Cowboy", ModelLoader::loadModel("Meshes/cowboy.dae"));
+        entitySystem.addEntity("C1", entitySystem.entityFactory.make("Cowboy", glm::vec3(0, 0, -20)));
+
+    } catch (MeshLoadingException& e){
+        std::cerr << e.getMessage();
+    }
 }
 
 void Application::main() {
@@ -136,10 +144,11 @@ void Application::main() {
     const std::shared_ptr<Model> barrel = entitySystem.getModel("Barrel");
     const std::vector<glm::mat4>* barrel_models = entitySystem.getAllFromModelSpaceMatricesForModel("Barrel");
 
+    const std::shared_ptr<Model> cowboy = entitySystem.getModel("Cowboy");
+    const std::vector<glm::mat4>* cowboy_models = entitySystem.getAllFromModelSpaceMatricesForModel("Cowboy");
 
     std::shared_ptr<Texture> barrelTexture = TextureLoader::loadTexture("Textures/barrel.png");
-
-    barrelTexture->bind();
+    std::shared_ptr<Texture> cowboyTexture = TextureLoader::loadTexture("Textures/cowboy.png");
 
     glEnable(GL_DEPTH_TEST);
     glPatchParameteri(GL_PATCH_VERTICES, 3);
@@ -176,6 +185,8 @@ void Application::main() {
 
         glDrawElementsInstanced(GL_PATCHES, quad->mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr, quad_models->size());
 
+        barrelTexture->bind();
+
         shader->use();
 
         posBuffer.bind();
@@ -191,6 +202,22 @@ void Application::main() {
         elementArrayBuffer.sendIfVaoEnabled( barrel->mesh->indicies );
 
         glDrawElementsInstanced(GL_TRIANGLES, barrel->mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr, barrel_models->size());
+
+        cowboyTexture->bind();
+
+        posBuffer.bind();
+        posBuffer.sendBufferToGPUifVaoBinded( cowboy->mesh->positions );
+
+        texCoordBuffer.bind();
+        texCoordBuffer.sendBufferToGPUifVaoBinded( cowboy->mesh->uv );
+
+        modelBuffer.bind();
+        modelBuffer.sendBufferToGPUifVaoBinded( *cowboy_models );
+
+        elementArrayBuffer.bind();
+        elementArrayBuffer.sendIfVaoEnabled( cowboy->mesh->indicies );
+
+        glDrawElementsInstanced(GL_TRIANGLES, cowboy->mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr, cowboy_models->size());
 
         window->swapBuffers();
         glfwPollEvents();

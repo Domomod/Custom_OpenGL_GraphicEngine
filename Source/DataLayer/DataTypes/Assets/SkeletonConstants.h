@@ -4,7 +4,7 @@
 
 #ifndef GAMEENGINE_SKELETONCONSTANTS_H
 #define GAMEENGINE_SKELETONCONSTANTS_H
-namespace Skeleton {
+namespace SkeletalSystem {
 
     const int MAX_BONES = 50;
 

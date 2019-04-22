@@ -24,8 +24,8 @@ public:
      * a skeleton it should have an animation (otherwise no point in having a skeleton)
      * */
     bool hasSkeletonAndAnimation = false;
-    std::shared_ptr<Skeleton::Skeleton> skeleton;
-    std::shared_ptr<Skeleton::SkeletalAnimation> skeletalAnimation;
+    std::shared_ptr<SkeletalSystem::Skeleton> skeleton;
+    std::shared_ptr<SkeletalSystem::SkeletalAnimation> skeletalAnimation;
 };
 
 class ModelFactory {
