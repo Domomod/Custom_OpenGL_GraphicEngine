@@ -44,14 +44,18 @@ set(    SOURCES_AND_HEADERS
         Source/DataLayer/DataTypes/GameLogic/EntityFactory.cpp
         Source/DataLayer/DataTypes/GameLogic/EntityFactory.h
         Source/DataLayer/DataTypes/Assets/ModelLoader.cpp Source/DataLayer/DataTypes/Assets/ModelLoader.h
+        Source/DataLayer/DataTypes/Assets/MeshLoader.cpp Source/DataLayer/DataTypes/Assets/MeshLoader.h
+        Source/DataLayer/DataTypes/Assets/SkeletonLoader.cpp Source/DataLayer/DataTypes/Assets/SkeletonLoader.h
         Source/DataLayer/DataTypes/Assets/Textures/Texture.cpp Source/DataLayer/DataTypes/Assets/Textures/Texture.h
         Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.cpp Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.h
+        Source/DataLayer/DataTypes/Assets/AssimpConversion.cpp Source/DataLayer/DataTypes/Assets/AssimpConversion.h
         Source/GraphicsLayer/Window/InputSystem.cpp Source/GraphicsLayer/Window/InputSystem.h
         Source/GraphicsLayer/FreeCamera.cpp Source/GraphicsLayer/FreeCamera.h
         Source/GraphicsLayer/Window/InputMetadata.h Source/DataLayer/DataTypes/Assets/Skeleton.cpp
         Source/DataLayer/DataTypes/Assets/Skeleton.h Source/DataLayer/DataTypes/Assets/SkeletalAnimation.cpp
         Source/DataLayer/DataTypes/Assets/SkeletalAnimation.h Source/DataLayer/DataTypes/Assets/SkeletonConstants.h
-        Source/DataLayer/DataTypes/Assets/Model.cpp Source/DataLayer/DataTypes/Assets/Model.h)
+        Source/DataLayer/DataTypes/Assets/Model.cpp Source/DataLayer/DataTypes/Assets/Model.h
+        )
 
 add_executable(RenderV2 Source/SampleApps/RenderV2Sample/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS} Source/GraphicsLayer/RenderSystemV2/Metadata/UniformMetadata.cpp Source/GraphicsLayer/RenderSystemV2/Metadata/UniformMetadata.h Source/GraphicsLayer/RenderSystemV2/Buffers/UniformBuffer.cpp Source/GraphicsLayer/RenderSystemV2/Buffers/UniformBuffer.h)
 target_include_directories(RenderV2 PUBLIC ${CMAKE_SOURCE_DIR})
