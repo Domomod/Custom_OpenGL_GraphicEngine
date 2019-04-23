@@ -12,7 +12,7 @@
 
 #include "SkeletonConstants.h"
 
-class ModelLoader;
+class SkeletonLoader;
 
 namespace SkeletalSystem {
 
@@ -35,7 +35,7 @@ namespace SkeletalSystem {
  * that we will load into the shader.
  * */
     class Skeleton {
-        friend class ::ModelLoader;
+        friend class ::SkeletonLoader;
     public:
     private:
         std::shared_ptr<Bone> rootBone;

@@ -91,10 +91,29 @@ public:
     MeshNotFound(const std::string &msg = "No message was set\n") : MyException("MeshNotFound", msg) {}
 };
 
-
-class MeshLoadingException : public MyException{
+class ModelLoadingException : public MyException{
 public:
-    MeshLoadingException(const std::string &msg = "No message was set\n") : MyException("MeshLoadingException", msg) {}
+    ModelLoadingException(const std::string &msg = "No message was set\n", const std::string& name = "") : MyException("ModelLoadingException:\t"+name, msg) {}
+};
 
+class MeshLoadingException : public ModelLoadingException{
+public:
+    MeshLoadingException(const std::string &msg = "No message was set\n") : ModelLoadingException(msg, "MeshLoadingException") {}
+};
+
+class SkeletonLoadingException : public ModelLoadingException{
+public:
+    SkeletonLoadingException(const std::string &msg = "No message was set\n") : ModelLoadingException(msg, "SkeletonLoadingException") {}
+};
+
+class AnimationLoadingException : public ModelLoadingException{
+public:
+    AnimationLoadingException(const std::string &msg = "No message was set\n") : ModelLoadingException(msg, "AnimationLoadingException") {}
+};
+
+//SkeletalSystemExceptions
+class AnimationInterpolationError : public MyException{
+public:
+    AnimationInterpolationError(const std::string &msg = "No message was set\n") : MyException("AnimationInterpolationError", msg) {}
 };
 #endif //GAMEENGINE_MYEXCEPTIONS_H
