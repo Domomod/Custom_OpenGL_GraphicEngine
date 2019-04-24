@@ -76,6 +76,7 @@ void MeshLoader::loadBasicMeshInfo(const aiMesh *aMesh) {
     }
 }
 
+
 void MeshLoader::addBoneInfo(const std::map<std::__cxx11::string, int> &boneNameToIndexMap) {
     if(isMeshInitialised() == false){
         throw MeshLoadingException("Tried to add per vertex bone info to mesh before adding basic vertex info.");
@@ -94,7 +95,7 @@ void MeshLoader::addBoneInfo(const std::map<std::__cxx11::string, int> &boneName
      * */
     for(int i = 0; i < assimpMesh->mNumBones; i++){
         aiBone* bone = assimpMesh->mBones[i];
-        std::string boneName = assimpToStdString(bone->mName);
+        std::string boneName = assimpToEngine(bone->mName);
         auto iteratorToBone = boneNameToIndexMap.find(boneName);
         int boneIdx = iteratorToBone->second;
         /* For each vertex the bone affects
@@ -109,6 +110,7 @@ void MeshLoader::addBoneInfo(const std::map<std::__cxx11::string, int> &boneName
         }
     }
 }
+
 
 std::shared_ptr<Mesh> MeshLoader::make() {
     if( isMeshInitialised()==false ){

@@ -13,9 +13,10 @@
 #include "Source/MyExceptions.h"
 #include "MeshLoader.h"
 #include "SkeletonLoader.h"
+#include "SkeletalAnimation.h"
+#include "SkeletonAnimationLoader.h"
 
-
-std::shared_ptr<Model> ModelLoader::loadModel(const std::string &path) {
+std::shared_ptr<Model> ModelLoader::loadModel( const std::string &path ) {
     std::shared_ptr<Model> thisModel = std::make_shared<Model>();
 
     //Using imporeter because it will handle resource cleaning.
@@ -49,7 +50,7 @@ std::shared_ptr<Model> ModelLoader::loadModel(const std::string &path) {
     aiMesh* assimpMesh = scene->mMeshes[0];
     auto meshLoader = MeshLoader(scene);
     auto skeletonLoader = SkeletonLoader(scene);
-
+    auto animationLoader = ::SkeletalSystem::SkeletonAnimationLoader();
 
     meshLoader.loadBasicMeshInfo(assimpMesh);
 
@@ -57,6 +58,12 @@ std::shared_ptr<Model> ModelLoader::loadModel(const std::string &path) {
         skeletonLoader.loadSkeleton(assimpMesh);
 
         meshLoader.addBoneInfo( skeletonLoader.getBoneNameToboneIdMap() );
+
+        if(scene->HasAnimations()) {
+            animationLoader.loadAnimation( scene->mAnimations[0],
+                                           skeletonLoader.getBoneNameToboneIdMap() );
+
+        }
 
         thisModel->skeleton = skeletonLoader.make();
     }

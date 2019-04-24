@@ -17,6 +17,8 @@ public:
 
     std::string getMessage();
 
+    const char* what() const noexcept { return msg.c_str(); };
+
     MyException() = default;
     MyException(std::string _exceptionName);
     MyException(const std::string &exceptionName, const std::string &msg);

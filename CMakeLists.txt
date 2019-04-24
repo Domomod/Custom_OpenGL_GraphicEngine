@@ -46,6 +46,7 @@ set(    SOURCES_AND_HEADERS
         Source/DataLayer/DataTypes/Assets/ModelLoader.cpp Source/DataLayer/DataTypes/Assets/ModelLoader.h
         Source/DataLayer/DataTypes/Assets/MeshLoader.cpp Source/DataLayer/DataTypes/Assets/MeshLoader.h
         Source/DataLayer/DataTypes/Assets/SkeletonLoader.cpp Source/DataLayer/DataTypes/Assets/SkeletonLoader.h
+        Source/DataLayer/DataTypes/Assets/SkeletonAnimationLoader.cpp Source/DataLayer/DataTypes/Assets/SkeletonAnimationLoader.h
         Source/DataLayer/DataTypes/Assets/Textures/Texture.cpp Source/DataLayer/DataTypes/Assets/Textures/Texture.h
         Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.cpp Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.h
         Source/DataLayer/DataTypes/Assets/AssimpConversion.cpp Source/DataLayer/DataTypes/Assets/AssimpConversion.h

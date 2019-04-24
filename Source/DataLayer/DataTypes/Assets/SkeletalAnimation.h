@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by dominik on 11.04.19.
 //
@@ -10,6 +12,7 @@
 #include <map>
 #include <vector>
 #include <glm/gtc/quaternion.hpp>
+#include "Source/MyExceptions.h"
 
 namespace SkeletalSystem {
 /* Each bone Animation stores transformation info for each keyframe (instead of keyframes storing transformation
@@ -17,36 +20,73 @@ namespace SkeletalSystem {
  * it doesn't really matter much.
  * */
 
-    struct BoneTransformation{
-        glm::vec3 translation;
-        glm::quat rotation;
-        glm::vec3 scalling;
-
-        BoneTransformation() = default;
-        BoneTransformation(const glm::vec3 &translation, const glm::quat &rotation, const glm::vec3 &scalling)
-                : translation(translation), rotation(rotation), scalling(scalling) {}
-    };
-
-    BoneTransformation interpolate(const BoneTransformation &startBone,
-                                   const BoneTransformation &endBone,
-                                   float progressionFraction);
-
+    template<class T>
     struct KeyFrame {
-        float timeStamp;
-        std::vector<BoneTransformation> boneTransformations;
+        double timeStamp;
+        T value;
+
+        typedef T ValueType;
+
+        KeyFrame() = default;
+
+        KeyFrame(double timeStamp, T value) : timeStamp(timeStamp), value(value) {}
     };
 
-    KeyFrame interpolate(const KeyFrame &startFrame,
-                         const KeyFrame &endFrame,
-                         float progression);
+    struct BoneAnimation {
+        std::vector<KeyFrame<glm::vec3>> translations;
+        std::vector<KeyFrame<glm::quat>> rotation;
+        std::vector<KeyFrame<glm::vec3>> scaling;
+
+        template<class T>
+        std::pair<T, T> findTwoNearest(float time, std::vector<KeyFrame<T>> &keyframes);
+
+        BoneAnimation() = default;
+
+        BoneAnimation(std::vector<KeyFrame<glm::vec3>> translations,
+                      std::vector<KeyFrame<glm::quat>> rotation    ,
+                      std::vector<KeyFrame<glm::vec3>> scaling     )
+                : translations(std::move(translations)), rotation(std::move(rotation)), scaling(std::move(scaling)) {}
+    };
+
+    BoneAnimation interpolate(const BoneAnimation &startBone,
+                              const BoneAnimation &endBone,
+                              float time);
+
 
     class SkeletalAnimation {
     public:
         std::string animationName;
         double durationInTicks;
         double ticksPerSecond;
-        std::vector<KeyFrame> keyFrames;
+        std::map<int,BoneAnimation> idToBoneAnimMap;
     };
+
+
+    /* Template functions definitions
+     * */
+
+    template<class T>
+    std::pair<T, T> BoneAnimation::findTwoNearest(float time, std::vector<KeyFrame<T>> &keyframes) {
+        if (time < 0) {
+            throw AnimationInterpolationError("Program was asked to calculate a negative time animation pose.");
+        }
+        if (keyframes.size() <= 1) {
+            throw AnimationInterpolationError("Program was asked to find two nearest keyFrames "
+                                              "while Node Animation did not have at least two keyframes.");
+        }
+        T nearestPreviousValue;
+        T nearestAfterValue;
+        for (KeyFrame<T> &keyframe : keyframes) {
+            nearestAfterValue = keyframe.value;
+            if (keyframe.timeStamp > time) {
+                return std::make_pair<T, T>(nearestPreviousValue, nearestAfterValue);
+            }
+            nearestPreviousValue = keyframe.value;
+        }
+        /* Reaching this point would mean given time exceeded animation time
+         * */
+        throw AnimationInterpolationError("Time exceeded animation time while searching nearest keyframes");
+    }
 }
 
 #endif //GAMEENGINE_SKELETALANIMATION_H

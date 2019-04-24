@@ -13,49 +13,48 @@ void SkeletonLoader::loadSkeleton(const aiMesh *aMesh) {
     if(aMesh->HasBones() == false){
         throw SkeletonLoadingException("Tried to load a skeleton for a mesh that does not have any.");
     }
-    /* Assimp node hierarchy may contains nodes for many meshes, we will check which nodes
-     * are the bones of our skeleton. To find out which nodes are bones we will check the aiMesh bones vector
-     * each record in this vector contains a corresponding node name.
-     * */
+
     assimpMesh = aMesh;
     constructedSkeleton = std::make_shared<SkeletalSystem::Skeleton>();
+    nextBoneIndexToBeAssigned = 0;
 
-    initNodesMap(scene->mRootNode);
+    initialiseNodeMaps(scene->mRootNode);
 
-
-    aiNode* meshRootNode = nodesNeededForSkeleton[assimpToStdString(assimpMesh->mName)].node;
-    assert(meshRootNode != nullptr);
+    aiNode* meshRootNode = nodesNeededForSkeleton[assimpToEngine(assimpMesh->mName)].node;
     aiNode* meshRootParentNode = meshRootNode->mParent;
 
-    /* Find the nodes needed for the skeleton
-     * */
-    aiBone** bones = assimpMesh->mBones;
-    unsigned int numBones = assimpMesh->mNumBones;
-    for(int boneId = 0; boneId < numBones; boneId++){
-        aiBone* bone = bones[boneId];
-        aiNode* boneNode = nodesNeededForSkeleton[assimpToStdString(bone->mName)].node;
-        markNeededUntilMeshRootOrRootParentFound(
-                boneNode,
-                meshRootNode,
-                meshRootParentNode
-                );
-    }
+    findNodesRepresentingThisSkeletonBones(meshRootNode, meshRootParentNode);
 
     aiNode* skeletonRoot = findSkeletonRootNode(scene->mRootNode);
 
     constructedSkeleton->rootBone = assimpNodeToEngineBone(skeletonRoot);
 }
 
-void SkeletonLoader::initNodesMap(aiNode *parentNode) {
+void SkeletonLoader::findNodesRepresentingThisSkeletonBones(aiNode *meshRootNode,
+                                                            aiNode *meshRootParentNode) {
+    aiBone** bones = assimpMesh->mBones;
+    unsigned int numBones = assimpMesh->mNumBones;
+    for(int boneId = 0; boneId < numBones; boneId++){
+        aiBone* bone = bones[boneId];
+        aiNode* boneNode = nodesNeededForSkeleton[assimpToEngine(bone->mName)].node;
+        markNeededUntilMeshRootOrRootParentFound(
+                boneNode,
+                meshRootNode,
+                meshRootParentNode
+                );
+    }
+}
+
+void SkeletonLoader::initialiseNodeMaps(aiNode *parentNode) {
     nodesNeededForSkeleton.emplace(
-            assimpToStdString(parentNode->mName),
+            assimpToEngine(parentNode->mName),
             NodeNecessityRecord(parentNode, false)
             );
 
     aiNode** children = parentNode->mChildren;
     unsigned int numChildren = parentNode->mNumChildren;
     for(int i = 0; i < numChildren; i++){
-        initNodesMap(children[i]);
+        initialiseNodeMaps(children[i]);
     }
 }
 
@@ -69,7 +68,7 @@ void SkeletonLoader::initNodesMap(aiNode *parentNode) {
  * */
 void SkeletonLoader::markNeededUntilMeshRootOrRootParentFound(aiNode *leaf, aiNode *meshRoot, aiNode *meshRootParent) {
     if(leaf != meshRoot && leaf != meshRootParent){
-        auto& necessityRecord = nodesNeededForSkeleton[ assimpToStdString(leaf->mName) ];
+        auto& necessityRecord = nodesNeededForSkeleton[assimpToEngine(leaf->mName) ];
 
         /* If a node is already marked as necessary this means, we have already searched it parens.
          * Given that this is the only function modifying nodes necessity.
@@ -101,7 +100,7 @@ aiNode * SkeletonLoader::findSkeletonRootNode(aiNode *node) {
 aiNode * SkeletonLoader::searchForSkeletonRootNode(aiNode *node) {
     aiNode* returnNode = nullptr;
 
-    auto& necessityRecord = nodesNeededForSkeleton[ assimpToStdString(node->mName) ];
+    auto& necessityRecord = nodesNeededForSkeleton[assimpToEngine(node->mName) ];
 
     /* This begins going back from the recursion.
      * */
@@ -128,7 +127,7 @@ aiNode * SkeletonLoader::searchForSkeletonRootNode(aiNode *node) {
 }
 
 std::shared_ptr<SkeletalSystem::Bone> SkeletonLoader::assimpNodeToEngineBone(aiNode *node) {
-    auto nodeName = assimpToStdString(node->mName);
+    auto nodeName = assimpToEngine(node->mName);
     auto& necessityRecord = nodesNeededForSkeleton[ nodeName ];
 
     if(necessityRecord.necessary){
@@ -141,7 +140,7 @@ std::shared_ptr<SkeletalSystem::Bone> SkeletonLoader::assimpNodeToEngineBone(aiN
 
         thisBone->name = nodeName;
 
-        thisBone->toParentSpaceMatrix = assmipMatToGlmMat( node->mTransformation );
+        thisBone->toParentSpaceMatrix = assimpToEngine(node->mTransformation);
 
         /* Bones are assigned an index in order they are visited using
         * depth search.
@@ -166,7 +165,7 @@ std::shared_ptr<SkeletalSystem::Bone> SkeletonLoader::assimpNodeToEngineBone(aiN
 
     } else {
         /* If a node is not necessary we can totally ignore it, because if it's children were necessary
-         * they would mark this node as necessary.
+         * they would mark this node as nGOKTURKecessary.
          * */
         return nullptr;
     }

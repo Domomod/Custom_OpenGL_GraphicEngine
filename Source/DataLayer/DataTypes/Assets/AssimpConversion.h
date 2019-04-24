@@ -9,13 +9,14 @@
 #include <string>
 #include <assimp/scene.h>
 
-glm::mat4 assmipMatToGlmMat(aiMatrix4x4 matrix);
+glm::mat4 assimpToEngine(aiMatrix4x4 matrix);
 
-/* Assimp glm conversion */
-std::string assimpToStdString(const aiString &assimpString);
+std::string assimpToEngine(const aiString &assimpString);
 
-#include <memory>
-#include <assimp/scene.h>
-#include "Model.h"
+glm::quat assimpToEngine(aiQuaternion assimpQuaternion);;
+
+glm::vec4 assimpToEngine(aiVector3D vector3d, float fourthValue);
+
+glm::vec3 assimpToEngine(aiVector3D vector3d);
 
 #endif //GAMEENGINE_ASSIMPCONVERSION_H

@@ -10,7 +10,6 @@
 #include <map>
 
 #include "Model.h"
-#include "Skeleton.h"
 
 /* Assimp is able to load whole scenes containing hierarchy of meshes etc ... (formats 3ds, collada)
  * I decided the Game Engine will only load single Models, and leave the scene making
@@ -27,13 +26,5 @@ private:
 };
 
 
-class SkeletonAnimationLoader{
-public:
-    void loadAnimation(aiAnimation* assimpAnimation);
-    std::shared_ptr<SkeletalSystem::SkeletalAnimation> make();
-private:
-    void doCleanup();
-    aiAnimation* assimpAnimation;
-    std::shared_ptr<SkeletalSystem::SkeletalAnimation> constructedAnimation;
-};
+
 #endif //GAMEENGINE_MODELLOADER_H

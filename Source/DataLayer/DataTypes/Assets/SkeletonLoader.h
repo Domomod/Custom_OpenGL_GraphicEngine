@@ -10,6 +10,13 @@
 #include <map>
 #include "Model.h"
 
+/* Skeleton Loader is designed to load one Skeleton at a time. It can load
+ * multiple skeletons one after another. Loaded skeleton is owned by the loader
+ * until released to the system by make() function. After that Loader
+ * goes back to the state after initialisation, therefore it is not possible
+ * to return multiple copies of the same skeleton by calling make multiple times.
+ * This way it's easier to assure that functions are called in right order.
+ * */
 class SkeletonLoader{
 public:
     SkeletonLoader(const aiScene *scene);
@@ -20,7 +27,9 @@ public:
 
     std::shared_ptr<SkeletalSystem::Skeleton> make();
 private:
-    void initNodesMap(aiNode *parentNode);
+    void initialiseNodeMaps(aiNode *parentNode);
+
+    void findNodesRepresentingThisSkeletonBones(aiNode *meshRootNode, aiNode *meshRootParentNode);
 
     void markNeededUntilMeshRootOrRootParentFound(aiNode *leaf, aiNode *meshRoot, aiNode *meshRootParent);
 
@@ -34,9 +43,13 @@ private:
 
     const aiScene* scene;
     const aiMesh* assimpMesh;
+
+    /* Assimp node hierarchy may contains nodes for many meshes, we will check which nodes
+    * are the bones of our skeleton.
+    * */
     struct NodeNecessityRecord;
-    std::map<std::__cxx11::string, NodeNecessityRecord> nodesNeededForSkeleton;
-    std::map<std::__cxx11::string, int> boneNameToboneIdMap;
+    std::map<std::string, NodeNecessityRecord> nodesNeededForSkeleton;
+    std::map<std::string, int> boneNameToboneIdMap;
     int nextBoneIndexToBeAssigned;
     std::shared_ptr<SkeletalSystem::Skeleton> constructedSkeleton;
 
@@ -48,6 +61,7 @@ private:
         aiNode* node;
         bool necessary;
     };
+
 };
 
 #endif //GAMEENGINE_SKELETONLOADER_H

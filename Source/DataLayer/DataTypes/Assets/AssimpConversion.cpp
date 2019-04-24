@@ -6,7 +6,7 @@
 #include "AssimpConversion.h"
 #include <glm/gtc/type_ptr.hpp>
 
-glm::mat4 assmipMatToGlmMat(aiMatrix4x4 matrix) {
+glm::mat4 assimpToEngine(aiMatrix4x4 matrix) {
 
     float mat[] = {
             matrix.a1, matrix.a2, matrix.a3, matrix.a4,
@@ -23,6 +23,20 @@ glm::mat4 assmipMatToGlmMat(aiMatrix4x4 matrix) {
     return glmMat4;
 }
 
-std::string assimpToStdString(const aiString &assimpString) {
-    return std::__cxx11::string(assimpString.C_Str());
+std::string assimpToEngine(const aiString &assimpString) {
+    return std::string(assimpString.C_Str());
+}
+
+glm::quat assimpToEngine(aiQuaternion assimpQuaternion) {
+    /* For some reason glm initializes quaternions in order  wxyz instead xyzw (as id does with vec4).
+     * */
+    return glm::quat(assimpQuaternion.w, assimpQuaternion.x, assimpQuaternion.y, assimpQuaternion.z);
+}
+
+glm::vec4 assimpToEngine(aiVector3D vector3d, float fourthValue) {
+    return glm::vec4(vector3d.x, vector3d.y, vector3d.z, fourthValue);
+}
+
+glm::vec3 assimpToEngine(aiVector3D vector3d) {
+    return glm::vec3(vector3d.x, vector3d.y, vector3d.z);
 }

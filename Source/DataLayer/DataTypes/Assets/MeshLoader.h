@@ -10,6 +10,13 @@
 #include <map>
 #include "Model.h"
 
+/* Mesh Loader is designed to load one Mesh at a time. It can load
+ * multiple meshes one after another. Loaded mesh is owned by the loader
+ * until released to the system by make() function. After that MeshLoader
+ * goes back to the state after initialisation, therefore it is not possible
+ * to return multiple copies of the same mesh by calling make multiple times.
+ * This way it's easier to assure that functions are called in right order.
+ * */
 class MeshLoader{
 public:
     explicit MeshLoader(const aiScene *scene);

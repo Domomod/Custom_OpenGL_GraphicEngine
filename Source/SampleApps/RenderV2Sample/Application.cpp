@@ -60,32 +60,32 @@ Application::Application() {
 
     window->getResizeNotifierPtr()->addListener(&windowResizeListener);
 
-    entitySystem.addModel("Triangle",   ModelFactory()
-                                          .addMesh( MeshGenerator::generateTriangeMesh() )
-                                          .make()
-                                          );
-    entitySystem.addEntity("T1", entitySystem.entityFactory.make("Triangle", glm::vec3(0.f,0.f,0.f)));
-    entitySystem.addEntity("T2", entitySystem.entityFactory.make("Triangle", glm::vec3(1.f,0.f,0.f)));
-    entitySystem.addEntity("T3", entitySystem.entityFactory.make("Triangle", glm::vec3(-1.f,0.f,0.f)));
-    entitySystem.addEntity("T4", entitySystem.entityFactory.make("Triangle", glm::vec3(2.f,2.f,0.f)));
-
-    entitySystem.addModel("Quad",       ModelFactory()
-                                          .addMesh( MeshGenerator::generateSimpleRectangleMesh(10, -1, 10) )
-                                          .make()
-                                          );
-
-    entitySystem.addEntity("Q1", entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, -20)));
-    entitySystem.addEntity("Q2", entitySystem.entityFactory.make("Quad", glm::vec3(10 , -1.7, -20)));
-    entitySystem.addEntity("Q3", entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, 0  )));
-    entitySystem.addEntity("Q4", entitySystem.entityFactory.make("Quad", glm::vec3(10 , -1.7, 0  )));
-
-    entitySystem.addModel("Barrel", ModelLoader::loadModel("Meshes/barrel.obj"));
-    entitySystem.addEntity("B1", entitySystem.entityFactory.make("Barrel", glm::vec3(0,0,-10)));
-
     try {
+        entitySystem.addModel("Triangle",   ModelFactory()
+                                              .addMesh( MeshGenerator::generateTriangeMesh() )
+                                              .make()
+                                              );
+        entitySystem.addEntity("T1", entitySystem.entityFactory.make("Triangle", glm::vec3(0.f,0.f,0.f)));
+        entitySystem.addEntity("T2", entitySystem.entityFactory.make("Triangle", glm::vec3(1.f,0.f,0.f)));
+        entitySystem.addEntity("T3", entitySystem.entityFactory.make("Triangle", glm::vec3(-1.f,0.f,0.f)));
+        entitySystem.addEntity("T4", entitySystem.entityFactory.make("Triangle", glm::vec3(2.f,2.f,0.f)));
+
+        entitySystem.addModel("Quad",       ModelFactory()
+                                              .addMesh( MeshGenerator::generateSimpleRectangleMesh(10, -1, 10) )
+                                              .make()
+                                              );
+
+        entitySystem.addEntity("Q1", entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, -20)));
+        entitySystem.addEntity("Q2", entitySystem.entityFactory.make("Quad", glm::vec3(10 , -1.7, -20)));
+        entitySystem.addEntity("Q3", entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, 0  )));
+        entitySystem.addEntity("Q4", entitySystem.entityFactory.make("Quad", glm::vec3(10 , -1.7, 0  )));
+
+        entitySystem.addModel("Barrel", ModelLoader::loadModel("Meshes/barrel.obj"));
+        entitySystem.addEntity("B1", entitySystem.entityFactory.make("Barrel", glm::vec3(0,0,-10)));
+
+
         entitySystem.addModel("Cowboy", ModelLoader::loadModel("Meshes/cowboy.dae"));
         entitySystem.addEntity("C1", entitySystem.entityFactory.make("Cowboy", glm::vec3(0, 0, -20)));
-
     } catch (MeshLoadingException& e){
         std::cerr << e.getMessage();
         exit(1);
