@@ -6,8 +6,9 @@
 #define GAMEENGINE_MODEL_H
 
 #include "Mesh.h"
-#include "Skeleton.h"
-#include "SkeletalAnimation.h"
+#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/Skeleton.h"
+#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimation.h"
+#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.h"
 #include "Source/MyExceptions.h"
 
 class Model {
@@ -24,6 +25,7 @@ public:
      * a skeleton it should have an animation (otherwise no point in having a skeleton)
      * */
     bool hasSkeletonAndAnimation = false;
+    std::shared_ptr<SkeletalSystem::SkeletalAnimator> animator;
     std::shared_ptr<SkeletalSystem::Skeleton> skeleton;
     std::shared_ptr<SkeletalSystem::SkeletalAnimation> skeletalAnimation;
 };

@@ -34,6 +34,7 @@ Application::Application() {
 
     shader = std::make_shared<Shader>();
     waterShader = std::make_shared<Shader>();
+    animationShader = std::make_shared<Shader>();
 
     try {
         shader->loadFromFile(Shader::VERTEX, "../Shaders/BasicTextured/basic_instanced.vs");
@@ -45,6 +46,10 @@ Application::Application() {
         waterShader->loadFromFile(Shader::TESSELATION_EVALUATION, "../Shaders/WaterShader/water.tes");
         waterShader->loadFromFile(Shader::FRAGMENT, "../Shaders/WaterShader/water.fs");
         waterShader->createAndLinkProgram();
+
+        animationShader->loadFromFile(Shader::VERTEX, "../Shaders/AnimationShader/animated.vs");
+        animationShader->loadFromFile(Shader::FRAGMENT, "../Shaders/AnimationShader/animated.fs");
+        animationShader->createAndLinkProgram();
     } catch( MyException& e) {
         std::cerr << e.getType() << ":\n" << e.getMessage();
         throw e;
@@ -52,7 +57,7 @@ Application::Application() {
     }
 
     View = glm::lookAt(glm::vec3(0.f,0.f,3.f), glm::vec3(0.f,0.f,0.f), glm::vec3(0.f,1.f,0.f));
-    Projection = glm::perspective(glm::radians(45.f),8.f/4.f, 1.f, 30.f);
+    Projection = glm::perspective(glm::radians(45.f),8.f/4.f, 1.f, 150.f);
 
     windowResizeListener.setReactionFuncPtr([&](std::pair<int,int> size){
        Projection =  glm::perspective(glm::radians(45.f),(float)size.first / (float)size.second, 1.f, 30.f);
@@ -108,6 +113,14 @@ void Application::main() {
             .insert( AttributeMetadata(1, 2, GL_FLOAT, 0, sizeof(glm::vec2)))
             .make();
 
+    AttributeBuffer boneIdsBuffer = AttributeBufferFactory()
+            .insert( AttributeMetadata(2, 4, GL_INT, 0, sizeof(glm::ivec4)))
+            .make();
+
+    AttributeBuffer boneWeightsBuffer = AttributeBufferFactory()
+            .insert( AttributeMetadata(3, 4, GL_FLOAT, 0, sizeof(glm::vec4)))
+            .make();
+
     AttributeBuffer modelBuffer = AttributeBufferFactory()
             //insert a Matrix, which is a set of 4 vec4's
             .insert( AttributeMetadata( 2, 4, GL_FLOAT, 0,
@@ -148,12 +161,22 @@ void Application::main() {
     const std::shared_ptr<Model> cowboy = entitySystem.getModel("Cowboy");
     const std::vector<glm::mat4>* cowboy_models = entitySystem.getAllFromModelSpaceMatricesForModel("Cowboy");
 
+    UniformBuffer animatedUniformBuffer = UniformBufferFactory()
+            .setBinding(2)
+            .insert( UniformMetadata( &ModelViewProjection, GL_FLOAT_MAT4 ) )
+            .insert( UniformMetadata( cowboy->animator->getCurrentPoseTransformation(), GL_FLOAT_MAT4, SkeletalSystem::MAX_BONES) )
+            .make();
+
     std::shared_ptr<Texture> barrelTexture = TextureLoader::loadTexture("Textures/barrel.png");
     std::shared_ptr<Texture> cowboyTexture = TextureLoader::loadTexture("Textures/cowboy.png");
+
+    cowboy->animator->setCurrentAnimation(cowboy->skeletalAnimation);
 
     glEnable(GL_DEPTH_TEST);
     glPatchParameteri(GL_PATCH_VERTICES, 3);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+
 
     while(window->isRunning()){
         time = static_cast<float>(glfwGetTime());
@@ -161,50 +184,57 @@ void Application::main() {
 
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-        //DRAW TRIANGLES
-        waterShader->use();
+//        //DRAW TRIANGLES
+//        waterShader->use();
+//
+//        posBuffer.bind();
+//        posBuffer.sendBufferToGPUifVaoBinded( quad->mesh->positions );
+//
+//        colBuffer.bind();
+//        colBuffer.sendBufferToGPUifVaoBinded( quad->mesh->colors );
+//
+//        modelBuffer.bind();
+//        modelBuffer.sendBufferToGPUifVaoBinded( *quad_models );
+//
+//        elementArrayBuffer.bind();
+//        elementArrayBuffer.sendIfVaoEnabled( quad->mesh->indicies );
+//
+//        instancedUniformBuffer.bind();
+//        instancedUniformBuffer.bakeData();
+//        instancedUniformBuffer.sendBufferToGPU();
+//
+//        waterUniformBuffer.bind();
+//        waterUniformBuffer.bakeData();
+//        waterUniformBuffer.sendBufferToGPU();
+//
+//        glDrawElementsInstanced(GL_PATCHES, quad->mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr, quad_models->size());
+//
+//        barrelTexture->bind();
+//
+//        shader->use();
+//
+//        posBuffer.bind();
+//        posBuffer.sendBufferToGPUifVaoBinded( barrel->mesh->positions );
+//
+//        texCoordBuffer.bind();
+//        texCoordBuffer.sendBufferToGPUifVaoBinded( barrel->mesh->uv );
+//
+//        modelBuffer.bind();
+//        modelBuffer.sendBufferToGPUifVaoBinded( *barrel_models );
+//
+//        elementArrayBuffer.bind();
+//        elementArrayBuffer.sendIfVaoEnabled( barrel->mesh->indicies );
+//
+//        glDrawElementsInstanced(GL_TRIANGLES, barrel->mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr, barrel_models->size());
 
-        posBuffer.bind();
-        posBuffer.sendBufferToGPUifVaoBinded( quad->mesh->positions );
+        modelBuffer.unbind();
 
-        colBuffer.bind();
-        colBuffer.sendBufferToGPUifVaoBinded( quad->mesh->colors );
-
-        modelBuffer.bind();
-        modelBuffer.sendBufferToGPUifVaoBinded( *quad_models );
-
-        elementArrayBuffer.bind();
-        elementArrayBuffer.sendIfVaoEnabled( quad->mesh->indicies );
-
-        instancedUniformBuffer.bind();
-        instancedUniformBuffer.bakeData();
-        instancedUniformBuffer.sendBufferToGPU();
-
-        waterUniformBuffer.bind();
-        waterUniformBuffer.bakeData();
-        waterUniformBuffer.sendBufferToGPU();
-
-        glDrawElementsInstanced(GL_PATCHES, quad->mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr, quad_models->size());
-
-        barrelTexture->bind();
-
-        shader->use();
-
-        posBuffer.bind();
-        posBuffer.sendBufferToGPUifVaoBinded( barrel->mesh->positions );
-
-        texCoordBuffer.bind();
-        texCoordBuffer.sendBufferToGPUifVaoBinded( barrel->mesh->uv );
-
-        modelBuffer.bind();
-        modelBuffer.sendBufferToGPUifVaoBinded( *barrel_models );
-
-        elementArrayBuffer.bind();
-        elementArrayBuffer.sendIfVaoEnabled( barrel->mesh->indicies );
-
-        glDrawElementsInstanced(GL_TRIANGLES, barrel->mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr, barrel_models->size());
+        animationShader->use();
 
         cowboyTexture->bind();
+        cowboy->animator->calculateCurrentPose();
+
+        ModelViewProjection = Projection * View * (*cowboy_models)[0];
 
         posBuffer.bind();
         posBuffer.sendBufferToGPUifVaoBinded( cowboy->mesh->positions );
@@ -212,13 +242,23 @@ void Application::main() {
         texCoordBuffer.bind();
         texCoordBuffer.sendBufferToGPUifVaoBinded( cowboy->mesh->uv );
 
-        modelBuffer.bind();
-        modelBuffer.sendBufferToGPUifVaoBinded( *cowboy_models );
+        boneIdsBuffer.bind();
+        boneIdsBuffer.sendBufferToGPUifVaoBinded( cowboy->mesh->boneIds );
+
+        boneWeightsBuffer.bind();
+        boneWeightsBuffer.sendBufferToGPUifVaoBinded( cowboy->mesh->boneWeights );
 
         elementArrayBuffer.bind();
         elementArrayBuffer.sendIfVaoEnabled( cowboy->mesh->indicies );
 
-        glDrawElementsInstanced(GL_TRIANGLES, cowboy->mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr, cowboy_models->size());
+        animatedUniformBuffer.bind();
+        animatedUniformBuffer.bakeData();
+        animatedUniformBuffer.sendBufferToGPU();
+
+        glDrawElements(GL_TRIANGLES, cowboy->mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr);
+
+        boneIdsBuffer.unbind();
+        boneWeightsBuffer.unbind();
 
         window->swapBuffers();
         glfwPollEvents();

@@ -23,8 +23,8 @@ void UniformBuffer::bakeData() {
     size_t offset = 0;
     bakedData.resize(bakedDataSize);
     for(auto& metadata : uniformsMetadata){
-        memcpy( bakedData.data() + offset, metadata.pointerToData, metadata.size );
-        offset += metadata.allign;
+        memcpy( bakedData.data() + offset, metadata.pointerToData , metadata.arraySize * metadata.size );
+        offset += metadata.arraySize * metadata.allign;
     }
 }
 
@@ -59,6 +59,6 @@ UniformBufferFactory& UniformBufferFactory::insert(const UniformMetadata &unifor
     }
     uniformsAdded = true;
     uniformsMetadata.push_back(uniformMetadata);
-    bakedDataSize += uniformMetadata.allign;
+    bakedDataSize += uniformMetadata.arraySize * uniformMetadata.allign;
     return  *this;
 }

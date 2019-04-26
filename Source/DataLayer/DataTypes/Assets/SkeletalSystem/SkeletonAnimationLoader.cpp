@@ -54,6 +54,16 @@ std::vector<EngineKeyframe> SkeletonAnimationLoader::translateKeyframes(unsigned
     return engineKeyframes;
 }
 
+std::shared_ptr<SkeletalSystem::SkeletalAnimation> SkeletonAnimationLoader::make() {
+    if(constructedAnimation == nullptr){
+        throw AnimationLoadingException("Tried to create an empty animation.");
+    }
+
+    auto returnAnimation = constructedAnimation;
+    constructedAnimation = nullptr;
+    return returnAnimation;
+}
+
 /* Because I exactly know what types those functions will have I can use forward declaration.
  * Using this 'trick' I can declare template in .h and define it in .cpp, in result creating
  * cleaner code.

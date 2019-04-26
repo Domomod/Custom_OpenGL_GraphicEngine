@@ -12,9 +12,9 @@
 
 #include "Source/MyExceptions.h"
 #include "MeshLoader.h"
-#include "SkeletonLoader.h"
-#include "SkeletalAnimation.h"
-#include "SkeletonAnimationLoader.h"
+#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonLoader.h"
+#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimation.h"
+#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonAnimationLoader.h"
 
 std::shared_ptr<Model> ModelLoader::loadModel( const std::string &path ) {
     std::shared_ptr<Model> thisModel = std::make_shared<Model>();
@@ -60,12 +60,14 @@ std::shared_ptr<Model> ModelLoader::loadModel( const std::string &path ) {
         meshLoader.addBoneInfo( skeletonLoader.getBoneNameToboneIdMap() );
 
         if(scene->HasAnimations()) {
-            animationLoader.loadAnimation( scene->mAnimations[0],
-                                           skeletonLoader.getBoneNameToboneIdMap() );
+             animationLoader.loadAnimation( scene->mAnimations[0],
+                                            skeletonLoader.getBoneNameToboneIdMap() );
+             thisModel->skeletalAnimation = animationLoader.make();
 
         }
 
         thisModel->skeleton = skeletonLoader.make();
+        thisModel->animator = std::make_shared<SkeletalSystem::SkeletalAnimator>(thisModel->skeleton);
     }
 
     thisModel->mesh = meshLoader.make();

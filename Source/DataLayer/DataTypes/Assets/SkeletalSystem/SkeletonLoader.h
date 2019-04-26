@@ -50,6 +50,7 @@ private:
     struct NodeNecessityRecord;
     std::map<std::string, NodeNecessityRecord> nodesNeededForSkeleton;
     std::map<std::string, int> boneNameToboneIdMap;
+    std::map<std::string, glm::mat4> boneNameToOffsetMap;
     int nextBoneIndexToBeAssigned;
     std::shared_ptr<SkeletalSystem::Skeleton> constructedSkeleton;
 
@@ -63,5 +64,7 @@ private:
     };
 
 };
+
+
 
 #endif //GAMEENGINE_SKELETONLOADER_H

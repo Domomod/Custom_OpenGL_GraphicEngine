@@ -15,8 +15,9 @@ struct UniformMetadata {
     GLenum dataType;
     size_t size;
     size_t allign;
+    int arraySize;
 
-    UniformMetadata(void *pointerToData, GLenum dataType);
+    UniformMetadata(void *pointerToData, GLenum dataType, int arraySize = 1);
     UniformMetadata();
 
     virtual ~UniformMetadata();

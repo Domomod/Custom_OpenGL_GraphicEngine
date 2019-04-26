@@ -20,6 +20,8 @@ namespace SkeletalSystem {
  * it doesn't really matter much.
  * */
 
+    class SkeletonAnimationLoader;
+
     template<class T>
     struct KeyFrame {
         double timeStamp;
@@ -32,29 +34,56 @@ namespace SkeletalSystem {
         KeyFrame(double timeStamp, T value) : timeStamp(timeStamp), value(value) {}
     };
 
-    struct BoneAnimation {
-        std::vector<KeyFrame<glm::vec3>> translations;
-        std::vector<KeyFrame<glm::quat>> rotation;
-        std::vector<KeyFrame<glm::vec3>> scaling;
-
-        template<class T>
-        std::pair<T, T> findTwoNearest(float time, std::vector<KeyFrame<T>> &keyframes);
-
+    class BoneAnimation {
+    public:
         BoneAnimation() = default;
 
         BoneAnimation(std::vector<KeyFrame<glm::vec3>> translations,
                       std::vector<KeyFrame<glm::quat>> rotation    ,
                       std::vector<KeyFrame<glm::vec3>> scaling     )
-                : translations(std::move(translations)), rotation(std::move(rotation)), scaling(std::move(scaling)) {}
-    };
+                : translations(std::move(translations)), rotations(std::move(rotation)), scalings(std::move(scaling)) {}
 
-    BoneAnimation interpolate(const BoneAnimation &startBone,
-                              const BoneAnimation &endBone,
-                              float time);
+        glm::vec3 calculateInterpolatedTransaltions(float time);
+        glm::quat calculateInterpolatedRotation(float time);
+        glm::vec3 calculateInterpolatedScaling(float time);
+
+    private:
+        template<class T>
+        T calculateCurrent(float time, std::vector<KeyFrame<T>> &keyframes);
+
+        template<class T>
+        T calculateInterpolated(float time, std::vector<KeyFrame<T>> &keyframes);
+
+        glm::vec3 interpolation(const glm::vec3 & first, const glm::vec3 & second, float progression);
+        glm::quat interpolation(const glm::quat & first, const glm::quat & second, float progression);
+
+        std::vector<KeyFrame<glm::vec3>> translations;
+        std::vector<KeyFrame<glm::quat>> rotations;
+        std::vector<KeyFrame<glm::vec3>> scalings;
+    };
 
 
     class SkeletalAnimation {
+        friend class SkeletonAnimationLoader;
     public:
+        BoneAnimation* findBoneAnimation(int id){
+            auto iterator = idToBoneAnimMap.find(id);
+            if(iterator != idToBoneAnimMap.end()){
+                auto& boneAnim = (*iterator).second;
+                return &boneAnim;
+            }
+            else {
+                return nullptr;
+            }
+        }
+
+        const std::string &getAnimationName() const;
+
+        double getDurationInTicks() const;
+
+        double getTicksPerSecond() const;
+
+    private:
         std::string animationName;
         double durationInTicks;
         double ticksPerSecond;
@@ -65,28 +94,9 @@ namespace SkeletalSystem {
     /* Template functions definitions
      * */
 
-    template<class T>
-    std::pair<T, T> BoneAnimation::findTwoNearest(float time, std::vector<KeyFrame<T>> &keyframes) {
-        if (time < 0) {
-            throw AnimationInterpolationError("Program was asked to calculate a negative time animation pose.");
-        }
-        if (keyframes.size() <= 1) {
-            throw AnimationInterpolationError("Program was asked to find two nearest keyFrames "
-                                              "while Node Animation did not have at least two keyframes.");
-        }
-        T nearestPreviousValue;
-        T nearestAfterValue;
-        for (KeyFrame<T> &keyframe : keyframes) {
-            nearestAfterValue = keyframe.value;
-            if (keyframe.timeStamp > time) {
-                return std::make_pair<T, T>(nearestPreviousValue, nearestAfterValue);
-            }
-            nearestPreviousValue = keyframe.value;
-        }
-        /* Reaching this point would mean given time exceeded animation time
-         * */
-        throw AnimationInterpolationError("Time exceeded animation time while searching nearest keyframes");
-    }
+
+
+
 }
 
 #endif //GAMEENGINE_SKELETALANIMATION_H

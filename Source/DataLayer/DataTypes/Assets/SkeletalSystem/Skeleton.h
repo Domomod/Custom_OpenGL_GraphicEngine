@@ -10,8 +10,6 @@
 #include <memory>
 #include <glm/glm.hpp>
 
-#include "SkeletonConstants.h"
-
 class SkeletonLoader;
 
 namespace SkeletalSystem {
@@ -25,7 +23,12 @@ namespace SkeletalSystem {
          * */
         int idx;
         std::string name;
+        /* Transformation in realtion to parent
+         * */
         glm::mat4 toParentSpaceMatrix;
+        /* Transformation from mesh space to bone space.
+         * */
+        glm::mat4 offset;
         std::shared_ptr<Bone> Parent;
         std::vector<std::shared_ptr<Bone>> Children;
     };
@@ -37,9 +40,13 @@ namespace SkeletalSystem {
     class Skeleton {
         friend class ::SkeletonLoader;
     public:
+        const glm::mat4 &getGlobalInverseTransformation() const;
+
+        const std::shared_ptr<Bone> &getRootBone() const;
+
     private:
         std::shared_ptr<Bone> rootBone;
-        glm::mat4 finalTransformations[MAX_BONES];
+        glm::mat4 globalInverseTransformation;
     };
 
 }

@@ -89,8 +89,8 @@ void MeshLoader::addBoneInfo(const std::map<std::__cxx11::string, int> &boneName
      * */
     auto vertexCount = constructedMesh->positions.size();
     assert(vertexCount!=0);
-    constructedMesh->boneIds.resize(vertexCount, glm::ivec4(0));
-    constructedMesh->boneWeights.resize(vertexCount, glm::vec4(0.f));
+    constructedMesh->boneIds.resize(vertexCount, glm::ivec4(0,0,0,0));
+    constructedMesh->boneWeights.resize(vertexCount, glm::vec4(0.f,0.f,0.f,0.f));
     /* For each bone in mesh;
      * */
     for(int i = 0; i < assimpMesh->mNumBones; i++){

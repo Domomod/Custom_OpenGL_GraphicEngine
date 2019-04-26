@@ -28,6 +28,8 @@ void SkeletonLoader::loadSkeleton(const aiMesh *aMesh) {
     aiNode* skeletonRoot = findSkeletonRootNode(scene->mRootNode);
 
     constructedSkeleton->rootBone = assimpNodeToEngineBone(skeletonRoot);
+    constructedSkeleton->globalInverseTransformation = glm::inverse(constructedSkeleton->rootBone->toParentSpaceMatrix);
+
 }
 
 void SkeletonLoader::findNodesRepresentingThisSkeletonBones(aiNode *meshRootNode,
@@ -41,6 +43,11 @@ void SkeletonLoader::findNodesRepresentingThisSkeletonBones(aiNode *meshRootNode
                 boneNode,
                 meshRootNode,
                 meshRootParentNode
+                );
+
+        boneNameToOffsetMap.emplace(
+                assimpToEngine(bone->mName),
+                assimpToEngine(bone->mOffsetMatrix)
                 );
     }
 }
@@ -141,6 +148,11 @@ std::shared_ptr<SkeletalSystem::Bone> SkeletonLoader::assimpNodeToEngineBone(aiN
         thisBone->name = nodeName;
 
         thisBone->toParentSpaceMatrix = assimpToEngine(node->mTransformation);
+
+        auto iterator = boneNameToOffsetMap.find(nodeName);
+        thisBone->offset =  iterator == boneNameToOffsetMap.end() ? glm::mat4(1)
+                                                                  : (*iterator).second;
+
 
         /* Bones are assigned an index in order they are visited using
         * depth search.

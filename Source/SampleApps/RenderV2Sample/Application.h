@@ -33,7 +33,9 @@ private:
     std::shared_ptr<Shader> shader;
     std::shared_ptr<Shader> waterShader;
     std::shared_ptr<Shader> texturedShader;
+    std::shared_ptr<Shader> animationShader;
 
+    glm::mat4 ModelViewProjection;
     glm::mat4 View;
     glm::mat4 Projection;
 

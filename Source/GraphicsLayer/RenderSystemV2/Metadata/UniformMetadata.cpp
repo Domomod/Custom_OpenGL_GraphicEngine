@@ -4,7 +4,8 @@
 
 #include "UniformMetadata.h"
 
-UniformMetadata::UniformMetadata(void *pointerToData, GLenum dataType) : pointerToData(pointerToData), dataType(dataType) {
+UniformMetadata::UniformMetadata(void *pointerToData, GLenum dataType, int arraySize)
+: pointerToData(pointerToData), dataType(dataType), arraySize(arraySize) {
     switch(dataType){
         case GL_FLOAT_MAT4:
             allign = size = 4 * 4 * sizeof(float);
