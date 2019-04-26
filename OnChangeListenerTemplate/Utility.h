@@ -15,4 +15,14 @@ ostream& operator<<(ostream& os, const vector<T>& v)
     } 
     os << "]\n"; 
     return os; 
-} 
+}
+
+std::string getFileExt(const std::string& s) {
+
+    size_t i = s.rfind('.', s.length());
+    if (i != string::npos) {
+        return(s.substr(i+1, s.length() - i));
+    }
+
+    return("");
+}

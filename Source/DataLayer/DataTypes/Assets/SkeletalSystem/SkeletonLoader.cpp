@@ -47,7 +47,7 @@ void SkeletonLoader::findNodesRepresentingThisSkeletonBones(aiNode *meshRootNode
 
         boneNameToOffsetMap.emplace(
                 assimpToEngine(bone->mName),
-                assimpToEngine(bone->mOffsetMatrix)
+                glmCast(bone->mOffsetMatrix)
                 );
     }
 }
@@ -147,7 +147,7 @@ std::shared_ptr<SkeletalSystem::Bone> SkeletonLoader::assimpNodeToEngineBone(aiN
 
         thisBone->name = nodeName;
 
-        thisBone->toParentSpaceMatrix = assimpToEngine(node->mTransformation);
+        thisBone->toParentSpaceMatrix = glmCast(node->mTransformation);
 
         auto iterator = boneNameToOffsetMap.find(nodeName);
         thisBone->offset =  iterator == boneNameToOffsetMap.end() ? glm::mat4(1)

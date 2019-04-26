@@ -48,7 +48,7 @@ std::vector<EngineKeyframe> SkeletonAnimationLoader::translateKeyframes(unsigned
     for(int keyFrameId = 0; keyFrameId < numKeyframes; keyFrameId ++){
         AssimpKeyframe& keyFrame = assimpKeyframes[keyFrameId];
         double timeStamp = keyFrame.mTime;
-        typename EngineKeyframe::ValueType translation = assimpToEngine(keyFrame.mValue);
+        typename EngineKeyframe::ValueType translation = glmCast(keyFrame.mValue);
         engineKeyframes.emplace_back(timeStamp, translation);
     }
     return engineKeyframes;

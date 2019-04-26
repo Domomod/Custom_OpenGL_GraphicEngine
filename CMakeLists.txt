@@ -66,5 +66,5 @@ set(    SOURCES_AND_HEADERS
 
 add_executable(RenderV2 Source/SampleApps/RenderV2Sample/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS}    )
 target_include_directories(RenderV2 PUBLIC ${CMAKE_SOURCE_DIR})
-target_link_libraries(RenderV2 ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} ${ASSIMP_LIBRARIES} ${SOIL_LIBRARIES} glfw)
+target_link_libraries(RenderV2 ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} ${ASSIMP_LIBRARIES} ${SOIL_LIBRARIES} glfw stdc++fs)
 

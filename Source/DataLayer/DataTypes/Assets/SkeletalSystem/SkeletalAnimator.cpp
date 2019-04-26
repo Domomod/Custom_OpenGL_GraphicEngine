@@ -43,11 +43,10 @@ SkeletalSystem::SkeletalAnimator::calculateHierarchyTransforms(const std::shared
         glm::mat4 rotationMatrix = glm::toMat4(rotation);
         glm::mat4 scalingMatrix = glm::scale(glm::mat4(1), scaling);
 
-
         localTransformation = translationMatrix * rotationMatrix * scalingMatrix;
     }
 
-    glm::mat4 globalTransformation = parentTransformation * localTransformation;
+    glm::mat4 globalTransformation = parentTransformation * localTransformation ;
     glm::mat4 inverseTransformation = itsSkeleton->getGlobalInverseTransformation();
     glm::mat4 offsetTransformation = bone->offset;
 

@@ -16,6 +16,8 @@
 #include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimation.h"
 #include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonAnimationLoader.h"
 
+#include "Utility.h"
+
 std::shared_ptr<Model> ModelLoader::loadModel( const std::string &path ) {
     std::shared_ptr<Model> thisModel = std::make_shared<Model>();
 
@@ -48,7 +50,7 @@ std::shared_ptr<Model> ModelLoader::loadModel( const std::string &path ) {
 
     /*TODO: for every mesh in assimp scene load it to model*/
     aiMesh* assimpMesh = scene->mMeshes[0];
-    auto meshLoader = MeshLoader(scene);
+    auto meshLoader = MeshLoader(scene, getFileExt(path) );
     auto skeletonLoader = SkeletonLoader(scene);
     auto animationLoader = ::SkeletalSystem::SkeletonAnimationLoader();
 

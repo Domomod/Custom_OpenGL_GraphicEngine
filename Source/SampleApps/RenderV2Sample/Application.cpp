@@ -32,21 +32,9 @@ Application::Application() {
     windowInputSystem->connectToKeyboardStateListener(freeCamera->getKeyboardStateListener());
     windowInputSystem->connectToMouseMovedListener(freeCamera->getMouseMovementListener());
 
-    shader = std::make_shared<Shader>();
-    waterShader = std::make_shared<Shader>();
     animationShader = std::make_shared<Shader>();
 
     try {
-        shader->loadFromFile(Shader::VERTEX, "../Shaders/BasicTextured/basic_instanced.vs");
-        shader->loadFromFile(Shader::FRAGMENT, "../Shaders/BasicTextured/basic.fs");
-        shader->createAndLinkProgram();
-
-        waterShader->loadFromFile(Shader::VERTEX, "../Shaders/WaterShader/water_instanced.vs");
-        waterShader->loadFromFile(Shader::TESSELATION_CONTROL, "../Shaders/WaterShader/water.tcs");
-        waterShader->loadFromFile(Shader::TESSELATION_EVALUATION, "../Shaders/WaterShader/water.tes");
-        waterShader->loadFromFile(Shader::FRAGMENT, "../Shaders/WaterShader/water.fs");
-        waterShader->createAndLinkProgram();
-
         animationShader->loadFromFile(Shader::VERTEX, "../Shaders/AnimationShader/animated.vs");
         animationShader->loadFromFile(Shader::FRAGMENT, "../Shaders/AnimationShader/animated.fs");
         animationShader->createAndLinkProgram();
@@ -60,25 +48,25 @@ Application::Application() {
     Projection = glm::perspective(glm::radians(45.f),8.f/4.f, 1.f, 150.f);
 
     windowResizeListener.setReactionFuncPtr([&](std::pair<int,int> size){
-       Projection =  glm::perspective(glm::radians(45.f),(float)size.first / (float)size.second, 1.f, 30.f);
+        Projection =  glm::perspective(glm::radians(45.f),(float)size.first / (float)size.second, 1.f, 30.f);
     });
 
     window->getResizeNotifierPtr()->addListener(&windowResizeListener);
 
     try {
         entitySystem.addModel("Triangle",   ModelFactory()
-                                              .addMesh( MeshGenerator::generateTriangeMesh() )
-                                              .make()
-                                              );
+                .addMesh( MeshGenerator::generateTriangeMesh() )
+                .make()
+        );
         entitySystem.addEntity("T1", entitySystem.entityFactory.make("Triangle", glm::vec3(0.f,0.f,0.f)));
         entitySystem.addEntity("T2", entitySystem.entityFactory.make("Triangle", glm::vec3(1.f,0.f,0.f)));
         entitySystem.addEntity("T3", entitySystem.entityFactory.make("Triangle", glm::vec3(-1.f,0.f,0.f)));
         entitySystem.addEntity("T4", entitySystem.entityFactory.make("Triangle", glm::vec3(2.f,2.f,0.f)));
 
         entitySystem.addModel("Quad",       ModelFactory()
-                                              .addMesh( MeshGenerator::generateSimpleRectangleMesh(10, -1, 10) )
-                                              .make()
-                                              );
+                .addMesh( MeshGenerator::generateSimpleRectangleMesh(10, -1, 10) )
+                .make()
+        );
 
         entitySystem.addEntity("Q1", entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, -20)));
         entitySystem.addEntity("Q2", entitySystem.entityFactory.make("Quad", glm::vec3(10 , -1.7, -20)));
@@ -105,58 +93,19 @@ void Application::main() {
             .insert( AttributeMetadata(0, 4, GL_FLOAT, 0, sizeof(glm::vec4)))
             .make();
 
-    AttributeBuffer colBuffer = AttributeBufferFactory()
-            .insert( AttributeMetadata(1, 4, GL_FLOAT, 0, sizeof(glm::vec4)))
-            .make();
-
     AttributeBuffer texCoordBuffer = AttributeBufferFactory()
             .insert( AttributeMetadata(1, 2, GL_FLOAT, 0, sizeof(glm::vec2)))
             .make();
 
     AttributeBuffer boneIdsBuffer = AttributeBufferFactory()
-            .insert( AttributeMetadata(2, 4, GL_INT, 0, sizeof(glm::ivec4)))
+            .insert( AttributeMetadata(2, 4, GL_FLOAT, 0, sizeof(glm::vec4)))
             .make();
 
     AttributeBuffer boneWeightsBuffer = AttributeBufferFactory()
             .insert( AttributeMetadata(3, 4, GL_FLOAT, 0, sizeof(glm::vec4)))
             .make();
 
-    AttributeBuffer modelBuffer = AttributeBufferFactory()
-            //insert a Matrix, which is a set of 4 vec4's
-            .insert( AttributeMetadata( 2, 4, GL_FLOAT, 0,
-                                        4 * sizeof(glm::vec4), 1) )
-            .insert( AttributeMetadata( 3, 4, GL_FLOAT, sizeof(glm::vec4),
-                                        4 * sizeof(glm::vec4), 1) )
-            .insert( AttributeMetadata( 4, 4, GL_FLOAT, 2 * sizeof(glm::vec4),
-                                        4 * sizeof(glm::vec4), 1) )
-            .insert( AttributeMetadata( 5, 4, GL_FLOAT, 3 * sizeof(glm::vec4),
-                                        4 * sizeof(glm::vec4), 1) )
-            .make();
-
     ElementArrayBuffer elementArrayBuffer;
-
-    UniformBuffer instancedUniformBuffer = UniformBufferFactory()
-            .setBinding(0)
-            .insert( UniformMetadata( &View,       GL_FLOAT_MAT4 ) )
-            .insert( UniformMetadata( &Projection, GL_FLOAT_MAT4 ) )
-            .make();
-
-    UniformBuffer waterUniformBuffer = UniformBufferFactory()
-            .setBinding(1)
-            .insert( UniformMetadata( &center,     GL_FLOAT_VEC4 ) )
-            .insert( UniformMetadata( &time,       GL_FLOAT      ) )
-            .insert( UniformMetadata( &amplitude,  GL_FLOAT      ) )
-            .insert( UniformMetadata( &frequency,  GL_FLOAT      ) )
-            .make();
-
-    const std::shared_ptr<Model> triangle = entitySystem.getModel("Triangle");
-    const std::vector<glm::mat4>* triangle_models = entitySystem.getAllFromModelSpaceMatricesForModel("Triangle");
-
-    const std::shared_ptr<Model> quad = entitySystem.getModel("Quad");
-    const std::vector<glm::mat4>* quad_models = entitySystem.getAllFromModelSpaceMatricesForModel("Quad");
-
-    const std::shared_ptr<Model> barrel = entitySystem.getModel("Barrel");
-    const std::vector<glm::mat4>* barrel_models = entitySystem.getAllFromModelSpaceMatricesForModel("Barrel");
 
     const std::shared_ptr<Model> cowboy = entitySystem.getModel("Cowboy");
     const std::vector<glm::mat4>* cowboy_models = entitySystem.getAllFromModelSpaceMatricesForModel("Cowboy");
@@ -167,7 +116,6 @@ void Application::main() {
             .insert( UniformMetadata( cowboy->animator->getCurrentPoseTransformation(), GL_FLOAT_MAT4, SkeletalSystem::MAX_BONES) )
             .make();
 
-    std::shared_ptr<Texture> barrelTexture = TextureLoader::loadTexture("Textures/barrel.png");
     std::shared_ptr<Texture> cowboyTexture = TextureLoader::loadTexture("Textures/cowboy.png");
 
     cowboy->animator->setCurrentAnimation(cowboy->skeletalAnimation);
@@ -177,59 +125,13 @@ void Application::main() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 
+    animationShader->use();
 
     while(window->isRunning()){
         time = static_cast<float>(glfwGetTime());
         View = freeCamera->calculateViewMatrix();
 
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-//        //DRAW TRIANGLES
-//        waterShader->use();
-//
-//        posBuffer.bind();
-//        posBuffer.sendBufferToGPUifVaoBinded( quad->mesh->positions );
-//
-//        colBuffer.bind();
-//        colBuffer.sendBufferToGPUifVaoBinded( quad->mesh->colors );
-//
-//        modelBuffer.bind();
-//        modelBuffer.sendBufferToGPUifVaoBinded( *quad_models );
-//
-//        elementArrayBuffer.bind();
-//        elementArrayBuffer.sendIfVaoEnabled( quad->mesh->indicies );
-//
-//        instancedUniformBuffer.bind();
-//        instancedUniformBuffer.bakeData();
-//        instancedUniformBuffer.sendBufferToGPU();
-//
-//        waterUniformBuffer.bind();
-//        waterUniformBuffer.bakeData();
-//        waterUniformBuffer.sendBufferToGPU();
-//
-//        glDrawElementsInstanced(GL_PATCHES, quad->mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr, quad_models->size());
-//
-//        barrelTexture->bind();
-//
-//        shader->use();
-//
-//        posBuffer.bind();
-//        posBuffer.sendBufferToGPUifVaoBinded( barrel->mesh->positions );
-//
-//        texCoordBuffer.bind();
-//        texCoordBuffer.sendBufferToGPUifVaoBinded( barrel->mesh->uv );
-//
-//        modelBuffer.bind();
-//        modelBuffer.sendBufferToGPUifVaoBinded( *barrel_models );
-//
-//        elementArrayBuffer.bind();
-//        elementArrayBuffer.sendIfVaoEnabled( barrel->mesh->indicies );
-//
-//        glDrawElementsInstanced(GL_TRIANGLES, barrel->mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr, barrel_models->size());
-
-        modelBuffer.unbind();
-
-        animationShader->use();
 
         cowboyTexture->bind();
         cowboy->animator->calculateCurrentPose();

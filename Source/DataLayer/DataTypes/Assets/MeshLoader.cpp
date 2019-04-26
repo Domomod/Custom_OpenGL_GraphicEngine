@@ -14,22 +14,42 @@ void MeshLoader::loadBasicMeshInfo(const aiMesh *aMesh) {
     constructedMesh = std::make_shared<Mesh>();
 
     for(unsigned int vertIdx = 0; vertIdx < assimpMesh->mNumVertices; vertIdx++){
-        aiVector3D pos = assimpMesh->mVertices[vertIdx];
-        constructedMesh->positions.emplace_back(
-                pos.x,
-                pos.y,
-                pos.z,
-                1
-        );
+        if(fileExtension != "dae"){
+            aiVector3D pos = assimpMesh->mVertices[vertIdx];
+            constructedMesh->positions.emplace_back(
+                    pos.x,
+                    pos.y,
+                    pos.z,
+                    1
+            );
 
-        aiVector3D normals = assimpMesh->mNormals[vertIdx];
+            aiVector3D normals = assimpMesh->mNormals[vertIdx];
 
-        constructedMesh->normals.emplace_back(
-                normals.x,
-                normals.y,
-                normals.z,
-                0
-        );
+            constructedMesh->normals.emplace_back(
+                    normals.x,
+                    normals.y,
+                    normals.z,
+                    0
+            );
+        }
+        else{
+            aiVector3D pos = assimpMesh->mVertices[vertIdx];
+            constructedMesh->positions.emplace_back(
+                    pos.x,
+                    pos.z,
+                    pos.y,
+                    1
+            );
+
+            aiVector3D normals = assimpMesh->mNormals[vertIdx];
+
+            constructedMesh->normals.emplace_back(
+                    normals.x,
+                    normals.z,
+                    normals.y,
+                    0
+            );
+        }
 
         if(assimpMesh->HasTextureCoords(0)){
             aiVector3D uvs = assimpMesh->mTextureCoords[0][vertIdx];
@@ -121,4 +141,6 @@ std::shared_ptr<Mesh> MeshLoader::make() {
     return returnPtr;
 }
 
-MeshLoader::MeshLoader(const aiScene *scene) : scene(scene) {}
+MeshLoader::MeshLoader(const aiScene *scene, const std::string &fileExtension) : scene(scene),
+                                                                                 fileExtension(fileExtension) {}
+

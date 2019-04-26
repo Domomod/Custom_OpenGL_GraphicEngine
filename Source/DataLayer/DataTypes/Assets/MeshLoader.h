@@ -19,7 +19,7 @@
  * */
 class MeshLoader{
 public:
-    explicit MeshLoader(const aiScene *scene);
+    MeshLoader(const aiScene *scene, const std::string &fileExtension);
 
     void loadBasicMeshInfo(const aiMesh *aMesh);
     void addBoneInfo(const std::map<std::__cxx11::string, int> &boneNameToIndexMap);
@@ -30,6 +30,7 @@ private:
 
     const aiScene* scene;
     const aiMesh* assimpMesh;
+    std::string fileExtension;
 };
 
 #endif //GAMEENGINE_MESHLOADER_H
