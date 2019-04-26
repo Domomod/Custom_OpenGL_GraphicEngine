@@ -7,7 +7,7 @@
 #include <assimp/cimport.h>
 #include <assimp/Importer.hpp>
 
-#include "AssimpConversion.h"
+#include "Source/DataLayer/DataTypes/Assets/AssimpConversion.h"
 
 void SkeletonLoader::loadSkeleton(const aiMesh *aMesh) {
     if(aMesh->HasBones() == false){

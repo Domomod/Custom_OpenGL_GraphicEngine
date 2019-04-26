@@ -8,7 +8,7 @@
 #include <memory>
 #include <assimp/scene.h>
 #include <map>
-#include "Model.h"
+#include "Source/DataLayer/DataTypes/Assets/Model.h"
 
 /* Skeleton Loader is designed to load one Skeleton at a time. It can load
  * multiple skeletons one after another. Loaded skeleton is owned by the loader
