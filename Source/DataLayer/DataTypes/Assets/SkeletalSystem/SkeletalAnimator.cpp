@@ -20,7 +20,7 @@ void SkeletalSystem::SkeletalAnimator::setCurrentAnimation(
 }
 
 void SkeletalSystem::SkeletalAnimator::calculateCurrentPose() {
-    currentTime = fmod( glfwGetTime() - startingTime , currentAnimation->getDurationInTicks() / currentAnimation->getTicksPerSecond());
+    currentTime = fmod( glfwGetTime() - startingTime, currentAnimation->getDurationInTicks() / currentAnimation->getTicksPerSecond());
     currentTimeInTicks = static_cast<float>(currentTime / currentAnimation->getTicksPerSecond());
 
     glm::mat4 IdentityMatrix = glm::mat4(1);
@@ -32,7 +32,7 @@ void
 SkeletalSystem::SkeletalAnimator::calculateHierarchyTransforms(const std::shared_ptr<SkeletalSystem::Bone> &bone, const glm::mat4 & parentTransformation) {
     glm::mat4 localTransformation = bone->toParentSpaceMatrix;
 
-    SkeletalSystem::BoneAnimation* boneAnimation = currentAnimation->findBoneAnimation(bone->idx);
+    SkeletalSystem::BoneAnimation* boneAnimation = currentAnimation->findBoneAnimation(bone->name);
 
     if(boneAnimation != nullptr) {
         glm::vec3 translation = boneAnimation->calculateInterpolatedTransaltions(currentTimeInTicks);
@@ -50,7 +50,7 @@ SkeletalSystem::SkeletalAnimator::calculateHierarchyTransforms(const std::shared
     glm::mat4 inverseTransformation = itsSkeleton->getGlobalInverseTransformation();
     glm::mat4 offsetTransformation = bone->offset;
 
-    currentPoseTransformation[bone->idx] = itsSkeleton->getGlobalInverseTransformation() * globalTransformation * bone->offset;
+    currentPoseTransformation[bone->idx] = inverseTransformation * globalTransformation * offsetTransformation;
 
     for(auto& child : bone->Children){
         calculateHierarchyTransforms(child, globalTransformation);

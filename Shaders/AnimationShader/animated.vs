@@ -23,5 +23,5 @@ void main(){
                        + bones[intBoneIDs.w] * weights.w;
 
     outTexCoord = texCoord;
-    gl_Position = ModelViewProjection * boneTransform* position;
+    gl_Position = ModelViewProjection * boneTransform * position;
 }

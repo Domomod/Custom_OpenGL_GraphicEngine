@@ -38,6 +38,17 @@ void SkeletonAnimationLoader::loadAnimation( aiAnimation *aAnimation,
                                                                                                       nodeAnimation->mScalingKeys      )
                                )
                 );
+
+        constructedAnimation->nameToBoneAnimMap.emplace(
+                assimpToEngine(nodeAnimation->mNodeName),
+                SkeletalSystem::BoneAnimation(translateKeyframes<SkeletalSystem::KeyFrame<glm::vec3>>(nodeAnimation->mNumPositionKeys,
+                                                                                                      nodeAnimation->mPositionKeys     ),
+                                              translateKeyframes<SkeletalSystem::KeyFrame<glm::quat>>(nodeAnimation->mNumRotationKeys,
+                                                                                                      nodeAnimation->mRotationKeys     ),
+                                              translateKeyframes<SkeletalSystem::KeyFrame<glm::vec3>>(nodeAnimation->mNumScalingKeys,
+                                                                                                      nodeAnimation->mScalingKeys      )
+                )
+        );
     }
 }
 

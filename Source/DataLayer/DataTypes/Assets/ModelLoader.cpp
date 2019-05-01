@@ -50,7 +50,7 @@ std::shared_ptr<Model> ModelLoader::loadModel( const std::string &path ) {
 
     /*TODO: for every mesh in assimp scene load it to model*/
     aiMesh* assimpMesh = scene->mMeshes[0];
-    auto meshLoader = MeshLoader(scene, getFileExt(path) );
+    auto meshLoader = MeshLoader(scene);
     auto skeletonLoader = SkeletonLoader(scene);
     auto animationLoader = ::SkeletalSystem::SkeletonAnimationLoader();
 

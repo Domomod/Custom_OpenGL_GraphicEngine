@@ -20,7 +20,7 @@ ostream& operator<<(ostream& os, const vector<T>& v)
 std::string getFileExt(const std::string& s) {
 
     size_t i = s.rfind('.', s.length());
-    if (i != string::npos) {
+    if (i != std::string::npos) {
         return(s.substr(i+1, s.length() - i));
     }
 

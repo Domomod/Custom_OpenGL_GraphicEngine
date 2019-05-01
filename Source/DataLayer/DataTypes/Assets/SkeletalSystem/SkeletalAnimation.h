@@ -47,12 +47,19 @@ namespace SkeletalSystem {
         glm::quat calculateInterpolatedRotation(float time);
         glm::vec3 calculateInterpolatedScaling(float time);
 
+        glm::vec3 calculateNearestTransaltions(float time);
+        glm::quat calculateNearestRotation(float time);
+        glm::vec3 calculateNearestScaling(float time);
+
     private:
         template<class T>
         T calculateCurrent(float time, std::vector<KeyFrame<T>> &keyframes);
 
         template<class T>
         T calculateInterpolated(float time, std::vector<KeyFrame<T>> &keyframes);
+
+        template<class T>
+        T calculateNearest(float time, std::vector<KeyFrame<T>> &keyframes);
 
         glm::vec3 interpolation(const glm::vec3 & first, const glm::vec3 & second, float progression);
         glm::quat interpolation(const glm::quat & first, const glm::quat & second, float progression);
@@ -77,6 +84,17 @@ namespace SkeletalSystem {
             }
         }
 
+        BoneAnimation* findBoneAnimation(const std::string& name){
+            auto iterator = nameToBoneAnimMap.find(name);
+            if(iterator != nameToBoneAnimMap.end()){
+                auto& boneAnim = (*iterator).second;
+                return &boneAnim;
+            }
+            else {
+                return nullptr;
+            }
+        }
+
         const std::string &getAnimationName() const;
 
         double getDurationInTicks() const;
@@ -88,6 +106,7 @@ namespace SkeletalSystem {
         double durationInTicks;
         double ticksPerSecond;
         std::map<int,BoneAnimation> idToBoneAnimMap;
+        std::map<std::string,BoneAnimation> nameToBoneAnimMap;
     };
 
 
