@@ -14,7 +14,11 @@
 class EntityFactory {
     friend class EntitySystem;
 public:
-    std::shared_ptr<Entity> make(const std::string &modelName, const glm::vec3 &position) const;
+    std::shared_ptr<Entity> make(const std::string &modelName, const glm::vec3 &position, const glm::vec3 &rotation = glm::vec3(0.f,0.f,0.f),
+                                     const glm::vec3 &scaling = glm::vec3(1.f, 1.f, 1.f)) const;
+
+    std::shared_ptr<Entity> make(const std::string &modelName, const glm::vec3 &position, const float scaling,
+                                     const glm::vec3 &rotation = glm::vec3(0.f, 0.f, 0.f)) const;
 
 private:
     void setAssociatedMeshStorageManager(ModelStorageManager &associatedMeshStorageManager);
