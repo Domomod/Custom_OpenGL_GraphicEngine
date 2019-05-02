@@ -9,7 +9,7 @@ smooth out vec2 outTexCoord;
 
 const int MAX_BONES = 50;
 
-layout (std140, binding = 2) uniform block{
+layout (std140, binding = 0) uniform block{
 mat4 ModelViewProjection;
 mat4 bones[MAX_BONES];
 };
