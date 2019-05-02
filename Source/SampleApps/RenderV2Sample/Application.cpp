@@ -125,7 +125,7 @@ void Application::main() {
 
     std::shared_ptr<Texture> cowboyTexture = TextureLoader::loadTexture("Textures/cowboy.png");
 
-    cowboy->animator->setCurrentAnimation(cowboy->skeletalAnimation);
+    cowboy->animator->setCurrentAnimation(cowboy->skeletalAnimations[0]);
 
     glEnable(GL_DEPTH_TEST);
     glPatchParameteri(GL_PATCH_VERTICES, 3);

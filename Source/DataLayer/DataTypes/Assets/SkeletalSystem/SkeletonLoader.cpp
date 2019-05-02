@@ -10,20 +10,31 @@
 #include "Source/DataLayer/DataTypes/Assets/AssimpConversion.h"
 
 void SkeletonLoader::loadSkeleton(aiMesh **assimpMeshTable, unsigned int tableSize) {
-    if(assimpMeshTable[0]->HasBones() == false){
-        throw SkeletonLoadingException("Tried to load a skeleton for a mesh that does not have any.");
+    bool hasSkeleton = false;
+    for(unsigned int idx = 0; idx < tableSize; idx++) {
+        assimpMesh = assimpMeshTable[idx];
+        if(assimpMesh->HasBones()) {
+            hasSkeleton = true;
+        }
+    }
+    if(hasSkeleton == false){
+        constructedSkeleton = nullptr;
+        return;
     }
 
-    assimpMesh = assimpMeshTable[0];
     constructedSkeleton = std::make_shared<SkeletalSystem::Skeleton>();
     nextBoneIndexToBeAssigned = 0;
 
     initialiseNodeMaps(scene->mRootNode);
 
-    aiNode* meshRootNode = nodesNeededForSkeleton[assimpToEngine(assimpMesh->mName)].node;
-    aiNode* meshRootParentNode = meshRootNode->mParent;
-
-    findNodesRepresentingThisSkeletonBones(meshRootNode, meshRootParentNode);
+    for(unsigned int idx = 0; idx < tableSize; idx++) {
+        assimpMesh = assimpMeshTable[idx];
+        if(assimpMesh->HasBones()) {
+            aiNode *meshRootNode = nodesNeededForSkeleton[assimpToEngine(assimpMesh->mName)].node;
+            aiNode *meshRootParentNode = meshRootNode->mParent;
+            findNodesRepresentingThisSkeletonBones(meshRootNode, meshRootParentNode);
+        }
+    }
 
     aiNode* skeletonRoot = findSkeletonRootNode(scene->mRootNode);
 
@@ -184,14 +195,13 @@ std::shared_ptr<SkeletalSystem::Bone> SkeletonLoader::assimpNodeToEngineBone(aiN
 
 }
 
+/* Allowed to return a null skeleton if a scene does not have any.
+ * Because skeleton is stored as a pointer it would be nullptr anyway.
+ * */
 std::shared_ptr<SkeletalSystem::Skeleton> SkeletonLoader::make() {
     nodesNeededForSkeleton.clear();
     boneNameToboneIdMap.clear();
     nextBoneIndexToBeAssigned = 0;
-
-    if(isSkeletonInitialised() == false){
-        throw SkeletonLoadingException("Tried to create an invalid (empty) skeleton.");
-    }
 
     std::shared_ptr returnSkeleton = constructedSkeleton;
     constructedSkeleton = nullptr;

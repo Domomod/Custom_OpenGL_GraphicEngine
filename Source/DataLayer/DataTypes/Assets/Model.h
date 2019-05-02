@@ -23,7 +23,7 @@ public:
     bool hasSkeletonAndAnimation = false;
     std::shared_ptr<SkeletalSystem::SkeletalAnimator> animator;
     std::shared_ptr<SkeletalSystem::Skeleton> skeleton;
-    std::shared_ptr<SkeletalSystem::SkeletalAnimation> skeletalAnimation;
+    std::vector<std::shared_ptr<SkeletalSystem::SkeletalAnimation>> skeletalAnimations;
 };
 
 class ModelFactory {
