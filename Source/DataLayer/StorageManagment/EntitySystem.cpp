@@ -16,6 +16,10 @@ void EntitySystem::addModel(const std::string &modelName, const std::shared_ptr<
     modelToModelSpaceMatriceslMap.addModel(modelName);
 }
 
+std::shared_ptr<Entity> EntitySystem::getEntity(const std::string &entityName) {
+    return entityStorageManager.getObject(entityName);
+}
+
 std::shared_ptr<Model> EntitySystem::getModel(const std::string &modelName) {
     return modelStorageManager.getObject(modelName);
 }

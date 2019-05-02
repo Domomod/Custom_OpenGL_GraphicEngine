@@ -48,29 +48,35 @@ std::shared_ptr<Model> ModelLoader::loadModel( const std::string &path ) {
         throw ModelLoadingException("Could not load file: " + path);
     }
 
+    auto debugInsightScene = scene;
+
     /*TODO: for every mesh in assimp scene load it to model*/
     auto meshLoader = MeshLoader(scene);
     auto skeletonLoader = SkeletonLoader(scene);
-    auto animationLoader = ::SkeletalSystem::SkeletonAnimationLoader();
+    auto animationLoader = SkeletalSystem::SkeletonAnimationLoader();
 
     skeletonLoader.loadSkeleton(scene->mMeshes, scene->mNumMeshes);
+    bool hasSkeleton = skeletonLoader.isSkeletonInitialised();
 
-
-    for (unsigned int idx = 0; idx < scene->mNumAnimations; idx++) {
-        animationLoader.loadAnimation(scene->mAnimations[idx],
-                                  skeletonLoader.getBoneNameToboneIdMap());
-        thisModel->skeletalAnimations.push_back( animationLoader.make() );
+    if(hasSkeleton) {
+        for (unsigned int idx = 0; idx < scene->mNumAnimations; idx++) {
+            animationLoader.loadAnimation(scene->mAnimations[idx],
+                                          skeletonLoader.getBoneNameToboneIdMap());
+            thisModel->skeletalAnimations.push_back(animationLoader.make());
+        }
     }
 
     for(unsigned int idx = 0; idx < scene->mNumMeshes; idx++) {
-        aiMesh *assimpMesh = scene->mMeshes[0];
+        aiMesh *assimpMesh = scene->mMeshes[idx];
         meshLoader.loadBasicMeshInfo(assimpMesh);
-        meshLoader.addBoneInfo(skeletonLoader.getBoneNameToboneIdMap());
+        if(hasSkeleton)
+            meshLoader.addBoneInfo(skeletonLoader.getBoneNameToboneIdMap());
         thisModel->meshes.push_back(meshLoader.make());
     }
 
     thisModel->skeleton = skeletonLoader.make();
-    thisModel->animator = std::make_shared<SkeletalSystem::SkeletalAnimator>(thisModel->skeleton);
+    if(hasSkeleton)
+        thisModel->animator = std::make_shared<SkeletalSystem::SkeletalAnimator>(thisModel->skeleton);
 
 
     return thisModel;

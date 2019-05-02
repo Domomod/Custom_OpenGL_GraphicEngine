@@ -30,7 +30,7 @@ private:
     std::shared_ptr<WindowInputSystem> windowInputSystem;
     std::shared_ptr<FreeCamera> freeCamera;
 
-    std::shared_ptr<Shader> shader;
+    std::shared_ptr<Shader> basicShader;
     std::shared_ptr<Shader> waterShader;
     std::shared_ptr<Shader> texturedShader;
     std::shared_ptr<Shader> animationShader;

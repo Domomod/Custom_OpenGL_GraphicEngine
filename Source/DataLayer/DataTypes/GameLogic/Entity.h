@@ -43,7 +43,7 @@ public:
         return model;
     }
 
-    const glm::mat4 getModelSpaceMatrixPtrPtr() const {
+    const glm::mat4 getModelSpaceMatrix() const {
         return **modelMatrixPtrPtr;
     }
 
@@ -51,7 +51,7 @@ public:
         Entity::model = model;
     }
 
-    void setModelMatrixPtrPtr(glm::mat4 modelMatrixPtrPtr) {
+    void setModelMatrix(glm::mat4 modelMatrixPtrPtr) {
         **Entity::modelMatrixPtrPtr = modelMatrixPtrPtr;
     }
 

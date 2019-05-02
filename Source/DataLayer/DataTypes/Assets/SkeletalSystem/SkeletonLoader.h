@@ -26,6 +26,9 @@ public:
     const std::map<std::__cxx11::string, int> &getBoneNameToboneIdMap() const;
 
     std::shared_ptr<SkeletalSystem::Skeleton> make();
+
+    bool isSkeletonInitialised() const { return constructedSkeleton != nullptr; }
+
 private:
     void initialiseNodeMaps(aiNode *parentNode);
 
@@ -38,8 +41,6 @@ private:
     aiNode *searchForSkeletonRootNode(aiNode *node);
 
     std::shared_ptr<SkeletalSystem::Bone> assimpNodeToEngineBone(aiNode *node);
-
-    bool isSkeletonInitialised() const { return constructedSkeleton != nullptr; }
 
     const aiScene* scene;
     const aiMesh* assimpMesh;

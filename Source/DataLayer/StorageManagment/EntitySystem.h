@@ -36,6 +36,8 @@ public:
 
     void addModel(const std::string &modelName, const std::shared_ptr<Model> &modelPtr);
 
+    std::shared_ptr<Entity> getEntity(const std::string &entityName);
+
     std::shared_ptr<Model> getModel(const std::string &modelName);
 
     const std::vector<glm::mat4> * getAllFromModelSpaceMatricesForModel(const std::string &meshName) const;

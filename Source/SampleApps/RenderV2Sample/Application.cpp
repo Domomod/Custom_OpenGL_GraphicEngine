@@ -32,9 +32,19 @@ Application::Application() {
     windowInputSystem->connectToKeyboardStateListener(freeCamera->getKeyboardStateListener());
     windowInputSystem->connectToMouseMovedListener(freeCamera->getMouseMovementListener());
 
+    basicShader = std::make_shared<Shader>();
+    texturedShader = std::make_shared<Shader>();
     animationShader = std::make_shared<Shader>();
 
     try {
+        basicShader->loadFromFile(Shader::VERTEX, "../Shaders/basic.vs");
+        basicShader->loadFromFile(Shader::FRAGMENT, "../Shaders/basic.fs");
+        basicShader->createAndLinkProgram();
+
+        texturedShader->loadFromFile(Shader::VERTEX, "../Shaders/BasicTextured/basic.vs");
+        texturedShader->loadFromFile(Shader::FRAGMENT, "../Shaders/BasicTextured/basic.fs");
+        texturedShader->createAndLinkProgram();
+
         animationShader->loadFromFile(Shader::VERTEX, "../Shaders/AnimationShader/animated.vs");
         animationShader->loadFromFile(Shader::FRAGMENT, "../Shaders/AnimationShader/animated.fs");
         animationShader->createAndLinkProgram();
@@ -54,38 +64,26 @@ Application::Application() {
     window->getResizeNotifierPtr()->addListener(&windowResizeListener);
 
     try {
-//        entitySystem.addModel("Triangle",   ModelFactory()
-//                .addMesh( MeshGenerator::generateTriangeMesh() )
-//                .make()
-//        );
-//        entitySystem.addEntity("T1",
-//                               entitySystem.entityFactory.make("Triangle", glm::vec3(0.f, 0.f, 0.f)));
-//        entitySystem.addEntity("T2",
-//                               entitySystem.entityFactory.make("Triangle", glm::vec3(1.f, 0.f, 0.f)));
-//        entitySystem.addEntity("T3",
-//                               entitySystem.entityFactory.make("Triangle", glm::vec3(-1.f, 0.f, 0.f)));
-//        entitySystem.addEntity("T4",
-//                               entitySystem.entityFactory.make("Triangle", glm::vec3(2.f, 2.f, 0.f)));
-//
-//        entitySystem.addModel("Quad",       ModelFactory()
-//                .addMesh( MeshGenerator::generateSimpleRectangleMesh(10, -1, 10) )
-//                .make()
-//        );
-//
-//        entitySystem.addEntity("Q1",
-//                               entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, -20)));
-//        entitySystem.addEntity("Q2",
-//                               entitySystem.entityFactory.make("Quad", glm::vec3(10, -1.7, -20)));
-//        entitySystem.addEntity("Q3",
-//                               entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, 0)));
-//        entitySystem.addEntity("Q4", entitySystem.entityFactory.make("Quad", glm::vec3(10, -1.7, 0)));
-//
-//        entitySystem.addModel("Barrel", ModelLoader::loadModel("Meshes/barrel.obj"));
-//        entitySystem.addEntity("B1", entitySystem.entityFactory.make("Barrel", glm::vec3(0, 0, -10)));
 
+        entitySystem.addModel("Quad",       ModelFactory()
+                .addMesh( MeshGenerator::generateSimpleRectangleMesh(10, -1, 10) )
+                .make()
+        );
+
+        entitySystem.addEntity("Q1",
+                               entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, -20)));
+        entitySystem.addEntity("Q2",
+                               entitySystem.entityFactory.make("Quad", glm::vec3(10, -1.7, -20)));
+        entitySystem.addEntity("Q3",
+                               entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, 0)));
+        entitySystem.addEntity("Q4", entitySystem.entityFactory.make("Quad", glm::vec3(10, -1.7, 0)));
 
         entitySystem.addModel("Cowboy", ModelLoader::loadModel("Meshes/cowboy.dae"));
         entitySystem.addEntity("C1", entitySystem.entityFactory.make("Cowboy", glm::vec3(0, -5, -20), glm::vec3(-90.f, 0.f, 0.f)) );
+
+        entitySystem.addModel("Sylvanas", ModelLoader::loadModel("Meshes/sylvanas.fbx"));
+        entitySystem.addEntity("S1", entitySystem.entityFactory.make("Sylvanas", glm::vec3(0, 0, -10), 0.05));
+
     } catch (MeshLoadingException& e){
         std::cerr << e.getMessage();
         exit(1);
@@ -93,6 +91,13 @@ Application::Application() {
 }
 
 void Application::main() {
+
+    const auto cowboy = entitySystem.getEntity("C1");
+    const auto cowboyModel = cowboy->getModel();
+
+    const auto sylvanas = entitySystem.getEntity("S1");
+    const auto sylvanasModel = sylvanas->getModel();
+
     VertexArrayObject vao;
     vao.bind();
 
@@ -102,6 +107,10 @@ void Application::main() {
 
     AttributeBuffer texCoordBuffer = AttributeBufferFactory()
             .insert( AttributeMetadata(1, 2, GL_FLOAT, 0, sizeof(glm::vec2)))
+            .make();
+
+    AttributeBuffer colorBuffer = AttributeBufferFactory()
+            .insert( AttributeMetadata(1, 4, GL_FLOAT, 0, sizeof(glm::vec4)))
             .make();
 
     AttributeBuffer boneIdsBuffer = AttributeBufferFactory()
@@ -114,25 +123,28 @@ void Application::main() {
 
     ElementArrayBuffer elementArrayBuffer;
 
-    const std::shared_ptr<Model> cowboy = entitySystem.getModel("Cowboy");
-    const std::vector<glm::mat4>* cowboy_models = entitySystem.getAllFromModelSpaceMatricesForModel("Cowboy");
-
     UniformBuffer animatedUniformBuffer = UniformBufferFactory()
-            .setBinding(2)
+            .setBinding(0)
             .insert( UniformMetadata( &ModelViewProjection, GL_FLOAT_MAT4 ) )
-            .insert( UniformMetadata( cowboy->animator->getCurrentPoseTransformation(), GL_FLOAT_MAT4, SkeletalSystem::MAX_BONES) )
+            .insert( UniformMetadata( cowboyModel->animator->getCurrentPoseTransformation(), GL_FLOAT_MAT4, SkeletalSystem::MAX_BONES) )
+            .make();
+
+    UniformBuffer basicShaderBuffer = UniformBufferFactory()
+            .setBinding(0)
+            .insert( UniformMetadata( &ModelViewProjection, GL_FLOAT_MAT4 ) )
             .make();
 
     std::shared_ptr<Texture> cowboyTexture = TextureLoader::loadTexture("Textures/cowboy.png");
 
-    cowboy->animator->setCurrentAnimation(cowboy->skeletalAnimations[0]);
+    /*TODO: move animator to entity because multiple entities schould have independent animations*/
+    cowboyModel->animator->setCurrentAnimation(cowboyModel->skeletalAnimations[0]);
 
     glEnable(GL_DEPTH_TEST);
     glPatchParameteri(GL_PATCH_VERTICES, 3);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 
-    animationShader->use();
+
 
     while(window->isRunning()){
         time = static_cast<float>(glfwGetTime());
@@ -140,12 +152,11 @@ void Application::main() {
 
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
+        animationShader->use();
         cowboyTexture->bind();
-        cowboy->animator->calculateCurrentPose();
-
-        ModelViewProjection = Projection * View * (*cowboy_models)[0];
-
-        for( auto& mesh : cowboy->meshes) {
+        cowboyModel->animator->calculateCurrentPose();
+        ModelViewProjection = Projection * View * cowboy->getModelSpaceMatrix();
+        for( auto& mesh : cowboyModel->meshes) {
 
             posBuffer.bind();
             posBuffer.sendBufferToGPUifVaoBinded(mesh->positions);
@@ -167,18 +178,36 @@ void Application::main() {
             animatedUniformBuffer.sendBufferToGPU();
 
             glDrawElements(GL_TRIANGLES, mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr);
-
         }
-
         boneIdsBuffer.unbind();
         boneWeightsBuffer.unbind();
+        animationShader->unuse();
+
+        basicShader->use();
+        ModelViewProjection = Projection * View * sylvanas->getModelSpaceMatrix();
+        for( auto& mesh : sylvanasModel->meshes) {
+
+            posBuffer.bind();
+            posBuffer.sendBufferToGPUifVaoBinded(mesh->positions);
+
+            colorBuffer.bind();
+            colorBuffer.sendBufferToGPUifVaoBinded(mesh->colors);
+
+            elementArrayBuffer.bind();
+            elementArrayBuffer.sendIfVaoEnabled(mesh->indicies);
+
+            animatedUniformBuffer.bind();
+            animatedUniformBuffer.bakeData();
+            animatedUniformBuffer.sendBufferToGPU();
+
+            glDrawElements(GL_TRIANGLES, mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr);
+        }
+        basicShader->unuse();
 
         window->swapBuffers();
         glfwPollEvents();
         windowInputSystem->keyboardStateNotify();
     }
-
-    waterShader->unuse();
 
     elementArrayBuffer.unbind();
     posBuffer.unbind();
