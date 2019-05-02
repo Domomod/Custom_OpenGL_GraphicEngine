@@ -9,12 +9,12 @@
 
 #include "Source/DataLayer/DataTypes/Assets/AssimpConversion.h"
 
-void SkeletonLoader::loadSkeleton(const aiMesh *aMesh) {
-    if(aMesh->HasBones() == false){
+void SkeletonLoader::loadSkeleton(aiMesh **assimpMeshTable, unsigned int tableSize) {
+    if(assimpMeshTable[0]->HasBones() == false){
         throw SkeletonLoadingException("Tried to load a skeleton for a mesh that does not have any.");
     }
 
-    assimpMesh = aMesh;
+    assimpMesh = assimpMeshTable[0];
     constructedSkeleton = std::make_shared<SkeletalSystem::Skeleton>();
     nextBoneIndexToBeAssigned = 0;
 

@@ -21,7 +21,7 @@ class SkeletonLoader{
 public:
     SkeletonLoader(const aiScene *scene);
 
-    void loadSkeleton(const aiMesh *aMesh);
+    void loadSkeleton(aiMesh **assimpMeshTable, unsigned int tableSize);
 
     const std::map<std::__cxx11::string, int> &getBoneNameToboneIdMap() const;
 

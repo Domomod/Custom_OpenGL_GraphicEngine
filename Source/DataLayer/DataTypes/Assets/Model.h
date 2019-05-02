@@ -13,13 +13,9 @@
 
 class Model {
 public:
-    Model() {
-        /* We have to at least initialise the mesh to make Model a valid state object
-         * */
-        mesh = std::make_shared<Mesh>();
-    }
+    Model() {}
 
-    std::shared_ptr<Mesh> mesh;
+    std::vector< std::shared_ptr<Mesh> > meshes;
 
     /* A Model might or might not have a skeleton, if a model has
      * a skeleton it should have an animation (otherwise no point in having a skeleton)
@@ -32,8 +28,8 @@ public:
 
 class ModelFactory {
 public:
-    ModelFactory& addMesh(const std::shared_ptr<Mesh>& _mesh){
-        mesh = _mesh;
+    ModelFactory& addMesh(const std::shared_ptr<Mesh>& mesh){
+        meshes.push_back(mesh);
         addedMesh = true;
         return *this;
     }
@@ -45,7 +41,7 @@ public:
             throw InvalidData("ModelFactroy was not given a model but was ordered to create a Mesh");
         }
 
-        returnModel->mesh = mesh;
+        returnModel->meshes = meshes;
 
         addedMesh = false;
 
@@ -53,7 +49,7 @@ public:
     }
 
 private:
-    std::shared_ptr<Mesh> mesh;
+    std::vector< std::shared_ptr<Mesh> > meshes;
     bool addedMesh = false;
 };
 

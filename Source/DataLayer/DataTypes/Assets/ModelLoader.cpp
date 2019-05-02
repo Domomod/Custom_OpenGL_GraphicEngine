@@ -49,30 +49,33 @@ std::shared_ptr<Model> ModelLoader::loadModel( const std::string &path ) {
     }
 
     /*TODO: for every mesh in assimp scene load it to model*/
-    aiMesh* assimpMesh = scene->mMeshes[0];
     auto meshLoader = MeshLoader(scene);
     auto skeletonLoader = SkeletonLoader(scene);
     auto animationLoader = ::SkeletalSystem::SkeletonAnimationLoader();
 
+    skeletonLoader.loadSkeleton(scene->mMeshes, scene->mNumMeshes);
+
+    if(scene->HasAnimations()) {
+        animationLoader.loadAnimation( scene->mAnimations[0],
+                                       skeletonLoader.getBoneNameToboneIdMap() );
+        thisModel->skeletalAnimation = animationLoader.make();
+    }
+
+    aiMesh* assimpMesh = scene->mMeshes[0];
     meshLoader.loadBasicMeshInfo(assimpMesh);
 
     if(assimpMesh->HasBones()){
-        skeletonLoader.loadSkeleton(assimpMesh);
+
 
         meshLoader.addBoneInfo( skeletonLoader.getBoneNameToboneIdMap() );
 
-        if(scene->HasAnimations()) {
-             animationLoader.loadAnimation( scene->mAnimations[0],
-                                            skeletonLoader.getBoneNameToboneIdMap() );
-             thisModel->skeletalAnimation = animationLoader.make();
 
-        }
 
         thisModel->skeleton = skeletonLoader.make();
         thisModel->animator = std::make_shared<SkeletalSystem::SkeletalAnimator>(thisModel->skeleton);
     }
 
-    thisModel->mesh = meshLoader.make();
+    thisModel->meshes.push_back( meshLoader.make() );
 
 
     return thisModel;

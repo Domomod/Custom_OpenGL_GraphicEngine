@@ -44,7 +44,7 @@ void OpenGlInitalizer::MessageCallback(GLenum source, GLenum type, GLuint id, GL
              ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
              type, severity, message );
     if(type == GL_DEBUG_TYPE_ERROR)
-        throw new OpenGlException();
+        throw OpenGlException();
 }
 
 GLint OpenGlInitalizer::getMaxPatchVertices() const {
