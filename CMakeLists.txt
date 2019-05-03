@@ -62,7 +62,7 @@ set(    SOURCES_AND_HEADERS
 
 
         Source/SampleApps/RenderV2Sample/Application.h                                  Source/SampleApps/RenderV2Sample/Application.cpp
-        Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.h             Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.cpp)
+        Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.h             Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.cpp )
 
 add_executable(RenderV2 Source/SampleApps/RenderV2Sample/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS}    )
 target_include_directories(RenderV2 PUBLIC ${CMAKE_SOURCE_DIR})

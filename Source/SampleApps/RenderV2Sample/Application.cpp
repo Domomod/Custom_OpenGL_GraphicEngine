@@ -51,7 +51,6 @@ Application::Application() {
     } catch( MyException& e) {
         std::cerr << e.getType() << ":\n" << e.getMessage();
         throw e;
-        //TODO: ask for proper path if sth goes wrong
     }
 
     View = glm::lookAt(glm::vec3(0.f,0.f,3.f), glm::vec3(0.f,0.f,0.f), glm::vec3(0.f,1.f,0.f));
@@ -64,25 +63,15 @@ Application::Application() {
     window->getResizeNotifierPtr()->addListener(&windowResizeListener);
 
     try {
+        entitySystem.addModel("Mech", ModelLoader::loadModel("Models/Mech/Mech2.dae"));
+        entitySystem.addEntity("M1", entitySystem.entityFactory.make("Mech", glm::vec3(-10, 0, -10)));
 
-        entitySystem.addModel("Quad",       ModelFactory()
-                .addMesh( MeshGenerator::generateSimpleRectangleMesh(10, -1, 10) )
-                .make()
-        );
-
-        entitySystem.addEntity("Q1",
-                               entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, -20)));
-        entitySystem.addEntity("Q2",
-                               entitySystem.entityFactory.make("Quad", glm::vec3(10, -1.7, -20)));
-        entitySystem.addEntity("Q3",
-                               entitySystem.entityFactory.make("Quad", glm::vec3(-10, -1.7, 0)));
-        entitySystem.addEntity("Q4", entitySystem.entityFactory.make("Quad", glm::vec3(10, -1.7, 0)));
+        entitySystem.addModel("Sylvanas", ModelLoader::loadModel("Meshes/sylvanas.fbx"));
+        entitySystem.addEntity("S1", entitySystem.entityFactory.make("Sylvanas", glm::vec3(0, 0, -10), 0.05));
 
         entitySystem.addModel("Cowboy", ModelLoader::loadModel("Meshes/cowboy.dae"));
         entitySystem.addEntity("C1", entitySystem.entityFactory.make("Cowboy", glm::vec3(0, -5, -20), glm::vec3(-90.f, 0.f, 0.f)) );
 
-        entitySystem.addModel("Sylvanas", ModelLoader::loadModel("Meshes/sylvanas.fbx"));
-        entitySystem.addEntity("S1", entitySystem.entityFactory.make("Sylvanas", glm::vec3(0, 0, -10), 0.05));
 
     } catch (MeshLoadingException& e){
         std::cerr << e.getMessage();

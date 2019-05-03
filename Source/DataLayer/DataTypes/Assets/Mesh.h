@@ -8,6 +8,9 @@
 #include <vector>
 #include <GL/gl3w.h>
 #include <glm/glm.hpp>
+#include <memory>
+
+#include "Source/DataLayer/DataTypes/Assets/Textures/Texture.h"
 
 class Mesh {
 public:
@@ -18,6 +21,8 @@ public:
     std::vector<glm::ivec4> boneIds;
     std::vector<glm::vec4>  boneWeights;
     std::vector<GLushort>   indicies;
+
+    std::shared_ptr<Texture> diffuse;
 
     bool hasColors;
     bool hasUvs;

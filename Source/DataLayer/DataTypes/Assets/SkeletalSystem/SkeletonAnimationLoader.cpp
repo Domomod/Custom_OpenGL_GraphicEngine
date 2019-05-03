@@ -67,11 +67,11 @@ std::vector<EngineKeyframe> SkeletonAnimationLoader::translateKeyframes(unsigned
 
 std::shared_ptr<SkeletalSystem::SkeletalAnimation> SkeletonAnimationLoader::make() {
     if(constructedAnimation == nullptr){
-        throw AnimationLoadingException("Tried to create an empty animation.");
+        throw AnimationLoadingException("Tried to create an empty animation. Possibly tried to return the same animation twice.");
     }
-
     auto returnAnimation = constructedAnimation;
     constructedAnimation = nullptr;
+
     return returnAnimation;
 }
 

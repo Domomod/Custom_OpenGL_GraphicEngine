@@ -123,5 +123,5 @@ std::shared_ptr<Mesh> MeshLoader::make() {
     return returnPtr;
 }
 
-MeshLoader::MeshLoader(const aiScene *scene) : scene(scene) {}
+MeshLoader::MeshLoader() {}
 

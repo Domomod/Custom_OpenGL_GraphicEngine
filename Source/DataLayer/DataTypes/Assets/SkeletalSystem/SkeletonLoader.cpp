@@ -10,6 +10,8 @@
 #include "Source/DataLayer/DataTypes/Assets/AssimpConversion.h"
 
 void SkeletonLoader::loadSkeleton(aiMesh **assimpMeshTable, unsigned int tableSize) {
+
+
     bool hasSkeleton = false;
     for(unsigned int idx = 0; idx < tableSize; idx++) {
         assimpMesh = assimpMeshTable[idx];
@@ -195,17 +197,14 @@ std::shared_ptr<SkeletalSystem::Bone> SkeletonLoader::assimpNodeToEngineBone(aiN
 
 }
 
-/* Allowed to return a null skeleton if a scene does not have any.
- * Because skeleton is stored as a pointer it would be nullptr anyway.
+/* Returns a nullptr if no skeleton was loaded, it's not a problem
+ * because if a model does not have skeleton it would be represented
+ * by a nullptr anyway. So assigning a nullptr to model changes nothing.
  * */
 std::shared_ptr<SkeletalSystem::Skeleton> SkeletonLoader::make() {
-    nodesNeededForSkeleton.clear();
-    boneNameToboneIdMap.clear();
-    nextBoneIndexToBeAssigned = 0;
-
-    std::shared_ptr returnSkeleton = constructedSkeleton;
+    auto returnSkeleton = constructedSkeleton;
+    returnedInitialisedSkeleton = constructedSkeleton != nullptr;
     constructedSkeleton = nullptr;
-
     return returnSkeleton;
 }
 
@@ -216,4 +215,8 @@ const std::map<std::__cxx11::string, int> &SkeletonLoader::getBoneNameToboneIdMa
     return boneNameToboneIdMap;
 }
 
-SkeletonLoader::SkeletonLoader(const aiScene *scene) : scene(scene) {}
+void SkeletonLoader::setScene(const aiScene *scene) {
+    SkeletonLoader::scene = scene;
+}
+
+bool SkeletonLoader::isSkeletonInitialised() const { return (constructedSkeleton != nullptr) || returnedInitialisedSkeleton; }

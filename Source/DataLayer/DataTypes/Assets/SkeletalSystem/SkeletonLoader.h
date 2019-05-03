@@ -19,7 +19,9 @@
  * */
 class SkeletonLoader{
 public:
-    SkeletonLoader(const aiScene *scene);
+    SkeletonLoader() = default;
+
+    void setScene(const aiScene *scene);
 
     void loadSkeleton(aiMesh **assimpMeshTable, unsigned int tableSize);
 
@@ -27,7 +29,7 @@ public:
 
     std::shared_ptr<SkeletalSystem::Skeleton> make();
 
-    bool isSkeletonInitialised() const { return constructedSkeleton != nullptr; }
+    bool isSkeletonInitialised() const;
 
 private:
     void initialiseNodeMaps(aiNode *parentNode);
@@ -53,6 +55,7 @@ private:
     std::map<std::string, int> boneNameToboneIdMap;
     std::map<std::string, glm::mat4> boneNameToOffsetMap;
     int nextBoneIndexToBeAssigned;
+    bool returnedInitialisedSkeleton;
     std::shared_ptr<SkeletalSystem::Skeleton> constructedSkeleton;
 
     /* Helper structure for searching for skeleton in assimp node hierarchy.
@@ -65,7 +68,5 @@ private:
     };
 
 };
-
-
 
 #endif //GAMEENGINE_SKELETONLOADER_H

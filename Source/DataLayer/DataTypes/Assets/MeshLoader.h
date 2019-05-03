@@ -19,7 +19,7 @@
  * */
 class MeshLoader{
 public:
-    MeshLoader(const aiScene *scene);
+    MeshLoader();
 
     void loadBasicMeshInfo(const aiMesh *aMesh);
     void addBoneInfo(const std::map<std::__cxx11::string, int> &boneNameToIndexMap);
@@ -28,7 +28,6 @@ private:
     std::shared_ptr<Mesh> constructedMesh;
     bool isMeshInitialised(){ return constructedMesh != nullptr; }
 
-    const aiScene* scene;
     const aiMesh* assimpMesh;
 };
 

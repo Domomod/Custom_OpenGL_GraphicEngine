@@ -9,6 +9,7 @@
 #include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/Skeleton.h"
 #include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimation.h"
 #include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.h"
+#include "Source/DataLayer/DataTypes/Assets/Textures/Texture.h"
 #include "Source/MyExceptions.h"
 
 class Model {
@@ -16,9 +17,9 @@ public:
     Model() {}
 
     std::vector< std::shared_ptr<Mesh> > meshes;
+    std::vector< std::shared_ptr<Texture> > diffuseTextures;
 
-    /* A Model might or might not have a skeleton, if a model has
-     * a skeleton it should have an animation (otherwise no point in having a skeleton)
+    /* A Model might or might not have a Skeletal system
      * */
     bool hasSkeletonAndAnimation = false;
     std::shared_ptr<SkeletalSystem::SkeletalAnimator> animator;
