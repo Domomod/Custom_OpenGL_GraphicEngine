@@ -32,7 +32,8 @@ void SkeletonLoader::loadSkeleton(aiMesh **assimpMeshTable, unsigned int tableSi
     for(unsigned int idx = 0; idx < tableSize; idx++) {
         assimpMesh = assimpMeshTable[idx];
         if(assimpMesh->HasBones()) {
-            aiNode *meshRootNode = nodesNeededForSkeleton[assimpToEngine(assimpMesh->mName)].node;
+            std::string meshName = assimpToEngine(assimpMesh->mName);
+            aiNode *meshRootNode = nodesNeededForSkeleton[meshName].node;
             aiNode *meshRootParentNode = meshRootNode->mParent;
             findNodesRepresentingThisSkeletonBones(meshRootNode, meshRootParentNode);
         }
@@ -190,7 +191,7 @@ std::shared_ptr<SkeletalSystem::Bone> SkeletonLoader::assimpNodeToEngineBone(aiN
 
     } else {
         /* If a node is not necessary we can totally ignore it, because if it's children were necessary
-         * they would mark this node as nGOKTURKecessary.
+         * they would mark this node as unnecessary.
          * */
         return nullptr;
     }

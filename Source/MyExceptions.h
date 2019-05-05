@@ -118,4 +118,10 @@ class AnimationInterpolationError : public MyException{
 public:
     AnimationInterpolationError(const std::string &msg = "No message was set\n") : MyException("AnimationInterpolationError", msg) {}
 };
+
+//CommonExceptions
+class FileNotFound : public MyException{
+public:
+    FileNotFound(const std::string &msg = "No message was set\n") : MyException("FileNotFound", msg) {}
+};
 #endif //GAMEENGINE_MYEXCEPTIONS_H

@@ -63,13 +63,10 @@ Application::Application() {
     window->getResizeNotifierPtr()->addListener(&windowResizeListener);
 
     try {
-        entitySystem.addModel("Mech", ModelLoader::loadModel("Models/Mech/Mech2.dae"));
+        entitySystem.addModel("Mech", ModelLoader::loadModel("Models/Chest/Chest.dae"));
         entitySystem.addEntity("M1", entitySystem.entityFactory.make("Mech", glm::vec3(-10, 0, -10)));
 
-        entitySystem.addModel("Sylvanas", ModelLoader::loadModel("Meshes/sylvanas.fbx"));
-        entitySystem.addEntity("S1", entitySystem.entityFactory.make("Sylvanas", glm::vec3(0, 0, -10), 0.05));
-
-        entitySystem.addModel("Cowboy", ModelLoader::loadModel("Meshes/cowboy.dae"));
+        entitySystem.addModel("Cowboy", ModelLoader::loadModel("Models/Cowboy/cowboy.dae"));
         entitySystem.addEntity("C1", entitySystem.entityFactory.make("Cowboy", glm::vec3(0, -5, -20), glm::vec3(-90.f, 0.f, 0.f)) );
 
 
@@ -84,8 +81,9 @@ void Application::main() {
     const auto cowboy = entitySystem.getEntity("C1");
     const auto cowboyModel = cowboy->getModel();
 
-    const auto sylvanas = entitySystem.getEntity("S1");
-    const auto sylvanasModel = sylvanas->getModel();
+    const auto mech = entitySystem.getEntity("M1");
+    const auto mechModel = mech->getModel();
+
 
     VertexArrayObject vao;
     vao.bind();
@@ -132,20 +130,17 @@ void Application::main() {
     glPatchParameteri(GL_PATCH_VERTICES, 3);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-
-
-
     while(window->isRunning()){
         time = static_cast<float>(glfwGetTime());
         View = freeCamera->calculateViewMatrix();
 
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-        animationShader->use();
-        cowboyTexture->bind();
-        cowboyModel->animator->calculateCurrentPose();
-        ModelViewProjection = Projection * View * cowboy->getModelSpaceMatrix();
-        for( auto& mesh : cowboyModel->meshes) {
+        texturedShader->use();
+        ModelViewProjection = Projection * View * mech->getModelSpaceMatrix();
+        for( auto& mesh : mechModel->meshes) {
+
+            mesh->diffuse->bind();
 
             posBuffer.bind();
             posBuffer.sendBufferToGPUifVaoBinded(mesh->positions);
@@ -153,12 +148,6 @@ void Application::main() {
             texCoordBuffer.bind();
             texCoordBuffer.sendBufferToGPUifVaoBinded(mesh->uv);
 
-            boneIdsBuffer.bind();
-            boneIdsBuffer.sendBufferToGPUifVaoBinded(mesh->boneIds);
-
-            boneWeightsBuffer.bind();
-            boneWeightsBuffer.sendBufferToGPUifVaoBinded(mesh->boneWeights);
-
             elementArrayBuffer.bind();
             elementArrayBuffer.sendIfVaoEnabled(mesh->indicies);
 
@@ -168,30 +157,9 @@ void Application::main() {
 
             glDrawElements(GL_TRIANGLES, mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr);
         }
-        boneIdsBuffer.unbind();
-        boneWeightsBuffer.unbind();
-        animationShader->unuse();
+        texturedShader->unuse();
 
-        basicShader->use();
-        ModelViewProjection = Projection * View * sylvanas->getModelSpaceMatrix();
-        for( auto& mesh : sylvanasModel->meshes) {
 
-            posBuffer.bind();
-            posBuffer.sendBufferToGPUifVaoBinded(mesh->positions);
-
-            colorBuffer.bind();
-            colorBuffer.sendBufferToGPUifVaoBinded(mesh->colors);
-
-            elementArrayBuffer.bind();
-            elementArrayBuffer.sendIfVaoEnabled(mesh->indicies);
-
-            animatedUniformBuffer.bind();
-            animatedUniformBuffer.bakeData();
-            animatedUniformBuffer.sendBufferToGPU();
-
-            glDrawElements(GL_TRIANGLES, mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr);
-        }
-        basicShader->unuse();
 
         window->swapBuffers();
         glfwPollEvents();

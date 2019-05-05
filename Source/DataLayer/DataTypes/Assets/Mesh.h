@@ -22,6 +22,8 @@ public:
     std::vector<glm::vec4>  boneWeights;
     std::vector<GLushort>   indicies;
 
+    std::string name;
+    unsigned int matId; //only used when assigning textures
     std::shared_ptr<Texture> diffuse;
 
     bool hasColors;

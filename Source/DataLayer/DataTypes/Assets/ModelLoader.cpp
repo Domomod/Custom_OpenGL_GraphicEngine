@@ -11,11 +11,15 @@
 
 #include "Source/MyExceptions.h"
 #include "MeshLoader.h"
+#include "AssimpConversion.h"
+#include "Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.h"
 
 #include "Utility.h"
 
 std::shared_ptr<Model> ModelLoader::loadModel( const std::string &path ) {
     std::shared_ptr<Model> thisModel = std::make_shared<Model>();
+
+    directory = getFileDir(path);
 
     scene = importer.ReadFile(path.c_str(),
                               aiProcess_CalcTangentSpace |
@@ -46,6 +50,8 @@ std::shared_ptr<Model> ModelLoader::loadModel( const std::string &path ) {
     loadSkeleton(thisModel);
     loadSkeletalAnimations(thisModel);
     loadMeshes(thisModel);
+    loadMaterials(thisModel);
+    assignMaterials(thisModel);
 
     return thisModel;
 }
@@ -79,8 +85,51 @@ void ModelLoader::loadSkeleton(const std::shared_ptr<Model> &thisModel) {
         thisModel->animator = std::make_shared<SkeletalSystem::SkeletalAnimator>(thisModel->skeleton);
 }
 
-void ModelLoader::loadMaterials() {
+void ModelLoader::loadMaterials(const std::shared_ptr<Model> &thisModel) {
+    for(int idx = 0; idx < scene->mNumMaterials; idx++){
+        aiMaterial* material = scene->mMaterials[idx];
+        if(material->GetTextureCount(aiTextureType_DIFFUSE)){
+            aiString path;
+            if(AI_SUCCESS == material->GetTexture(aiTextureType_DIFFUSE, 0,
+                                                  &path, nullptr, nullptr, nullptr, nullptr, nullptr)){
+                std::string stdPath = assimpToEngine(path);
+                std::string fullPath = directory;
+#ifdef __linux__
+                fullPath += "/";
+#elif _WIN32
+                fullPath += "\\";
+#else
+#error "OS not supported"
+#endif
+                fullPath += stdPath;
 
+                thisModel->diffuseTextures.push_back(TextureLoader::loadTexture(fullPath));
+            } else {
+                /* If model does not have this texture load default texture
+                * */
+                thisModel->diffuseTextures.push_back(TextureLoader::getDefaultTexture());
+            }
+        } else {
+            /* If model does not have this texture load default texture
+            * */
+            thisModel->diffuseTextures.push_back(TextureLoader::getDefaultTexture());
+        }
+    }
+}
+
+void ModelLoader::assignMaterials(const std::shared_ptr<Model> &thisModel) {
+    if(thisModel->meshes.size() < 1){
+        throw ModelLoadingException("Tried to assign materials to meshes before loading meshes.");
+    }
+    if(thisModel->diffuseTextures.size() < 1){
+        throw ModelLoadingException("Tried to assign materials to meshes before loading materials.");
+    }
+
+    /* Assign materials to meshes
+     * */
+    for(auto& mesh : thisModel->meshes){
+        mesh->diffuse = thisModel->diffuseTextures[mesh->matId];
+    }
 }
 
 

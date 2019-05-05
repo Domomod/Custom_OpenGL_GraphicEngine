@@ -24,10 +24,9 @@ class ModelLoader {
 public:
     static std::shared_ptr<Model> loadModel(const std::string &path);
 private:
-    static void loadMaterials();
-
     inline static const aiScene* scene;
     inline static bool hasSkeleton = false;
+    inline static std::string directory;
 
     inline static MeshLoader meshLoader;
     inline static SkeletonLoader skeletonLoader;
@@ -42,6 +41,10 @@ private:
     static void loadSkeletalAnimations(const std::shared_ptr<Model> &thisModel);
 
     static void loadMeshes(const std::shared_ptr<Model> &thisModel);
+
+    static void loadMaterials(const std::shared_ptr<Model> &thisModel);
+
+    static void assignMaterials(const std::shared_ptr<Model> &thisModel);
 };
 
 

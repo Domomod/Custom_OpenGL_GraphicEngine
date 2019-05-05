@@ -13,6 +13,9 @@ void MeshLoader::loadBasicMeshInfo(const aiMesh *aMesh) {
     assimpMesh = aMesh;
     constructedMesh = std::make_shared<Mesh>();
 
+    constructedMesh->name = assimpToEngine(aMesh->mName);
+    constructedMesh->matId = aMesh->mMaterialIndex;
+
     for(unsigned int vertIdx = 0; vertIdx < assimpMesh->mNumVertices; vertIdx++){
 
         aiVector3D pos = assimpMesh->mVertices[vertIdx];
@@ -124,4 +127,3 @@ std::shared_ptr<Mesh> MeshLoader::make() {
 }
 
 MeshLoader::MeshLoader() {}
-

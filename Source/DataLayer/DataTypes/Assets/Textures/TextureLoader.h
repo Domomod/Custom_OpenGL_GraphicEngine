@@ -14,6 +14,10 @@
 class TextureLoader {
 public:
     static std::shared_ptr<Texture> loadTexture(const std::string& filePath);
+    static std::shared_ptr<Texture> getDefaultTexture();
+    inline static std::string defaultTexturePath = "Textures/default.png"; // NOLINT(cert-err58-cpp)
+    inline static std::shared_ptr<Texture> defaultTexture;
+    inline static bool isDefaultTextureLoaded = false;
 };
 
 
