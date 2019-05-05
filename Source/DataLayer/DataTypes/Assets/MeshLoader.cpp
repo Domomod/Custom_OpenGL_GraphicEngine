@@ -14,7 +14,6 @@ void MeshLoader::loadBasicMeshInfo(const aiMesh *aMesh) {
     constructedMesh = std::make_shared<Mesh>();
 
     constructedMesh->name = assimpToEngine(aMesh->mName);
-    constructedMesh->matId = aMesh->mMaterialIndex;
 
     for(unsigned int vertIdx = 0; vertIdx < assimpMesh->mNumVertices; vertIdx++){
 
@@ -81,7 +80,6 @@ void MeshLoader::loadBasicMeshInfo(const aiMesh *aMesh) {
     }
 }
 
-
 void MeshLoader::addBoneInfo(const std::map<std::__cxx11::string, int> &boneNameToIndexMap) {
     if(isMeshInitialised() == false){
         throw MeshLoadingException("Tried to add per vertex bone info to mesh before adding basic vertex info.");
@@ -127,3 +125,32 @@ std::shared_ptr<Mesh> MeshLoader::make() {
 }
 
 MeshLoader::MeshLoader() {}
+
+void MeshLoader::addNormalTextures(const std::vector<std::shared_ptr<Texture>> &textures) {
+    addTexture(textures, constructedMesh->normalMap);
+}
+
+void MeshLoader::addBaseColorTexture(const std::vector<std::shared_ptr<Texture>> &textures) {
+    addTexture(textures, constructedMesh->albedoMap);
+}
+
+void MeshLoader::addAOTextures(const std::vector<std::shared_ptr<Texture>> &textures) {
+    addTexture(textures, constructedMesh->AOMap);
+}
+
+void MeshLoader::addMetallnessTexture(const std::vector<std::shared_ptr<Texture>> &textures) {
+    addTexture(textures, constructedMesh->metallnessMap);
+}
+
+void MeshLoader::addRoughnessTexture(const std::vector<std::shared_ptr<Texture>> &textures) {
+    addTexture(textures, constructedMesh->roughnessMap);
+}
+
+
+void MeshLoader::addTexture(const std::vector<std::shared_ptr<Texture>> &textures, std::shared_ptr<Texture> & destinatedTexture) {
+    unsigned int matId = assimpMesh->mMaterialIndex;
+    destinatedTexture = textures[matId];
+}
+
+
+

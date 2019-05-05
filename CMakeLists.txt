@@ -47,6 +47,7 @@ set(    SOURCES_AND_HEADERS
         Source/DataLayer/DataTypes/GameLogic/Entity.h                                   Source/DataLayer/DataTypes/GameLogic/Entity.cpp
 
         Source/DataLayer/DataTypes/Assets/ModelLoader.h                                 Source/DataLayer/DataTypes/Assets/ModelLoader.cpp
+        Source/DataLayer/DataTypes/Assets/MaterialsLoader.h                             Source/DataLayer/DataTypes/Assets/MaterialsLoader.cpp
         Source/DataLayer/DataTypes/Assets/MeshLoader.h                                  Source/DataLayer/DataTypes/Assets/MeshLoader.cpp
         Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonLoader.h               Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonLoader.cpp
         Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonAnimationLoader.h      Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonAnimationLoader.cpp

@@ -1,4 +1,3 @@
-//kaczmarski rejtan        Source/DataLayer/DataTypes/Assets/Textures/Model.cpp Source/DataLayer/DataTypes/Assets/Textures/Model.h
 // Created by dominik on 23.02.19.
 //
 
@@ -23,8 +22,12 @@ public:
     std::vector<GLushort>   indicies;
 
     std::string name;
-    unsigned int matId; //only used when assigning textures
-    std::shared_ptr<Texture> diffuse;
+
+    std::shared_ptr<Texture> normalMap;
+    std::shared_ptr<Texture> AOMap;
+    std::shared_ptr<Texture> albedoMap;
+    std::shared_ptr<Texture> metallnessMap;
+    std::shared_ptr<Texture> roughnessMap;
 
     bool hasColors;
     bool hasUvs;

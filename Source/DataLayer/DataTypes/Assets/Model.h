@@ -17,7 +17,6 @@ public:
     Model() {}
 
     std::vector< std::shared_ptr<Mesh> > meshes;
-    std::vector< std::shared_ptr<Texture> > diffuseTextures;
 
     /* A Model might or might not have a Skeletal system
      * */

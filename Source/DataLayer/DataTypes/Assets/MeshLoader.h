@@ -23,8 +23,16 @@ public:
 
     void loadBasicMeshInfo(const aiMesh *aMesh);
     void addBoneInfo(const std::map<std::__cxx11::string, int> &boneNameToIndexMap);
+
+    void addNormalTextures(const std::vector<std::shared_ptr<Texture>> & textures);
+    void addAOTextures(const std::vector<std::shared_ptr<Texture>> & textures);
+    void addBaseColorTexture(const std::vector<std::shared_ptr<Texture>> & textures);
+    void addMetallnessTexture(const std::vector<std::shared_ptr<Texture>> & textures);
+    void addRoughnessTexture(const std::vector<std::shared_ptr<Texture>> & textures);
     std::shared_ptr<Mesh> make();
 private:
+    void addTexture(const std::vector<std::shared_ptr<Texture>> & textures, std::shared_ptr<Texture> & destinatedTexture);
+
     std::shared_ptr<Mesh> constructedMesh;
     bool isMeshInitialised(){ return constructedMesh != nullptr; }
 

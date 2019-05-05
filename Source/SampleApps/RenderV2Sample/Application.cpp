@@ -63,8 +63,8 @@ Application::Application() {
     window->getResizeNotifierPtr()->addListener(&windowResizeListener);
 
     try {
-        entitySystem.addModel("Mech", ModelLoader::loadModel("Models/Chest/Chest.dae"));
-        entitySystem.addEntity("M1", entitySystem.entityFactory.make("Mech", glm::vec3(-10, 0, -10)));
+        entitySystem.addModel("Mech", ModelLoader::loadModel("Models/WornMetalKnight/Knight.obj"));
+        entitySystem.addEntity("M1", entitySystem.entityFactory.make("Mech", glm::vec3(0, 0, -10), 3.0f));
 
         entitySystem.addModel("Cowboy", ModelLoader::loadModel("Models/Cowboy/cowboy.dae"));
         entitySystem.addEntity("C1", entitySystem.entityFactory.make("Cowboy", glm::vec3(0, -5, -20), glm::vec3(-90.f, 0.f, 0.f)) );
@@ -140,7 +140,7 @@ void Application::main() {
         ModelViewProjection = Projection * View * mech->getModelSpaceMatrix();
         for( auto& mesh : mechModel->meshes) {
 
-            mesh->diffuse->bind();
+            mesh->normalMap->bind();
 
             posBuffer.bind();
             posBuffer.sendBufferToGPUifVaoBinded(mesh->positions);
