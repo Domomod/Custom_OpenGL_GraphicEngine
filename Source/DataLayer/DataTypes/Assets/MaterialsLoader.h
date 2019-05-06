@@ -8,6 +8,7 @@
 #include <vector>
 #include <memory>
 #include <assimp/scene.h>
+#include <TinyXML2/tinyxml2.h>
 
 #include "Model.h"
 
@@ -17,9 +18,9 @@
 class MaterialsLoader  {
 public:
     std::vector< std::shared_ptr<Texture> > normalMaps;
-    std::vector< std::shared_ptr<Texture> > AOMaps;
+    std::vector< std::shared_ptr<Texture> > ambientMaps;
     std::vector< std::shared_ptr<Texture> > albedoMaps;
-    std::vector< std::shared_ptr<Texture> > metallnessMaps;
+    std::vector< std::shared_ptr<Texture> > metalnessMaps;
     std::vector< std::shared_ptr<Texture> > roughnessMaps;
 
     void loadMaterials();
@@ -30,10 +31,18 @@ public:
 
 private:
 
-    void loadMaterial(aiTextureType textureType, std::vector<std::shared_ptr<Texture>> &destination);
+    void loadMaterialAtribute(std::vector<std::shared_ptr<Texture> > &atributeVector,
+                              const std::string &textureFileName);
+    void loadMaterialXML(aiMaterial * assimpMaterial);
 
     const aiScene* scene;
     std::string directory;
+
+    std::string getPathToMaterial(const aiMaterial *assimpMaterial) const;
+
+    std::string getPathToMaterialTexture(const std::string & textureFileName) const;
+
+    std::string elementTextToString(tinyxml2::XMLElement *xmlElement) const;
 };
 
 

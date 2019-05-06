@@ -140,7 +140,7 @@ void Application::main() {
         ModelViewProjection = Projection * View * mech->getModelSpaceMatrix();
         for( auto& mesh : mechModel->meshes) {
 
-            mesh->normalMap->bind();
+            mesh->albedoMap->bind();
 
             posBuffer.bind();
             posBuffer.sendBufferToGPUifVaoBinded(mesh->positions);
@@ -151,9 +151,9 @@ void Application::main() {
             elementArrayBuffer.bind();
             elementArrayBuffer.sendIfVaoEnabled(mesh->indicies);
 
-            animatedUniformBuffer.bind();
-            animatedUniformBuffer.bakeData();
-            animatedUniformBuffer.sendBufferToGPU();
+            basicShaderBuffer.bind();
+            basicShaderBuffer.bakeData();
+            basicShaderBuffer.sendBufferToGPU();
 
             glDrawElements(GL_TRIANGLES, mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr);
         }

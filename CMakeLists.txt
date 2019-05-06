@@ -16,6 +16,8 @@ include_directories( ${OPENGL_INCLUDE_DIRS} ${BOOST_INCLUDE_DIRS} ${ASSIMP_INCLU
 add_subdirectory(gl3w)
 
 set(    SOURCES_AND_HEADERS
+        TinyXML2/tinyxml2.h                                                             TinyXML2/tinyxml2.cpp
+
         Source/MyExceptions.h                                                           Source/MyExceptions.cpp
 
 

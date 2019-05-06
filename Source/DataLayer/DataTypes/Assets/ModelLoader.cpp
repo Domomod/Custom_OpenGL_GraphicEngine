@@ -62,9 +62,9 @@ void ModelLoader::loadMeshes(const std::shared_ptr<Model> &thisModel) {
             meshLoader.addBoneInfo(skeletonLoader.getBoneNameToboneIdMap());
 
         meshLoader.addNormalTextures(    materialsLoader.normalMaps    );
-        meshLoader.addAOTextures(        materialsLoader.AOMaps        );
+        meshLoader.addAOTextures(        materialsLoader.ambientMaps   );
         meshLoader.addBaseColorTexture(  materialsLoader.albedoMaps    );
-        meshLoader.addMetallnessTexture( materialsLoader.metallnessMaps);
+        meshLoader.addMetallnessTexture( materialsLoader.metalnessMaps );
         meshLoader.addRoughnessTexture(  materialsLoader.roughnessMaps );
 
         thisModel->meshes.push_back(meshLoader.make());
