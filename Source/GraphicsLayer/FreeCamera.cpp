@@ -100,3 +100,7 @@ FreeCamera::FreeCamera(const glm::vec3 &position, const glm::vec3 &forward, cons
             [&](MouseMovementInfo mouseMovementInfo){ this->mouseMovementReaction(mouseMovementInfo); }
     );
 }
+
+const glm::vec3 &FreeCamera::getPosition() const {
+    return position;
+}

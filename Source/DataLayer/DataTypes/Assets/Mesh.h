@@ -13,10 +13,11 @@
 
 class Mesh {
 public:
-    std::vector<glm::vec4>  positions;
+    std::vector<glm::vec3>  positions;
     std::vector<glm::vec4>  colors;
     std::vector<glm::vec2>  uv;
-    std::vector<glm::vec4>  normals;
+    std::vector<glm::vec3>  normals;
+    std::vector<glm::vec3>  tangents;
     std::vector<glm::ivec4> boneIds;
     std::vector<glm::vec4>  boneWeights;
     std::vector<GLushort>   indicies;
@@ -24,7 +25,7 @@ public:
     std::string name;
 
     std::shared_ptr<Texture> normalMap;
-    std::shared_ptr<Texture> AOMap;
+    std::shared_ptr<Texture> aoMap;
     std::shared_ptr<Texture> albedoMap;
     std::shared_ptr<Texture> metallnessMap;
     std::shared_ptr<Texture> roughnessMap;

@@ -21,8 +21,7 @@ void MeshLoader::loadBasicMeshInfo(const aiMesh *aMesh) {
         constructedMesh->positions.emplace_back(
                 pos.x,
                 pos.y,
-                pos.z,
-                1
+                pos.z
         );
 
         aiVector3D normals = assimpMesh->mNormals[vertIdx];
@@ -30,8 +29,15 @@ void MeshLoader::loadBasicMeshInfo(const aiMesh *aMesh) {
         constructedMesh->normals.emplace_back(
                 normals.x,
                 normals.y,
-                normals.z,
-                0
+                normals.z
+        );
+
+        aiVector3D tangent = assimpMesh->mTangents[vertIdx];
+
+        constructedMesh->tangents.emplace_back(
+                tangent.x,
+                tangent.y,
+                tangent.z
         );
 
 
@@ -135,7 +141,7 @@ void MeshLoader::addBaseColorTexture(const std::vector<std::shared_ptr<Texture>>
 }
 
 void MeshLoader::addAOTextures(const std::vector<std::shared_ptr<Texture>> &textures) {
-    addTexture(textures, constructedMesh->AOMap);
+    addTexture(textures, constructedMesh->aoMap);
 }
 
 void MeshLoader::addMetallnessTexture(const std::vector<std::shared_ptr<Texture>> &textures) {

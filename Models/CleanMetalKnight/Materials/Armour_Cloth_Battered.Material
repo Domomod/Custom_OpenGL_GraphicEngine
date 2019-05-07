@@ -1,0 +1,13 @@
+<?xml version = "1.0"?>
+<material type="PBR_MR">
+	<albedo>T_Armour_Clean_Cloth_BaseColor.png</albedo>
+
+	<ambient>T_Armour_Clean_Cloth_AO.png</ambient>
+
+	<metalness>T_Armour_Clean_Cloth_Metallic.png</metalness>
+
+	<roughness>T_Armour_Clean_Cloth_Roughness.png</roughness>
+
+	<normal>T_Armour_Clean_Cloth_NOpenGL.png</normal>
+</material>
+

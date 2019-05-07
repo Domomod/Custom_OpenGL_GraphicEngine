@@ -11,7 +11,7 @@ class Texture {
     friend class TextureLoader;
 public:
     GLuint texID;
-    void bind();
+    void bind(unsigned int bindPoint);
 
     virtual ~Texture();
 

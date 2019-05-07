@@ -55,6 +55,6 @@ Texture::~Texture() {
     glDeleteTextures(1, &texID);
 }
 
-void Texture::bind() {
-    glBindTextureUnit(0, texID);
+void Texture::bind(unsigned int bindPoint) {
+    glBindTextureUnit(bindPoint, texID);
 }
