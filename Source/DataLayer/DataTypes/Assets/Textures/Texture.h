@@ -15,7 +15,7 @@ public:
 
     virtual ~Texture();
 
-private:
     Texture(const int &width, const int &height, unsigned char *data);
+private:
 };
 #endif //GAMEENGINE_TEXTURE_H

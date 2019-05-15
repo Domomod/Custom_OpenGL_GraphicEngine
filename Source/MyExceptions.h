@@ -87,6 +87,11 @@ public:
     InvalidData(const std::string &msg = "No message was set\n") : MyException("InvalidData", msg) {}
 };
 
+class InvalidImage : public MyException {
+public:
+    InvalidImage(const std::string &msg = "No message was set\n") : MyException("InvalidImage", msg) {}
+};
+
 //EntitySystemExceptions
 class MeshNotFound : public MyException{
 public:

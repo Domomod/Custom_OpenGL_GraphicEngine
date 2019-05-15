@@ -18,6 +18,7 @@ public:
 
     static std::shared_ptr<Mesh> generateTriangeMesh();
 
+    static std::shared_ptr<Mesh> generateSkyBox();
 };
 
 

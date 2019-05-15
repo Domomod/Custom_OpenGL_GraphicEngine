@@ -35,6 +35,7 @@ private:
     std::shared_ptr<Shader> texturedShader;
     std::shared_ptr<Shader> animationShader;
     std::shared_ptr<Shader> pbrShader;
+    std::shared_ptr<Shader> skyBoxShader;
 
     glm::mat4 ModelViewProjection;
     glm::mat4 Model;

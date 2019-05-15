@@ -15,6 +15,7 @@
 #include "Source/DataLayer/DataTypes/Assets/ModelLoader.h"
 #include "Source/DataLayer/DataTypes/Assets/Model.h"
 #include "Source/DataLayer/DataTypes/Assets/Textures/Texture.h"
+#include "Source/DataLayer/DataTypes/Assets/Textures/CubicTexture.h"
 #include "Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.h"
 
 Application::Application() {
@@ -32,10 +33,11 @@ Application::Application() {
     windowInputSystem->connectToKeyboardStateListener(freeCamera->getKeyboardStateListener());
     windowInputSystem->connectToMouseMovedListener(freeCamera->getMouseMovementListener());
 
-    basicShader = std::make_shared<Shader>();
-    texturedShader = std::make_shared<Shader>();
+    basicShader     = std::make_shared<Shader>();
+    texturedShader  = std::make_shared<Shader>();
     animationShader = std::make_shared<Shader>();
-    pbrShader =  std::make_shared<Shader>();
+    pbrShader       = std::make_shared<Shader>();
+    skyBoxShader    = std::make_shared<Shader>();
 
     try {
         basicShader->loadFromFile(Shader::VERTEX, "../Shaders/basic.vs");
@@ -52,6 +54,10 @@ Application::Application() {
         pbrShader->loadFromFile(Shader::VERTEX, "../Shaders/FORWARD_PBR_RM_TANGENT_SPACE/vertex.glsl");
         pbrShader->loadFromFile(Shader::FRAGMENT, "../Shaders/FORWARD_PBR_RM_TANGENT_SPACE/fragment.glsl");
         pbrShader->createAndLinkProgram();
+
+        skyBoxShader->loadFromFile(Shader::VERTEX, "../Shaders/SkyBox/vertex.glsl");
+        skyBoxShader->loadFromFile(Shader::FRAGMENT, "../Shaders/SkyBox/fragment.glsl");
+        skyBoxShader->createAndLinkProgram();
     } catch( MyException& e) {
         std::cerr << e.getType() << ":\n" << e.getMessage();
         exit(1);
@@ -117,13 +123,29 @@ void Application::main() {
             .insert( UniformMetadata( &ViewerPos, GL_FLOAT_MAT4 ) )
             .make();
 
+    UniformBuffer skyShaderBuffer = UniformBufferFactory()
+            .setBinding(0)
+            .insert( UniformMetadata( &Projection, GL_FLOAT_MAT4 ) )
+            .insert( UniformMetadata( &View, GL_FLOAT_MAT4 ) )
+            .make();
+
     std::shared_ptr<Texture> cowboyTexture = TextureLoader::loadTexture("Textures/cowboy.png");
+
+    auto skyboxMesh = MeshGenerator::generateSkyBox();
+    std::shared_ptr<CubicTexture> skyboxTexture = TextureLoader::loadCubicTexture({"Textures/skybox/right.jpg",
+                                                                       "Textures/skybox/left.jpg",
+                                                                       "Textures/skybox/top.jpg",
+                                                                       "Textures/skybox/bottom.jpg",
+                                                                       "Textures/skybox/front.jpg",
+                                                                       "Textures/skybox/back.jpg"});
+
 
     /*TODO: move animator to entity because multiple entities schould have independent animations*/
 
     glEnable(GL_DEPTH_TEST);
     glPatchParameteri(GL_PATCH_VERTICES, 3);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glDepthFunc(GL_LEQUAL);
 
     while(window->isRunning()){
         time = static_cast<float>(glfwGetTime());
@@ -132,10 +154,20 @@ void Application::main() {
 
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
+
+        basicShaderBuffer.bind();
         pbrShader->use();
         for(auto & entity : entities) {
             ModelViewProjection = Projection * View * entity->getModelSpaceMatrix();
             Model = entity->getModelSpaceMatrix();
+
+
+            basicShaderBuffer.bakeData();
+            basicShaderBuffer.sendBufferToGPU();
+
+
+            /* DRAW KNIGHTS
+             * */
             for (auto &mesh : entity->getModel()->meshes) {
 
                 mesh->albedoMap->bind(0);
@@ -159,10 +191,6 @@ void Application::main() {
                 elementArrayBuffer.bind();
                 elementArrayBuffer.sendIfVaoEnabled(mesh->indicies);
 
-                basicShaderBuffer.bind();
-                basicShaderBuffer.bakeData();
-                basicShaderBuffer.sendBufferToGPU();
-
                 glDrawElements(GL_TRIANGLES, mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr);
             }
         }
@@ -175,6 +203,8 @@ void Application::main() {
         tangentBuffer.unbind();
         elementArrayBuffer.unbind();
 
+        /* DRAW LIGHTS
+         * */
         basicShader->use();
         std::vector<glm::vec3> lightPos = {glm::vec3(0.3,5.0,0.6)};
         posBuffer.bind();
@@ -187,6 +217,24 @@ void Application::main() {
         glDrawArrays(GL_POINTS, 0, lightPos.size());
         basicShader->unuse();
 
+        /* DRAW SKYBOX
+         * */
+        skyBoxShader->use();
+        skyboxTexture->bind(0);
+
+        posBuffer.bind();
+        posBuffer.sendBufferToGPUifVaoBinded(skyboxMesh->positions);
+
+        elementArrayBuffer.bind();
+        elementArrayBuffer.sendIfVaoEnabled(skyboxMesh->indicies);
+
+        skyShaderBuffer.bind();
+        skyShaderBuffer.bakeData();
+        skyShaderBuffer.sendBufferToGPU();
+
+        glDrawElements(GL_TRIANGLES, skyboxMesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr);
+
+        skyBoxShader->unuse();
 
         window->swapBuffers();
         glfwPollEvents();
