@@ -27,41 +27,18 @@ Application::Application() {
 
     freeCamera = std::make_shared<FreeCamera>();
 
+    loadShaders();
 
     windowInputSystem = std::make_shared<WindowInputSystem>();
     windowInputSystem->connectToWindow(*window);
     windowInputSystem->connectToKeyboardStateListener(freeCamera->getKeyboardStateListener());
+    windowInputSystem->connectToKeyboardStateListener(applicatonKeyboardStateListener);
     windowInputSystem->connectToMouseMovedListener(freeCamera->getMouseMovementListener());
 
-    basicShader     = std::make_shared<Shader>();
-    texturedShader  = std::make_shared<Shader>();
-    animationShader = std::make_shared<Shader>();
-    pbrShader       = std::make_shared<Shader>();
-    skyBoxShader    = std::make_shared<Shader>();
-
-    try {
-        basicShader->loadFromFile(Shader::VERTEX, "../Shaders/basic.vs");
-        basicShader->createAndLinkProgram();
-
-        texturedShader->loadFromFile(Shader::VERTEX, "../Shaders/BasicTextured/basic.vs");
-        texturedShader->loadFromFile(Shader::FRAGMENT, "../Shaders/BasicTextured/basic.fs");
-        texturedShader->createAndLinkProgram();
-
-        animationShader->loadFromFile(Shader::VERTEX, "../Shaders/AnimationShader/animated.vs");
-        animationShader->loadFromFile(Shader::FRAGMENT, "../Shaders/AnimationShader/animated.fs");
-        animationShader->createAndLinkProgram();
-
-        pbrShader->loadFromFile(Shader::VERTEX, "../Shaders/FORWARD_PBR_RM_TANGENT_SPACE/vertex.glsl");
-        pbrShader->loadFromFile(Shader::FRAGMENT, "../Shaders/FORWARD_PBR_RM_TANGENT_SPACE/fragment.glsl");
-        pbrShader->createAndLinkProgram();
-
-        skyBoxShader->loadFromFile(Shader::VERTEX, "../Shaders/SkyBox/vertex.glsl");
-        skyBoxShader->loadFromFile(Shader::FRAGMENT, "../Shaders/SkyBox/fragment.glsl");
-        skyBoxShader->createAndLinkProgram();
-    } catch( MyException& e) {
-        std::cerr << e.getType() << ":\n" << e.getMessage();
-        exit(1);
-    }
+    /*Set application reaction to keyboard state notify*/
+    applicatonKeyboardStateListener.setReactionFuncPtr(
+            [&](const char* pressedKeys){ if(pressedKeys[GLFW_KEY_R] == true){ this->loadShaders(); } }
+    );
 
     View = glm::lookAt(glm::vec3(0.f,0.f,3.f), glm::vec3(0.f,0.f,0.f), glm::vec3(0.f,1.f,0.f));
     Projection = glm::perspective(glm::radians(45.f),8.f/4.f, 1.f, 150.f);
@@ -148,95 +125,96 @@ void Application::main() {
     glDepthFunc(GL_LEQUAL);
 
     while(window->isRunning()){
-        time = static_cast<float>(glfwGetTime());
-        View = freeCamera->calculateViewMatrix();
-        ViewerPos = freeCamera->getPosition();
+        if(shadersCompiled) {
+            time = static_cast<float>(glfwGetTime());
+            View = freeCamera->calculateViewMatrix();
+            ViewerPos = freeCamera->getPosition();
 
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+            glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 
-        basicShaderBuffer.bind();
-        pbrShader->use();
-        for(auto & entity : entities) {
-            ModelViewProjection = Projection * View * entity->getModelSpaceMatrix();
-            Model = entity->getModelSpaceMatrix();
+            basicShaderBuffer.bind();
+            pbrShader->use();
+            for (auto &entity : entities) {
+                ModelViewProjection = Projection * View * entity->getModelSpaceMatrix();
+                Model = entity->getModelSpaceMatrix();
 
+
+                basicShaderBuffer.bakeData();
+                basicShaderBuffer.sendBufferToGPU();
+
+
+                /* DRAW KNIGHTS
+                 * */
+                for (auto &mesh : entity->getModel()->meshes) {
+
+                    mesh->albedoMap->bind(0);
+                    mesh->aoMap->bind(1);
+                    mesh->metallnessMap->bind(2);
+                    mesh->roughnessMap->bind(3);
+                    mesh->normalMap->bind(4);
+
+                    posBuffer.bind();
+                    posBuffer.sendBufferToGPUifVaoBinded(mesh->positions);
+
+                    texCoordBuffer.bind();
+                    texCoordBuffer.sendBufferToGPUifVaoBinded(mesh->uv);
+
+                    normalBuffer.bind();
+                    normalBuffer.sendBufferToGPUifVaoBinded(mesh->normals);
+
+                    tangentBuffer.bind();
+                    tangentBuffer.sendBufferToGPUifVaoBinded(mesh->tangents);
+
+                    elementArrayBuffer.bind();
+                    elementArrayBuffer.sendIfVaoEnabled(mesh->indicies);
+
+                    glDrawElements(GL_TRIANGLES, mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr);
+                }
+            }
+            pbrShader->unuse();
+
+            ModelViewProjection = Projection * View;
+
+            texCoordBuffer.unbind();
+            normalBuffer.unbind();
+            tangentBuffer.unbind();
+            elementArrayBuffer.unbind();
+
+            /* DRAW LIGHTS
+             * */
+            basicShader->use();
+            std::vector<glm::vec3> lightPos = {glm::vec3(0.3, 5.0, 0.6)};
+            posBuffer.bind();
+            posBuffer.sendBufferToGPUifVaoBinded(lightPos);
 
             basicShaderBuffer.bakeData();
             basicShaderBuffer.sendBufferToGPU();
 
+            glPointSize(20);
+            glDrawArrays(GL_POINTS, 0, lightPos.size());
+            basicShader->unuse();
 
-            /* DRAW KNIGHTS
+            /* DRAW SKYBOX
              * */
-            for (auto &mesh : entity->getModel()->meshes) {
+            skyBoxShader->use();
+            skyboxTexture->bind(0);
 
-                mesh->albedoMap->bind(0);
-                mesh->aoMap->bind(1);
-                mesh->metallnessMap->bind(2);
-                mesh->roughnessMap->bind(3);
-                mesh->normalMap->bind(4);
+            posBuffer.bind();
+            posBuffer.sendBufferToGPUifVaoBinded(skyboxMesh->positions);
 
-                posBuffer.bind();
-                posBuffer.sendBufferToGPUifVaoBinded(mesh->positions);
+            elementArrayBuffer.bind();
+            elementArrayBuffer.sendIfVaoEnabled(skyboxMesh->indicies);
 
-                texCoordBuffer.bind();
-                texCoordBuffer.sendBufferToGPUifVaoBinded(mesh->uv);
+            skyShaderBuffer.bind();
+            skyShaderBuffer.bakeData();
+            skyShaderBuffer.sendBufferToGPU();
 
-                normalBuffer.bind();
-                normalBuffer.sendBufferToGPUifVaoBinded(mesh->normals);
+            glDrawElements(GL_TRIANGLES, skyboxMesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr);
 
-                tangentBuffer.bind();
-                tangentBuffer.sendBufferToGPUifVaoBinded(mesh->tangents);
-
-                elementArrayBuffer.bind();
-                elementArrayBuffer.sendIfVaoEnabled(mesh->indicies);
-
-                glDrawElements(GL_TRIANGLES, mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr);
-            }
+            skyBoxShader->unuse();
+            window->swapBuffers();
         }
-        pbrShader->unuse();
-
-        ModelViewProjection = Projection * View;
-
-        texCoordBuffer.unbind();
-        normalBuffer.unbind();
-        tangentBuffer.unbind();
-        elementArrayBuffer.unbind();
-
-        /* DRAW LIGHTS
-         * */
-        basicShader->use();
-        std::vector<glm::vec3> lightPos = {glm::vec3(0.3,5.0,0.6)};
-        posBuffer.bind();
-        posBuffer.sendBufferToGPUifVaoBinded(lightPos);
-
-        basicShaderBuffer.bakeData();
-        basicShaderBuffer.sendBufferToGPU();
-
-        glPointSize(20);
-        glDrawArrays(GL_POINTS, 0, lightPos.size());
-        basicShader->unuse();
-
-        /* DRAW SKYBOX
-         * */
-        skyBoxShader->use();
-        skyboxTexture->bind(0);
-
-        posBuffer.bind();
-        posBuffer.sendBufferToGPUifVaoBinded(skyboxMesh->positions);
-
-        elementArrayBuffer.bind();
-        elementArrayBuffer.sendIfVaoEnabled(skyboxMesh->indicies);
-
-        skyShaderBuffer.bind();
-        skyShaderBuffer.bakeData();
-        skyShaderBuffer.sendBufferToGPU();
-
-        glDrawElements(GL_TRIANGLES, skyboxMesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr);
-
-        skyBoxShader->unuse();
-
-        window->swapBuffers();
         glfwPollEvents();
         windowInputSystem->keyboardStateNotify();
     }
@@ -248,4 +226,38 @@ void Application::main() {
 
 Application::~Application() {
 
+}
+
+void Application::loadShaders() {
+    basicShader     = std::make_shared<Shader>();
+    texturedShader  = std::make_shared<Shader>();
+    animationShader = std::make_shared<Shader>();
+    pbrShader       = std::make_shared<Shader>();
+    skyBoxShader    = std::make_shared<Shader>();
+
+    try {
+        basicShader->loadFromFile(Shader::VERTEX, "../Shaders/basic.vs");
+        basicShader->createAndLinkProgram();
+
+        texturedShader->loadFromFile(Shader::VERTEX, "../Shaders/BasicTextured/basic.vs");
+        texturedShader->loadFromFile(Shader::FRAGMENT, "../Shaders/BasicTextured/basic.fs");
+        texturedShader->createAndLinkProgram();
+
+        animationShader->loadFromFile(Shader::VERTEX, "../Shaders/AnimationShader/animated.vs");
+        animationShader->loadFromFile(Shader::FRAGMENT, "../Shaders/AnimationShader/animated.fs");
+        animationShader->createAndLinkProgram();
+
+        pbrShader->loadFromFile(Shader::VERTEX, "../Shaders/FORWARD_PBR_RM_TANGENT_SPACE/vertex.glsl");
+        pbrShader->loadFromFile(Shader::FRAGMENT, "../Shaders/FORWARD_PBR_RM_TANGENT_SPACE/fragment.glsl");
+        pbrShader->createAndLinkProgram();
+
+        skyBoxShader->loadFromFile(Shader::VERTEX, "../Shaders/SkyBox/vertex.glsl");
+        skyBoxShader->loadFromFile(Shader::FRAGMENT, "../Shaders/SkyBox/fragment.glsl");
+        skyBoxShader->createAndLinkProgram();
+
+        shadersCompiled = true;
+    } catch( MyException& e) { /*TODO: add hierarchy for shader exceptions*/
+        std::cerr << e.getType() << ":\n" << e.getMessage();
+        shadersCompiled = false;
+    }
 }

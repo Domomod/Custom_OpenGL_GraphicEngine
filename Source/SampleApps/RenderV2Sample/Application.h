@@ -37,6 +37,9 @@ private:
     std::shared_ptr<Shader> pbrShader;
     std::shared_ptr<Shader> skyBoxShader;
 
+    bool shadersCompiled = false;
+    void loadShaders();
+
     glm::mat4 ModelViewProjection;
     glm::mat4 Model;
     glm::mat4 View;
@@ -51,6 +54,7 @@ private:
     float frequency = 0.4;
 
     OnChangeListener<std::pair<int,int>> windowResizeListener;
+    OnChangeListener<char*> applicatonKeyboardStateListener;
 
     EntitySystem entitySystem;
 };

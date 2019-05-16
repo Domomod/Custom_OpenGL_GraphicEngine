@@ -111,7 +111,7 @@ void main() {
     vec3 specular     = numerator / max(denominator, 0.001); /*0.001 avoids dividing by 0*/
     vec3 outcomingRadiance = (diffContrubition * albedo / PI + specular) * radiance * NdotL;
 
-    vec3 ambient = vec3(0.03) * albedo * ao;
+    vec3 ambient = vec3(0.3) * albedo * ao;
 
 
     vec3 color = ambient + outcomingRadiance;
