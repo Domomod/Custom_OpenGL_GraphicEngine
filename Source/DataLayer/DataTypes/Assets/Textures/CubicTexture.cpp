@@ -18,7 +18,7 @@ CubicTexture::CubicTexture(int width, int height, unsigned char **data) {
     );
 
     if(data == nullptr){
-        char baseColor[] = {127, 127, 127, 127};
+        char baseColor[] = {0, 0, 0, 127};
         glClearTexSubImage( texID,
                             0,   //mipmap level
                             0,0, //x,y offset
@@ -74,4 +74,24 @@ void CubicTexture::setFaceTexture(unsigned int face, int width, int height, unsi
 
 void CubicTexture::bind(unsigned int textureUnit) {
     glBindTextureUnit(textureUnit, texID);
+}
+
+void CubicTexture::attachFaceToFramebuffer(unsigned int face) {
+    glBindTexture(GL_TEXTURE_CUBE_MAP, texID);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                           GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, texID, 0);
+}
+
+void CubicTexture::generateMipmaps() {
+    glBindTexture(GL_TEXTURE_CUBE_MAP, texID);
+
+    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+}
+
+CubicTexture::CubicTexture(unsigned int texture) {
+    if(!glIsTexture(texture)){
+        throw InvalidOpenGLTypeException(" Given texture name does not represent a texture. ");
+    }
+    texID = texture;
 }

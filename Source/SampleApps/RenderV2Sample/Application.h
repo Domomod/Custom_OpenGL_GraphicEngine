@@ -36,9 +36,12 @@ private:
     std::shared_ptr<Shader> animationShader;
     std::shared_ptr<Shader> pbrShader;
     std::shared_ptr<Shader> skyBoxShader;
+    std::shared_ptr<Shader> equirSkyBoxShader;
+    std::shared_ptr<Shader> equirToSkyboxShader;
 
     bool shadersCompiled = false;
     void loadShaders();
+    void freeResources();
 
     glm::mat4 ModelViewProjection;
     glm::mat4 Model;

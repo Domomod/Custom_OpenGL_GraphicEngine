@@ -15,9 +15,15 @@ class CubicTexture {
 public:
     unsigned int texID = 0;
 
+    CubicTexture(unsigned int texture);
+
     CubicTexture(int width, int height, unsigned char **data);
 
     void setFaceTexture(unsigned int face, int width, int height, unsigned char *data);
+
+    void attachFaceToFramebuffer(unsigned int face);
+
+    void generateMipmaps();
 
     void bind(unsigned int textureUnit);
 };

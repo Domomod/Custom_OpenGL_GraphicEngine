@@ -98,6 +98,12 @@ void Shader::createAndLinkProgram() {
     }
 }
 
+void Shader::deleteProgram() {
+    glUseProgram(0);
+    glDeleteProgram(program);
+    program = 0;
+    programLinked = false;
+}
 
 void Shader::use() {
     glUseProgram(program);
@@ -152,12 +158,6 @@ GLint Shader::abstractGet(const std::string &elementName, std::map<std::string, 
         throw NoSuchGlslElementException(elementName + "was not added to shader's uniforms");
     }
     return elementId;
-}
-
-
-void Shader::deleteProgram() {
-    glDeleteProgram(program);
-    programLinked = false;
 }
 
 bool Shader::operator<(const Shader &rhs) const {

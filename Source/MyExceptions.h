@@ -129,4 +129,15 @@ class FileNotFound : public MyException{
 public:
     FileNotFound(const std::string &msg = "No message was set\n") : MyException("FileNotFound", msg) {}
 };
+
+//CommonExceptions
+class TextureConverterShaderNotSet : public MyException{
+public:
+    TextureConverterShaderNotSet(const std::string &msg = "No message was set\n") : MyException("TextureConverterShaderNotSet", msg) {}
+};
+
+class InvalidOpenGLTypeException : public MyException{
+public:
+    InvalidOpenGLTypeException(const std::string &msg = "No message was set\n") : MyException("InvalidOpenGLTypeException", msg) {}
+};
 #endif //GAMEENGINE_MYEXCEPTIONS_H
