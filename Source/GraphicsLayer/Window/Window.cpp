@@ -17,6 +17,8 @@ Window::Window(std::string title, int width, int height) {
 
     auto newNotifier = std::make_shared<OnChangeNotifier<std::pair<int, int>>>();
     onWindowResizeNotifiersMap.emplace(window, newNotifier);
+
+    makeCurrent();
 }
 
 

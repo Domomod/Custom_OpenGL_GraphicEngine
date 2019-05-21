@@ -19,13 +19,7 @@
 #include "Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.h"
 
 Application::Application() {
-    openGlInitalizer = std::make_shared<OpenGlInitalizer>();
-    openGlInitalizer->initGLFW();
-    window = std::make_shared<Window>();
-    window->makeCurrent();
-    openGlInitalizer->initOpenGL();
 
-    freeCamera = std::make_shared<FreeCamera>();
 
     basicShader         = std::make_shared<Shader>();
     texturedShader      = std::make_shared<Shader>();
@@ -38,11 +32,10 @@ Application::Application() {
     TextureLoader::setEquirToCubemapShaderSet(equirToSkyboxShader);
 
 
-    windowInputSystem = std::make_shared<WindowInputSystem>();
-    windowInputSystem->connectToWindow(*window);
-    windowInputSystem->connectToKeyboardStateListener(freeCamera->getKeyboardStateListener());
-    windowInputSystem->connectToKeyboardStateListener(applicatonKeyboardStateListener);
-    windowInputSystem->connectToMouseMovedListener(freeCamera->getMouseMovementListener());
+    windowInputSystem.connectToWindow(window);
+    windowInputSystem.connectToKeyboardStateListener(freeCamera.getKeyboardStateListener());
+    windowInputSystem.connectToKeyboardStateListener(applicatonKeyboardStateListener);
+    windowInputSystem.connectToMouseMovedListener(freeCamera.getMouseMovementListener());
 
     /*Set application reaction to keyboard state notify*/
     applicatonKeyboardStateListener.setReactionFuncPtr(
@@ -56,7 +49,7 @@ Application::Application() {
         Projection =  glm::perspective(glm::radians(45.f),(float)size.first / (float)size.second, 1.f, 30.f);
     });
 
-    window->getResizeNotifierPtr()->addListener(&windowResizeListener);
+    window.getResizeNotifierPtr()->addListener(&windowResizeListener);
 
     try {
         entitySystem.addModel("Mech", ModelLoader::loadModel("Models/CleanMetalKnight/Knight.obj"));
@@ -133,11 +126,11 @@ void Application::main() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glDepthFunc(GL_LEQUAL);
 
-    while(window->isRunning()){
+    while(window.isRunning()){
         if(shadersCompiled) {
             time = static_cast<float>(glfwGetTime());
-            View = freeCamera->calculateViewMatrix();
-            ViewerPos = freeCamera->getPosition();
+            View = freeCamera.calculateViewMatrix();
+            ViewerPos = freeCamera.getPosition();
 
             glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
@@ -222,10 +215,10 @@ void Application::main() {
             glDrawElements(GL_TRIANGLES, skyboxMesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr);
 
             skyBoxShader->unuse();
-            window->swapBuffers();
+            window.swapBuffers();
         }
         glfwPollEvents();
-        windowInputSystem->keyboardStateNotify();
+        windowInputSystem.keyboardStateNotify();
     }
 
     elementArrayBuffer.unbind();

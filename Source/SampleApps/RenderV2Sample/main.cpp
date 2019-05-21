@@ -7,9 +7,12 @@
 #include <iostream>
 #include <glm/glm.hpp>
 
+#include "Source/GraphicsLayer/OpenGLinitializer.h"
+
 #include "Application.h"
 
 int main(){
+    OpenGlInitalizer::initGLFW();
     Application app;
     app.main();
 }

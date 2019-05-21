@@ -25,10 +25,18 @@ public:
     void main();
 
 private:
-    std::shared_ptr<OpenGlInitalizer> openGlInitalizer;
-    std::shared_ptr<Window> window;
-    std::shared_ptr<WindowInputSystem> windowInputSystem;
-    std::shared_ptr<FreeCamera> freeCamera;
+    void loadShaders();
+    void freeResources();
+
+    Window window;
+    OpenGlInitalizer openGlInitalizer;
+
+    WindowInputSystem windowInputSystem;
+    FreeCamera        freeCamera;
+    EntitySystem entitySystem;
+
+    OnChangeListener<std::pair<int,int>> windowResizeListener;
+    OnChangeListener<char*> applicatonKeyboardStateListener;
 
     std::shared_ptr<Shader> basicShader;
     std::shared_ptr<Shader> waterShader;
@@ -40,8 +48,6 @@ private:
     std::shared_ptr<Shader> equirToSkyboxShader;
 
     bool shadersCompiled = false;
-    void loadShaders();
-    void freeResources();
 
     glm::mat4 ModelViewProjection;
     glm::mat4 Model;
@@ -56,10 +62,8 @@ private:
     float amplitude = 0.5f;
     float frequency = 0.4;
 
-    OnChangeListener<std::pair<int,int>> windowResizeListener;
-    OnChangeListener<char*> applicatonKeyboardStateListener;
 
-    EntitySystem entitySystem;
+
 };
 
 
