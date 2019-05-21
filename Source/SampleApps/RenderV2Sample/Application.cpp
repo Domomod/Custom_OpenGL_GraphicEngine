@@ -76,11 +76,6 @@ void Application::main() {
 
     std::shared_ptr<Texture> cowboyTexture = TextureLoader::loadTexture("Textures/cowboy.png");
 
-    std::shared_ptr<Texture> waterfallTexture = TextureLoader::loadTexture("Textures/equirectangular/"
-                                                                           "Frozen_Waterfall/Frozen_Waterfall_HiRes_TMap.jpg");
-
-    std::shared_ptr<CubicTexture> waterfallCubemap = TextureLoader::loadCubicTextureFromEquirectangluar(waterfallTexture);
-
     auto skyboxMesh = MeshGenerator::generateSkyBox();
     std::shared_ptr<CubicTexture> skyboxTexture = TextureLoader::loadCubicTexture({"Textures/skybox/right.jpg",
                                                                                    "Textures/skybox/left.jpg",
@@ -212,7 +207,7 @@ void Application::main() {
             /* DRAW SKYBOX
              * */
             skyBoxShader->use();
-            waterfallCubemap->bind(0);
+            skyboxTexture->bind(0);
 
             posBuffer.bind();
             posBuffer.sendBufferToGPUifVaoBinded(skyboxMesh->positions);

@@ -7,7 +7,6 @@
 #ifndef GAMEENGINE_MYEXCEPTIONS_H
 #define GAMEENGINE_MYEXCEPTIONS_H
 
-#include <GL/freeglut.h>
 #include <string>
 #include <iostream>
 

@@ -3,6 +3,7 @@
 //
 
 #include "OpenGLinitializer.h"
+#include "Source/MyExceptions.h"
 
 void OpenGlInitalizer::initGLFW() {
     if(!glfwInit()){

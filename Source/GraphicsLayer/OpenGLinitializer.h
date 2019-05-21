@@ -10,8 +10,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
+#include <iostream>
+#include <GL/freeglut.h> /*gl3w seems not to have GLAPIENTRY defined*/
 
-#include "Source/MyExceptions.h"
 
 class OpenGlInitalizer {
 public:

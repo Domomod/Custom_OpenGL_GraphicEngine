@@ -5,8 +5,7 @@
 #ifndef GAMEENGINE_ENTITYSTORAGEMANAGER_H
 #define GAMEENGINE_ENTITYSTORAGEMANAGER_H
 
-#include <map>
-#include <memory>
+
 
 #include "StorageManagerTemplate.h"
 #include "Source/DataLayer/DataTypes/GameLogic/Entity.h"
