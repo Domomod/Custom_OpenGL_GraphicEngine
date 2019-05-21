@@ -5,6 +5,8 @@
 #include <cstring>
 #include "UniformBuffer.h"
 
+#include "Source/MyExceptions.h"
+
 void UniformBuffer::bind() {
     glBindBuffer(GL_UNIFORM_BUFFER, Buffer::vbo);
     glBindBufferBase(GL_UNIFORM_BUFFER, binding, Buffer::vbo);

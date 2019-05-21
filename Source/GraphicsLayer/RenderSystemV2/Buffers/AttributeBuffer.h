@@ -8,7 +8,8 @@
 #include <GL/gl3w.h>
 #include <vector>
 
-#include "Source/DataLayer/DataTypes/Assets/Mesh.h"
+/* If user includes AttriuteBuffer he will always want to include Attribute Metadata,
+ * that's why i chose to inclde it instead of forward declare it.*/
 #include "Source/GraphicsLayer/RenderSystemV2/Metadata/AttributeMetadata.h"
 #include "Buffer.h"
 

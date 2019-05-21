@@ -4,6 +4,10 @@
 
 #include "InputSystem.h"
 
+#include "Window.h"
+#include "InputMetadata.h"
+
+
 void WindowInputSystem::connectToWindow(Window &window) {
     auto windowHandle = window.getWindowHandle();
     glfwSetWindowUserPointer(windowHandle, this);

@@ -3,6 +3,8 @@
 //
 
 #include "AttributeBuffer.h"
+
+#include "Source/GraphicsLayer/RenderSystemV2/Metadata/AttributeMetadata.h"
 #include "Source/MyExceptions.h"
 
 void AttributeBuffer::bind() {

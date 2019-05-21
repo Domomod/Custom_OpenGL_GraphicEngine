@@ -8,8 +8,6 @@
 #include <GL/gl3w.h>
 #include <cstddef>
 
-#include "Source/MyExceptions.h"
-
 struct UniformMetadata {
     void* pointerToData;
     GLenum dataType;

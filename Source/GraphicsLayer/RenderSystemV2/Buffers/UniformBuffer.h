@@ -8,6 +8,8 @@
 #include <vector>
 
 #include "Buffer.h"
+/* If user includes Uniform Buffer he will always want to include Uniform Metadata,
+ * that's why i chose to inclde it instead of forward declare it.*/
 #include "Source/GraphicsLayer/RenderSystemV2/Metadata/UniformMetadata.h"
 
 /* To work properly, uniform block in a shader schould have

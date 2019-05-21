@@ -4,6 +4,9 @@
 
 #include "Shader.h"
 
+#include "Source/MyExceptions.h"
+
+
 Shader::Shader() {
 
 }

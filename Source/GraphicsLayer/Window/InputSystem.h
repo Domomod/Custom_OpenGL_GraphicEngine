@@ -5,9 +5,15 @@
 #ifndef GAMEENGINE_INPUTSYSTEM_H
 #define GAMEENGINE_INPUTSYSTEM_H
 
-#include "Window.h"
+
+#include <GLFW/glfw3.h>
+
 #include "OnChangeNotifier.h"
-#include "InputMetadata.h"
+class KeyInfo;
+class MouseMovementInfo;
+class MouseClickInfo;
+class Window;
+
 
 /* WindowInputSystem works as an input interface for GLFW window, one Input System may connect to
  * multiple GLFW windows. GLFW is a c API so only c style function pointers can be assigned to handle

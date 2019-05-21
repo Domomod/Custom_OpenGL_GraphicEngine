@@ -4,6 +4,8 @@
 
 #include "UniformMetadata.h"
 
+#include "Source/MyExceptions.h"
+
 UniformMetadata::UniformMetadata(void *pointerToData, GLenum dataType, int arraySize)
 : pointerToData(pointerToData), dataType(dataType), arraySize(arraySize) {
     switch(dataType){
