@@ -5,12 +5,17 @@
 #ifndef GAMEENGINE_SKELETALANIMATOR_H
 #define GAMEENGINE_SKELETALANIMATOR_H
 
-#include "SkeletalAnimation.h"
-#include "Skeleton.h"
+#include <memory>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "SkeletonConstants.h"
 
 namespace SkeletalSystem {
 
+    class SkeletalAnimation;
+    class Bone;
+    class Skeleton;
 /*
  * */
     class SkeletalAnimator {
@@ -24,7 +29,7 @@ namespace SkeletalSystem {
         void calculateCurrentPose();
     private:
 
-        void calculateHierarchyTransforms(const std::shared_ptr<SkeletalSystem::Bone> &bone, const glm::mat4 & parentTransformation);
+        void calculateHierarchyTransforms(const std::shared_ptr<Bone> &bone, const glm::mat4 & parentTransformation);
 
         const std::shared_ptr<SkeletalSystem::Skeleton> itsSkeleton;
         std::shared_ptr<SkeletalSystem::SkeletalAnimation> currentAnimation;

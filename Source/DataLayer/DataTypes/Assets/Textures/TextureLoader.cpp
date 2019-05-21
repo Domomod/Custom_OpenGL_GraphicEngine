@@ -15,6 +15,8 @@
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/ElementArrayBuffer.h"
 #include "Source/DataLayer/DataTypes/Assets/MeshGenerator.h"
 
+#include "Texture.h"
+#include "CubicTexture.h"
 
 std::shared_ptr<Texture> TextureLoader::loadTexture(const std::string &filePath) {
     int width, height;

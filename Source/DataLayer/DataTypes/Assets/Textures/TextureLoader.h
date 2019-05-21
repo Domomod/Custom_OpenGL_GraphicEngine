@@ -12,6 +12,10 @@
 #include "Texture.h"
 #include "CubicTexture.h"
 
+class Texture;
+class CubicTexture;
+class Shader;
+
 #include "Source/GraphicsLayer/ShaderProgram/Shader.h"
 
 class TextureLoader {

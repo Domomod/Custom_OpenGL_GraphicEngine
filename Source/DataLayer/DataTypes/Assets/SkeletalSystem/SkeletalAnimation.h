@@ -7,12 +7,10 @@
 #ifndef GAMEENGINE_SKELETALANIMATION_H
 #define GAMEENGINE_SKELETALANIMATION_H
 
-#include "Skeleton.h"
-
 #include <map>
 #include <vector>
 #include <glm/gtc/quaternion.hpp>
-#include "Source/MyExceptions.h"
+
 
 namespace SkeletalSystem {
 /* Each bone Animation stores transformation info for each keyframe (instead of keyframes storing transformation
@@ -108,14 +106,6 @@ namespace SkeletalSystem {
         std::map<int,BoneAnimation> idToBoneAnimMap;
         std::map<std::string,BoneAnimation> nameToBoneAnimMap;
     };
-
-
-    /* Template functions definitions
-     * */
-
-
-
-
 }
 
 #endif //GAMEENGINE_SKELETALANIMATION_H

@@ -9,6 +9,8 @@
 #include "SkeletalAnimation.h"
 #include "Source/DataLayer/DataTypes/Assets/AssimpConversion.h"
 
+#include "Source/MyExceptions.h"
+
 using namespace SkeletalSystem;
 
 void SkeletonAnimationLoader::loadAnimation( aiAnimation *aAnimation,

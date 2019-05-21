@@ -10,6 +10,9 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "SkeletalAnimation.h"
+#include "Skeleton.h"
+
 SkeletalSystem::SkeletalAnimator::SkeletalAnimator(const std::shared_ptr<SkeletalSystem::Skeleton> &itsSkeleton)
         : itsSkeleton(itsSkeleton) {}
 
