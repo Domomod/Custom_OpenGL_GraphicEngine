@@ -9,12 +9,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/gl3w.h>
+#include <GLFW/glfw3.h>
 
-#include "Source/GraphicsLayer/Window/Window.h"
-#include "Source/GraphicsLayer/ShaderProgram/Shader.h"
 #include "Source/MyExceptions.h"
-#include "OnChangeListenerTemplate/OnChangeListener.h"
-#include "Source/DataLayer/DataTypes/Assets/Mesh.h"
 
 class OpenGlInitalizer {
 public:
