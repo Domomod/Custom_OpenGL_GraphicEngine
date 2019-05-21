@@ -6,8 +6,13 @@
 
 #include <assimp/cimport.h>
 #include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+
+#include "Model.h"
+#include "Mesh.h"
 
 #include "AssimpConversion.h"
+#include "Source/MyExceptions.h"
 
 void MeshLoader::loadBasicMeshInfo(const aiMesh *aMesh) {
     assimpMesh = aMesh;

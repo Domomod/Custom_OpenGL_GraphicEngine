@@ -6,9 +6,12 @@
 #define GAMEENGINE_MESHLOADER_H
 
 #include <memory>
-#include <assimp/scene.h>
 #include <map>
-#include "Model.h"
+#include <vector>
+
+class Mesh;
+class aiMesh;
+class Texture;
 
 /* Mesh Loader is designed to load one Mesh at a time. It can load
  * multiple meshes one after another. Loaded mesh is owned by the loader

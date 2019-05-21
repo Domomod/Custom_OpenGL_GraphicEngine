@@ -15,6 +15,7 @@
 #include "MaterialsLoader.h"
 #include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonLoader.h"
 #include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimation.h"
+#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.h"
 #include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonAnimationLoader.h"
 
 #include "Utility.h"

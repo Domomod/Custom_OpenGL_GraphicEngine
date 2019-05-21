@@ -7,9 +7,12 @@
 
 #include <memory>
 #include <string>
-#include "Entity.h"
-#include "Source/DataLayer/StorageManagment/ModelStorageManager.h"
-#include "Source/DataLayer/StorageManagment/ModelToModelSpaceMatricesMap.h"
+#include <glm/glm.hpp>
+
+class Entity;
+class ModelStorageManager;
+class ModelToModelSpaceMatricesMap;
+
 
 class EntityFactory {
     friend class EntitySystem;
@@ -21,10 +24,10 @@ public:
                                      const glm::vec3 &rotation = glm::vec3(0.f, 0.f, 0.f)) const;
 
 private:
-    void setAssociatedMeshStorageManager(ModelStorageManager &associatedMeshStorageManager);
+    void setAssociatedMeshStorageManager(ModelStorageManager & associatedMeshStorageManager);
 
 public:
-    void setAssociatedMeshToModelMap(ModelToModelSpaceMatricesMap &associatedMeshToModelMap);
+    void setAssociatedMeshToModelMap(ModelToModelSpaceMatricesMap & associatedMeshToModelMap);
 
 private:
 

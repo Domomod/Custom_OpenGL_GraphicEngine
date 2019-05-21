@@ -4,6 +4,10 @@
 
 #include "EntityFactory.h"
 
+#include "Entity.h"
+#include "Source/DataLayer/StorageManagment/ModelStorageManager.h"
+#include "Source/DataLayer/StorageManagment/ModelToModelSpaceMatricesMap.h"
+
 std::shared_ptr<Entity> EntityFactory::make(const std::string &modelName, const glm::vec3 &position, const glm::vec3 &rotation,
                                             const glm::vec3 &scaling) const {
     std::shared_ptr<Model> model = associatedMeshStorageManager->getObject(modelName);
