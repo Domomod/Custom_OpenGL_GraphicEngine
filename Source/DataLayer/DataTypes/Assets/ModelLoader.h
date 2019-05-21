@@ -10,13 +10,14 @@
 #include <assimp/scene.h>
 #include <map>
 
-#include "Model.h"
-#include "MeshLoader.h"
-#include "MaterialsLoader.h"
+class Model;
+class MeshLoader;
+class MaterialsLoader;
+class SkeletonLoader;
 
-#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonLoader.h"
-#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimation.h"
-#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonAnimationLoader.h"
+namespace SkeletalSystem{
+    class SkeletonAnimationLoader;
+}
 
 /* Assimp is able to load whole scenes containing hierarchy of meshes etc ... (formats 3ds, collada)
  * I decided the Game Engine will only load single Models, and leave the scene making
@@ -30,10 +31,10 @@ private:
     inline static bool hasSkeleton = false;
     inline static std::string directory;
 
-    inline static MeshLoader meshLoader;
-    inline static SkeletonLoader skeletonLoader;
-    inline static SkeletalSystem::SkeletonAnimationLoader animationLoader;
-    inline static MaterialsLoader materialsLoader;
+    static MeshLoader meshLoader;
+    static SkeletonLoader skeletonLoader;
+    static SkeletalSystem::SkeletonAnimationLoader animationLoader;
+    static MaterialsLoader materialsLoader;
 
 
     /*Using imporeter because it will handle resource cleaning.

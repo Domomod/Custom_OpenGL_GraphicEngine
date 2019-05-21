@@ -10,10 +10,22 @@
 #include <assimp/postprocess.h>
 
 #include "Source/MyExceptions.h"
+
+#include "Model.h"
 #include "MeshLoader.h"
+#include "MaterialsLoader.h"
+
+#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonLoader.h"
+#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimation.h"
+#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonAnimationLoader.h"
 
 #include "Utility.h"
 #include "MaterialsLoader.h"
+
+MeshLoader ModelLoader::meshLoader;
+SkeletonLoader ModelLoader::skeletonLoader;
+SkeletalSystem::SkeletonAnimationLoader ModelLoader::animationLoader;
+MaterialsLoader ModelLoader::materialsLoader;
 
 std::shared_ptr<Model> ModelLoader::loadModel( const std::string &path ) {
     std::shared_ptr<Model> thisModel = std::make_shared<Model>();
