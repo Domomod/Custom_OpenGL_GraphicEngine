@@ -4,6 +4,9 @@
 
 #include "SkeletonAnimationLoader.h"
 
+#include <assimp/scene.h>
+
+#include "SkeletalAnimation.h"
 #include "Source/DataLayer/DataTypes/Assets/AssimpConversion.h"
 
 using namespace SkeletalSystem;

@@ -6,9 +6,17 @@
 #define GAMEENGINE_SKELETONLOADER_H
 
 #include <memory>
-#include <assimp/scene.h>
 #include <map>
-#include "Source/DataLayer/DataTypes/Assets/Model.h"
+#include <glm/glm.hpp>
+
+class aiScene;
+class aiMesh;
+class aiNode;
+
+namespace SkeletalSystem{
+    class Skeleton;
+    class Bone;
+}
 
 /* Skeleton Loader is designed to load one Skeleton at a time. It can load
  * multiple skeletons one after another. Loaded skeleton is owned by the loader

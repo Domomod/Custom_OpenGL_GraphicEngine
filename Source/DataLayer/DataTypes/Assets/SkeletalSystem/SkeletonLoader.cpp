@@ -9,8 +9,10 @@ using namespace SkeletalSystem;
 #include <assimp/cimport.h>
 #include <assimp/Importer.hpp>
 
+#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/Skeleton.h"
 #include "Source/DataLayer/DataTypes/Assets/AssimpConversion.h"
 
+#include "Source/MyExceptions.h"
 
 void SkeletonLoader::loadSkeleton(aiMesh **assimpMeshTable, unsigned int tableSize) {
 

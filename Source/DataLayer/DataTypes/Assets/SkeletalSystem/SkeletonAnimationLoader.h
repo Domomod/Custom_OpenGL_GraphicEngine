@@ -6,11 +6,14 @@
 #define GAMEENGINE_SKELETONANIMATIONLOADER_H
 
 #include <memory>
-#include <assimp/scene.h>
 #include <map>
-#include "SkeletalAnimation.h"
+#include <vector>
+
+class aiAnimation;
 
 namespace SkeletalSystem {
+    class SkeletalAnimation;
+
     class SkeletonAnimationLoader {
     public:
         void loadAnimation(aiAnimation *aAnimation, const std::map<std::__cxx11::string, int> &boneNameToIndexMap);
