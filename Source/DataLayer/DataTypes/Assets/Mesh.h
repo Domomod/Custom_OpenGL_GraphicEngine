@@ -9,7 +9,7 @@
 #include <glm/glm.hpp>
 #include <memory>
 
-#include "Source/DataLayer/DataTypes/Assets/Textures/Texture.h"
+class Texture;
 
 class Mesh {
 public:

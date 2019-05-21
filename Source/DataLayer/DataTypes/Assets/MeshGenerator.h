@@ -10,7 +10,7 @@
 #include <GL/gl3w.h>
 #include <memory>
 
-#include "Mesh.h"
+class Mesh;
 
 class MeshGenerator {
 public:

@@ -4,6 +4,9 @@
 
 #include "MeshGenerator.h"
 
+#include "Mesh.h"
+
+
 std::shared_ptr<Mesh> MeshGenerator::generateSimpleRectangleMesh(float x, float y, float z) {
     std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
 
@@ -43,6 +46,7 @@ std::shared_ptr<Mesh> MeshGenerator::generateSimpleRectangleMesh(float x, float 
     return mesh;
 }
 
+
 std::shared_ptr<Mesh> MeshGenerator::generateTriangeMesh() {
     std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
 
@@ -74,6 +78,7 @@ std::shared_ptr<Mesh> MeshGenerator::generateTriangeMesh() {
 
     return mesh;
 }
+
 
 std::shared_ptr<Mesh> MeshGenerator::generateSkyBox() {
     std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
@@ -136,4 +141,3 @@ std::shared_ptr<Mesh> MeshGenerator::generateSkyBox() {
 
     return mesh;
 }
-
