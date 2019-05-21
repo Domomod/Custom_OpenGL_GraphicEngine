@@ -7,13 +7,16 @@
 
 #include <vector>
 #include <memory>
-#include <assimp/scene.h>
-#include <TinyXML2/tinyxml2.h>
 
-#include "Model.h"
+class aiScene;
+class aiMaterial;
 
-#include "Textures/Texture.h"
-#include "Textures/TextureLoader.h"
+class Model;
+class Texture;
+
+namespace tinyxml2{
+    class XMLElement;
+}
 
 class MaterialsLoader  {
 public:

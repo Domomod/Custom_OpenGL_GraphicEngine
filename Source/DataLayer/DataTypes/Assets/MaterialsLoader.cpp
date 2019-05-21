@@ -4,13 +4,20 @@
 
 #include "MaterialsLoader.h"
 
+#include <assimp/scene.h>
+#include <TinyXML2/tinyxml2.h>
+
+#include "Model.h"
+#include "Textures/Texture.h"
+#include "Textures/TextureLoader.h"
+
 #include "AssimpConversion.h"
 
-#include "TinyXML2/tinyxml2.h"
 
 #ifndef XMLCheckResult
 #define XMLCheckResult(a_eResult) if (a_eResult != tinyxml2::XML_SUCCESS) { printf("Error: %i\n", a_eResult); }
 #endif
+
 
 void MaterialsLoader::loadMaterials() {
     normalMaps.clear();
