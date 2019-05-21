@@ -10,9 +10,9 @@
 #include <memory>
 #include <glm/glm.hpp>
 
-class SkeletonLoader;
 
 namespace SkeletalSystem {
+    class SkeletonLoader;
 
 /* A bone represents a transformation
  * */
@@ -38,7 +38,7 @@ namespace SkeletalSystem {
  * that we will load into the shader.
  * */
     class Skeleton {
-        friend class ::SkeletonLoader;
+        friend class SkeletonLoader;
     public:
         const glm::mat4 &getGlobalInverseTransformation() const;
 

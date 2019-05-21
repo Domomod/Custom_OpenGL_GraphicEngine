@@ -17,56 +17,60 @@
  * to return multiple copies of the same skeleton by calling make multiple times.
  * This way it's easier to assure that functions are called in right order.
  * */
-class SkeletonLoader{
-public:
-    SkeletonLoader() = default;
 
-    void setScene(const aiScene *scene);
+namespace SkeletalSystem {
+    class SkeletonLoader {
+    public:
+        SkeletonLoader() = default;
 
-    void loadSkeleton(aiMesh **assimpMeshTable, unsigned int tableSize);
+        void setScene(const aiScene *scene);
 
-    const std::map<std::__cxx11::string, int> &getBoneNameToboneIdMap() const;
+        void loadSkeleton(aiMesh **assimpMeshTable, unsigned int tableSize);
 
-    std::shared_ptr<SkeletalSystem::Skeleton> make();
+        const std::map<std::__cxx11::string, int> &getBoneNameToboneIdMap() const;
 
-    bool isSkeletonInitialised() const;
+        std::shared_ptr<SkeletalSystem::Skeleton> make();
 
-private:
-    void initialiseNodeMaps(aiNode *parentNode);
+        bool isSkeletonInitialised() const;
 
-    void findNodesRepresentingThisSkeletonBones(aiNode *meshRootNode, aiNode *meshRootParentNode);
+    private:
+        void initialiseNodeMaps(aiNode *parentNode);
 
-    void markNeededUntilMeshRootOrRootParentFound(aiNode *leaf, aiNode *meshRoot, aiNode *meshRootParent);
+        void findNodesRepresentingThisSkeletonBones(aiNode *meshRootNode, aiNode *meshRootParentNode);
 
-    aiNode *findSkeletonRootNode(aiNode *node);
+        void markNeededUntilMeshRootOrRootParentFound(aiNode *leaf, aiNode *meshRoot, aiNode *meshRootParent);
 
-    aiNode *searchForSkeletonRootNode(aiNode *node);
+        aiNode *findSkeletonRootNode(aiNode *node);
 
-    std::shared_ptr<SkeletalSystem::Bone> assimpNodeToEngineBone(aiNode *node);
+        aiNode *searchForSkeletonRootNode(aiNode *node);
 
-    const aiScene* scene;
-    const aiMesh* assimpMesh;
+        std::shared_ptr<SkeletalSystem::Bone> assimpNodeToEngineBone(aiNode *node);
 
-    /* Assimp node hierarchy may contains nodes for many meshes, we will check which nodes
-    * are the bones of our skeleton.
-    * */
-    struct NodeNecessityRecord;
-    std::map<std::string, NodeNecessityRecord> nodesNeededForSkeleton;
-    std::map<std::string, int> boneNameToboneIdMap;
-    std::map<std::string, glm::mat4> boneNameToOffsetMap;
-    int nextBoneIndexToBeAssigned;
-    bool returnedInitialisedSkeleton;
-    std::shared_ptr<SkeletalSystem::Skeleton> constructedSkeleton;
+        const aiScene *scene;
+        const aiMesh *assimpMesh;
 
-    /* Helper structure for searching for skeleton in assimp node hierarchy.
-     * */
-    struct NodeNecessityRecord{
-        NodeNecessityRecord() = default;
-        explicit NodeNecessityRecord(aiNode *node, bool necessary = false) : node(node), necessary(necessary) {}
-        aiNode* node;
-        bool necessary;
+        /* Assimp node hierarchy may contains nodes for many meshes, we will check which nodes
+        * are the bones of our skeleton.
+        * */
+        struct NodeNecessityRecord;
+        std::map<std::string, NodeNecessityRecord> nodesNeededForSkeleton;
+        std::map<std::string, int> boneNameToboneIdMap;
+        std::map<std::string, glm::mat4> boneNameToOffsetMap;
+        int nextBoneIndexToBeAssigned;
+        bool returnedInitialisedSkeleton;
+        std::shared_ptr<SkeletalSystem::Skeleton> constructedSkeleton;
+
+        /* Helper structure for searching for skeleton in assimp node hierarchy.
+         * */
+        struct NodeNecessityRecord {
+            NodeNecessityRecord() = default;
+
+            explicit NodeNecessityRecord(aiNode *node, bool necessary = false) : node(node), necessary(necessary) {}
+
+            aiNode *node;
+            bool necessary;
+        };
+
     };
-
-};
-
+}
 #endif //GAMEENGINE_SKELETONLOADER_H

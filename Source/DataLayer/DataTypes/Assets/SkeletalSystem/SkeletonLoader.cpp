@@ -2,12 +2,15 @@
 // Created by dominik on 23.04.19.
 //
 
+
 #include "SkeletonLoader.h"
+using namespace SkeletalSystem;
 
 #include <assimp/cimport.h>
 #include <assimp/Importer.hpp>
 
 #include "Source/DataLayer/DataTypes/Assets/AssimpConversion.h"
+
 
 void SkeletonLoader::loadSkeleton(aiMesh **assimpMeshTable, unsigned int tableSize) {
 
