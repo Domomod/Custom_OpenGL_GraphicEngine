@@ -16,6 +16,7 @@
 
 #include "Source/DataLayer/StorageManagment/EntitySystem.h"
 
+
 class Application {
 public:
     Application();
@@ -36,7 +37,7 @@ private:
     EntitySystem entitySystem;
 
     OnChangeListener<std::pair<int,int>> windowResizeListener;
-    OnChangeListener<char*> applicatonKeyboardStateListener;
+    OnChangeListener<KeyInfo> keyActionListener;
 
     std::shared_ptr<Shader> basicShader;
     std::shared_ptr<Shader> waterShader;

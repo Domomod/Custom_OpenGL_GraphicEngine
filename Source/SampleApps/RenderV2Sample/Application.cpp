@@ -34,12 +34,12 @@ Application::Application() {
 
     windowInputSystem.connectToWindow(window);
     windowInputSystem.connectToKeyboardStateListener(freeCamera.getKeyboardStateListener());
-    windowInputSystem.connectToKeyboardStateListener(applicatonKeyboardStateListener);
+    windowInputSystem.connectToKeyPressedListener(keyActionListener);
     windowInputSystem.connectToMouseMovedListener(freeCamera.getMouseMovementListener());
 
     /*Set application reaction to keyboard state notify*/
-    applicatonKeyboardStateListener.setReactionFuncPtr(
-            [&](const char* pressedKeys){ if(pressedKeys[GLFW_KEY_R] == true){ this->loadShaders(); } }
+    keyActionListener.setReactionFuncPtr(
+            [&](KeyInfo keyInfo){ if( keyInfo.key == GLFW_KEY_R && keyInfo.action == GLFW_PRESS){ this->loadShaders(); } }
     );
 
     View = glm::lookAt(glm::vec3(0.f,0.f,3.f), glm::vec3(0.f,0.f,0.f), glm::vec3(0.f,1.f,0.f));
@@ -217,8 +217,7 @@ void Application::main() {
             skyBoxShader->unuse();
             window.swapBuffers();
         }
-        glfwPollEvents();
-        windowInputSystem.keyboardStateNotify();
+        windowInputSystem.pollEvents();
     }
 
     elementArrayBuffer.unbind();

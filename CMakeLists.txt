@@ -4,12 +4,43 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(OpenGL REQUIRED)
+
 find_package(glfw3 REQUIRED)
+IF (NOT glfw3_FOUND)
+    message(WARNING glfw3-NOT-FOUND : ${glfw3_INCLUDE_DIR})
+ENDIF()
+
+find_package(ASSIMP REQUIRED)
+IF(NOT ASSIMP_FOUND)
+    message(WARNING ASSIMP-NOT-FOUND : ${ASSIMP_INCLUDE_DIRS})
+ENDIF()
+
 find_package(Boost REQUIRED)
+IF (NOT Boost_FOUND)
+    message(WARNING Boost-NOT-FOUND : ${Boost_INCLUDE_DIR})
+ENDIF()
+
 find_package(GLM REQUIRED)
-find_package(assimp REQUIRED)
+IF (NOT GLM_FOUND)
+    message(WARNING GLM-NOT-FOUND : ${GLM_INCLUDE_DIR})
+ENDIF()
+
 find_package(SOIL REQUIRED)
+IF (NOT SOIL_FOUND)
+    message(WARNING SOIL-NOT-FOUND : ${SOIL_INCLUDE_DIR})
+ENDIF()
+
+find_package(OpenGL REQUIRED)
+IF (NOT OPENGL_FOUND)
+    message(WARNING OPENGL-NOT-FOUND: ${OPENGL_INCLUDE_DIR})
+else()
+    message(OPENGL-FOUND: ${OPENGL_INCLUDE_DIR})
+    message(GLM-FOUND : ${GLM_INCLUDE_DIRS})
+    message(glfw3-FOUND : ${glfw3_DIR})
+    message(Boost-FOUND : ${Boost_INCLUDE_DIR})
+    message(ASSIMP-FOUND : ${ASSIMP_INCLUDE_DIRS})
+    message(SOIL-FOUND : ${SOIL_INCLUDE_DIR})
+ENDIF()
 
 include_directories( ${OPENGL_INCLUDE_DIRS} ${BOOST_INCLUDE_DIRS} ${ASSIMP_INCLUDE_DIRS} ${SOIL_INCLUDE_DIRS} OnChangeListenerTemplate /usr/local/include)
 
@@ -65,9 +96,8 @@ set(    SOURCES_AND_HEADERS
 
 
         Source/SampleApps/RenderV2Sample/Application.h                                  Source/SampleApps/RenderV2Sample/Application.cpp
-        Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.h             Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.cpp Source/DataLayer/DataTypes/Assets/Textures/CubicTexture.cpp Source/DataLayer/DataTypes/Assets/Textures/CubicTexture.h)
+        Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.h             Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.cpp Source/DataLayer/DataTypes/Assets/Textures/CubicTexture.cpp Source/DataLayer/DataTypes/Assets/Textures/CubicTexture.h Source/GraphicsLayer/Window/KeyStateGetter.cpp Source/GraphicsLayer/Window/KeyStateGetter.h)
 
 add_executable(RenderV2 Source/SampleApps/RenderV2Sample/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS}    )
 target_include_directories(RenderV2 PUBLIC ${CMAKE_SOURCE_DIR})
 target_link_libraries(RenderV2 ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} ${ASSIMP_LIBRARIES} ${SOIL_LIBRARIES} glfw stdc++fs)
-

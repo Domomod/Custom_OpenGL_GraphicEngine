@@ -19,6 +19,8 @@
 
 #include <iostream>
 
+class KeyStateGetter;
+
 /* This class implements a free ("zero gravity") camera, with no up and down, you can
  * look around move and rotate your view in any direction you want. For this you have to link it
  * to a system that will notify the class about keyboard / mouse events, because camera does not directly
@@ -29,7 +31,7 @@ class FreeCamera {
 public:
     glm::mat4 calculateViewMatrix();
 
-    OnChangeListener<char*> &getKeyboardStateListener();
+    OnChangeListener<KeyStateGetter*> &getKeyboardStateListener();
 
     OnChangeListener<MouseMovementInfo> &getMouseMovementListener();
 
@@ -39,7 +41,7 @@ public:
     const glm::vec3 &getPosition() const;
 
 private:
-    void keyboardReaction(char* pressedKeys);
+    void keyboardReaction(KeyStateGetter *keyStateGetter);
 
     void mouseMovementReaction(MouseMovementInfo& mouseMovementInfo);
 
@@ -49,7 +51,7 @@ private:
     glm::vec3 forward;
     glm::vec3 up;
 
-    OnChangeListener<char*> keyboardStateListener;
+    OnChangeListener<KeyStateGetter*> keyboardStateListener;
     OnChangeListener<MouseMovementInfo> mouseMovementListener;
 };
 

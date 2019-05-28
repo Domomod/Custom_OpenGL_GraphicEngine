@@ -3,18 +3,19 @@
 //
 
 #include "FreeCamera.h"
+#include "Window/KeyStateGetter.h"
 
-void FreeCamera::keyboardReaction(char *pressedKeys) {
-    if(pressedKeys[ GLFW_KEY_W ]) {
+void FreeCamera::keyboardReaction(KeyStateGetter *keyStateGetter) {
+    if(keyStateGetter->getKey( GLFW_KEY_W )) {
         position += movementSpeed * forward;
     }
-    if(pressedKeys[ GLFW_KEY_S ]) {
+    if(keyStateGetter->getKey( GLFW_KEY_S )) {
         position -= movementSpeed * forward;
     }
-    if(pressedKeys[ GLFW_KEY_A ]) {
+    if(keyStateGetter->getKey( GLFW_KEY_A )) {
         position -= movementSpeed * cross(forward, up);
     }
-    if(pressedKeys[ GLFW_KEY_D ]) {
+    if(keyStateGetter->getKey( GLFW_KEY_D )) {
         position += movementSpeed * cross(forward, up);
     }
 }
@@ -82,7 +83,7 @@ glm::mat4 FreeCamera::calculateViewMatrix() {
             up                 );
 }
 
-OnChangeListener<char *> &FreeCamera::getKeyboardStateListener() {
+OnChangeListener<KeyStateGetter *> &FreeCamera::getKeyboardStateListener() {
     return keyboardStateListener;
 }
 
@@ -93,7 +94,7 @@ OnChangeListener<MouseMovementInfo> &FreeCamera::getMouseMovementListener() {
 FreeCamera::FreeCamera(const glm::vec3 &position, const glm::vec3 &forward, const glm::vec3 &up, float speed) : movementSpeed(speed), position(position),
                                                                                                                 forward(forward), up(up) {
     keyboardStateListener.setReactionFuncPtr(
-            [&](char* pressedKeys){ this->keyboardReaction(pressedKeys); }
+            [&](KeyStateGetter* keyStateGetter){ this->keyboardReaction(keyStateGetter); }
     );
 
     mouseMovementListener.setReactionFuncPtr(

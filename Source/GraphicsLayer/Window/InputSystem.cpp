@@ -7,10 +7,10 @@
 #include "Window.h"
 #include "InputMetadata.h"
 
-
 void WindowInputSystem::connectToWindow(Window &window) {
     auto windowHandle = window.getWindowHandle();
     glfwSetWindowUserPointer(windowHandle, this);
+    keyStateGetter.setWindow(windowHandle);
 
     glfwSetKeyCallback        ( windowHandle, onKeyAction                  );
     glfwSetCursorPosCallback  ( windowHandle, onMouseMovementAction        );
@@ -24,7 +24,7 @@ void WindowInputSystem::connectToKeyPressedListener(OnChangeListener<KeyInfo> &o
 }
 
 
-void WindowInputSystem::connectToKeyboardStateListener(OnChangeListener<char *> &onChangeListener) {
+void WindowInputSystem::connectToKeyboardStateListener(OnChangeListener<KeyStateGetter*> &onChangeListener) {
     KeyboardStateNotifier.addListener(&onChangeListener);
 }
 
@@ -45,7 +45,7 @@ void WindowInputSystem::keyboardStateNotify() {
      * The client does not ask the Input System about the state because I wanted it to only know that
      * it owns a Listener, and the System to only know about having a Notifier.
      * */
-    KeyboardStateNotifier.notifyListeners(pressedKeys);
+    KeyboardStateNotifier.notifyListeners(&keyStateGetter);
 }
 
 
@@ -55,15 +55,6 @@ void WindowInputSystem::onKeyAction(GLFWwindow *window, int key, int scancode, i
     // keys are pressed at the same time he will have to ask the Input System. If user is only interested in the
     // fact the button was pressed he needs to sing on the listeners list.
     auto * windowsInputSystem = reinterpret_cast<WindowInputSystem*>(glfwGetWindowUserPointer(window));
-
-    /* System remembers which keys are pressed at the moment, this may desynchronize, if the window becomes
-     * unfocused and the key releases before window becomes focused again.
-     * */
-    if(action == GLFW_PRESS){
-        windowsInputSystem->pressedKeys[key] = true;
-    } else if(action == GLFW_RELEASE){
-        windowsInputSystem->pressedKeys[key] = false;
-    }
 
     /* System works in two modes, with hidden cursor (fe. for camera movements)
      * and with free cursor (fe. for clicking in menu)
@@ -108,15 +99,6 @@ void WindowInputSystem::onMousePressedAction(GLFWwindow *window, int button, int
 
 void WindowInputSystem::onWindowFocusRecheckKeyStates(GLFWwindow *window, int focused) {
     auto * windowsInputSystem = reinterpret_cast<WindowInputSystem*>(glfwGetWindowUserPointer(window));
-    /* Key state may have changed while the window was unfocused, so the keyboard state has to be analized.
-     * Window focus changes should be rare, so checking around 300 key states once an let's say hour,
-     * should not be a problem.
-     * However TODO: This approach seems to not always change the WASD keys states back to not pressed.
-     * */
-    for(int i = 0; i < GLFW_KEY_LAST; i++){
-        int state = glfwGetKey(window, i);
-        windowsInputSystem->pressedKeys[i] = (state == GLFW_PRESS);
-    }
 
     setMouseStateFocused(window, windowsInputSystem);
 }
@@ -132,4 +114,9 @@ void WindowInputSystem::setMouseStateFocused(GLFWwindow *window, WindowInputSyst
 void WindowInputSystem::setMouseStateUnfocused(GLFWwindow *window, WindowInputSystem *windowsInputSystem) {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     windowsInputSystem->mouseFocused = false;
+}
+
+void WindowInputSystem::pollEvents() {
+    glfwPollEvents();
+    keyboardStateNotify();
 }

@@ -8,11 +8,13 @@
 
 #include <GLFW/glfw3.h>
 
+#include "KeyStateGetter.h"
 #include "OnChangeNotifier.h"
 class KeyInfo;
 class MouseMovementInfo;
 class MouseClickInfo;
 class Window;
+
 
 
 /* WindowInputSystem works as an input interface for GLFW window, one Input System may connect to
@@ -22,19 +24,20 @@ class Window;
  * System reacts to the input (fe. to change mouse state), and also notifies all interested listeners about
  * an event via a notifier-listener interface.
  * */
+
 class WindowInputSystem {
 public:
     void connectToWindow(Window& window);
 
     void connectToKeyPressedListener(OnChangeListener<KeyInfo>& onChangeListener);
 
-    void connectToKeyboardStateListener(OnChangeListener<char*>& onChangeListener);
+    void connectToKeyboardStateListener(OnChangeListener<KeyStateGetter*>& onChangeListener);
 
     void connectToMouseMovedListener(OnChangeListener<MouseMovementInfo>& onChangeListener);
 
     void connectToMouseClickedListener(OnChangeListener<MouseClickInfo>& onChangeListener);
 
-    void keyboardStateNotify();;
+    void pollEvents();
 
 private:
     static void onKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -49,19 +52,21 @@ private:
 
     static void setMouseStateUnfocused(GLFWwindow *window, WindowInputSystem *windowsInputSystem);
 
+    void keyboardStateNotify();
 
     OnChangeNotifier<KeyInfo>           OnKeyPressedNotifier;
-    OnChangeNotifier<char*>             KeyboardStateNotifier;
+    OnChangeNotifier<KeyStateGetter*>   KeyboardStateNotifier;
     OnChangeNotifier<MouseMovementInfo> OnMoseMovedNotifier;
     OnChangeNotifier<MouseClickInfo>    OnMouseClickedNotifier;
 
-    char pressedKeys[GLFW_KEY_LAST + 1] = {false};
+    KeyStateGetter keyStateGetter;
 
     bool mouseFocused = false;
 
     double xPreviousMosePosition = 0;
     double yPreviousMosePosition = 0;
 };
+
 
 
 #endif //GAMEENGINE_INPUTSYSTEM_H
