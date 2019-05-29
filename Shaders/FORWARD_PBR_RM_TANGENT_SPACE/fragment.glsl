@@ -111,10 +111,10 @@ void main() {
     vec3 specular     = numerator / max(denominator, 0.001); /*0.001 avoids dividing by 0*/
     vec3 outcomingRadiance = (diffContrubition * albedo / PI + specular) * radiance * NdotL;
 
-    vec3 ambient = vec3(0.3) * albedo * ao;
+    vec3 ambient = vec3(0.1) * (albedo * ao);
 
 
-    vec3 color = ambient + outcomingRadiance;
+    vec3 color =  ambient + outcomingRadiance;
     //color = color / (color + vec3(1.0)); /*HDR*/
     color = pow(color, vec3(1.0/2.2));   /*Gamma correction*/
 
