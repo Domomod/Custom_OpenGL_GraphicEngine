@@ -53,3 +53,19 @@ void Mesh::bindTexturesPBR() {
     roughnessMap->bind(3);
     normalMap->bind(4);
 }
+
+void Mesh::bindPositon()  { positionsB.bind( vao.getVaoName());  }
+void Mesh::bindNormals()  { normalsB.bind( vao.getVaoName());    }
+void Mesh::bindTangents() { tangentsB.bind( vao.getVaoName());   }
+void Mesh::bindColors()   { colorsB.bind( vao.getVaoName());     }
+void Mesh::bindUvs()      { uvB.bind( vao.getVaoName());         }
+void Mesh::bindBoneInfo() { boneIdsB.bind( vao.getVaoName());
+                            boneWeightsB.bind( vao.getVaoName());}
+
+void Mesh::unbindPositon() { positionsB.unbind( vao.getVaoName());  }
+void Mesh::unbindNormals() { normalsB.unbind( vao.getVaoName());    }
+void Mesh::unbindTangents(){ tangentsB.unbind( vao.getVaoName());   }
+void Mesh::unbindColors()  { colorsB.unbind( vao.getVaoName());     }
+void Mesh::unbindUvs()     { uvB.unbind( vao.getVaoName());         }
+void Mesh::unbindBoneInfo(){ boneIdsB.unbind( vao.getVaoName());
+                             boneWeightsB.unbind( vao.getVaoName());}

@@ -33,26 +33,24 @@ public:
     void bindVao(){vao.bind();}
     void bindTexturesPBR();
 
-    void bindPositon()  { positionsB.bind( vao.getVaoName());  }
-    void bindNormals()  { normalsB.bind( vao.getVaoName());    }
-    void bindTangents() { tangentsB.bind( vao.getVaoName());   }
-    void bindColors()   { colorsB.bind( vao.getVaoName());     }
-    void bindUvs()      { uvB.bind( vao.getVaoName());         }
-    void bindBoneInfo() { boneIdsB.bind( vao.getVaoName());
-                          boneWeightsB.bind( vao.getVaoName());}
+    void bindPositon();
+    void bindNormals();
+    void bindTangents();
+    void bindColors();
+    void bindUvs();
+    void bindBoneInfo();
 
-    void unbindPositon() { positionsB.unbind( vao.getVaoName());  }
-    void unbindNormals() { normalsB.unbind( vao.getVaoName());    }
-    void unbindTangents(){ tangentsB.unbind( vao.getVaoName());   }
-    void unbindColors()  { colorsB.unbind( vao.getVaoName());     }
-    void unbindUvs()     { uvB.unbind( vao.getVaoName());         }
-    void unbindBoneInfo(){ boneIdsB.unbind( vao.getVaoName());
-                           boneWeightsB.unbind( vao.getVaoName());}
+    void unbindPositon();
+    void unbindNormals();
+    void unbindTangents();
+    void unbindColors();
+    void unbindUvs();
+    void unbindBoneInfo();
+
 
     unsigned int getIndiciesCount() const;
 
 private:
-
     VertexArrayObject vao;
 
     SingleAttributeBuffer<0, glm::vec3 >  positionsB;
