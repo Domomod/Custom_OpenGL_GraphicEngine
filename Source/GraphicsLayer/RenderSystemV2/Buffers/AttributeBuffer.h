@@ -16,9 +16,9 @@
 class AttributeBuffer : public Buffer {
     friend class AttributeBufferFactory;
 public:
-    void bind() override;
+    void bind();
 
-    void unbind() override;
+    void unbind();
 
     template<class VertexClass>
     void sendBufferToGPUifVaoBinded(const std::vector<VertexClass>& vertices){

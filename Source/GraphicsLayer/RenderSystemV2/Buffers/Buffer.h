@@ -10,18 +10,14 @@
 
 class Buffer {
 protected:
-    GLuint vbo;
+    GLuint myName;
 public:
-    virtual void bind() = 0;
-
-    virtual void unbind() = 0;
-
     Buffer() {
-        glGenBuffers(1, &vbo);
+        glGenBuffers(1, &myName);
     }
 
     virtual ~Buffer() {
-        glDeleteBuffers(1, &vbo);
+        glDeleteBuffers(1, &myName);
     }
 };
 

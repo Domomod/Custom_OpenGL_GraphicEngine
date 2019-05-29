@@ -92,16 +92,7 @@ std::shared_ptr<CubicTexture> TextureLoader::loadCubicTextureFromEquirectangluar
     GLint previousViewport[4];
     glGetIntegerv( GL_VIEWPORT, previousViewport );
 
-    AttributeBuffer positionBuffer = AttributeBufferFactory()
-            .insert( AttributeMetadata(0, 3, GL_FLOAT, 0, sizeof(glm::vec3)))
-            .make();
-
-    positionBuffer.bind();
-    positionBuffer.sendBufferToGPUifVaoBinded(skyboxMesh->positions);
-
-    ElementArrayBuffer elementArrayBuffer;
-    elementArrayBuffer.bind();
-    elementArrayBuffer.sendIfVaoEnabled(skyboxMesh->indicies);
+    skyboxMesh->bindVao();
 
     glm::mat4 Projection;
     glm::mat4 View;
@@ -172,7 +163,7 @@ std::shared_ptr<CubicTexture> TextureLoader::loadCubicTextureFromEquirectangluar
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(skyboxMesh->indicies.size()), GL_UNSIGNED_SHORT, nullptr);
+        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(skyboxMesh->getIndiciesCount()), GL_UNSIGNED_SHORT, nullptr);
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -8,8 +8,8 @@
 #include "Source/MyExceptions.h"
 
 void UniformBuffer::bind() {
-    glBindBuffer(GL_UNIFORM_BUFFER, Buffer::vbo);
-    glBindBufferBase(GL_UNIFORM_BUFFER, binding, Buffer::vbo);
+    glBindBuffer(GL_UNIFORM_BUFFER, Buffer::myName);
+    glBindBufferBase(GL_UNIFORM_BUFFER, binding, Buffer::myName);
 }
 
 void UniformBuffer::unbind() {

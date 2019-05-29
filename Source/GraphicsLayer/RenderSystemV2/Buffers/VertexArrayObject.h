@@ -13,6 +13,10 @@ class VertexArrayObject {
 private:
     GLuint vao;
 public:
+    GLuint getVaoName() const {
+        return vao;
+    }
+
     void bind(){
         glBindVertexArray(vao);
     }
@@ -29,6 +33,5 @@ public:
         glDeleteVertexArrays(1,&vao);
     }
 };
-
 
 #endif //GAMEENGINE_VERTEXARRAYOBJECT_H

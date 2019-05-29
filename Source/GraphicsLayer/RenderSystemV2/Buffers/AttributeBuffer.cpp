@@ -8,7 +8,7 @@
 #include "Source/MyExceptions.h"
 
 void AttributeBuffer::bind() {
-    glBindBuffer(GL_ARRAY_BUFFER, Buffer::vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, Buffer::myName);
 
     for(const auto& metadata : attributeMetadataTable){
         glEnableVertexAttribArray(metadata.index);

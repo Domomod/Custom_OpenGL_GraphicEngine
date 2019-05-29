@@ -11,12 +11,20 @@
 
 class ElementArrayBuffer : public Buffer {
 public:
-    void bind() override {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffer::vbo);
+    ElementArrayBuffer() {}
+
+    ElementArrayBuffer(std::vector<GLushort> indicies) {
+        bind();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicies.size() * sizeof(indicies[0]), indicies.data(), GL_STATIC_DRAW);
+        unbind();
+    }
+
+    void bind(){
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffer::myName);
 
     }
 
-    void unbind() override {
+    void unbind(){
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     }

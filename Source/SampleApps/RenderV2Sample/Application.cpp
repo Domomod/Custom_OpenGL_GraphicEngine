@@ -90,20 +90,6 @@ void Application::main() {
             .insert( AttributeMetadata(0, 3, GL_FLOAT, 0, sizeof(glm::vec3)))
             .make();
 
-    AttributeBuffer texCoordBuffer = AttributeBufferFactory()
-            .insert( AttributeMetadata(1, 2, GL_FLOAT, 0, sizeof(glm::vec2)))
-            .make();
-
-    AttributeBuffer normalBuffer = AttributeBufferFactory()
-            .insert( AttributeMetadata(2, 3, GL_FLOAT, 0, sizeof(glm::vec3)))
-            .make();
-
-    AttributeBuffer tangentBuffer = AttributeBufferFactory()
-            .insert( AttributeMetadata(3, 3, GL_FLOAT, 0, sizeof(glm::vec3)))
-            .make();
-
-    ElementArrayBuffer elementArrayBuffer;
-
     auto ViewerPos = glm::vec3(0.f);
 
     UniformBuffer basicShaderBuffer = UniformBufferFactory()
@@ -149,44 +135,20 @@ void Application::main() {
                 /* DRAW KNIGHTS
                  * */
                 for (auto &mesh : entity->getModel()->meshes) {
-
-                    mesh->albedoMap->bind(0);
-                    mesh->aoMap->bind(1);
-                    mesh->metallnessMap->bind(2);
-                    mesh->roughnessMap->bind(3);
-                    mesh->normalMap->bind(4);
-
-                    posBuffer.bind();
-                    posBuffer.sendBufferToGPUifVaoBinded(mesh->positions);
-
-                    texCoordBuffer.bind();
-                    texCoordBuffer.sendBufferToGPUifVaoBinded(mesh->uv);
-
-                    normalBuffer.bind();
-                    normalBuffer.sendBufferToGPUifVaoBinded(mesh->normals);
-
-                    tangentBuffer.bind();
-                    tangentBuffer.sendBufferToGPUifVaoBinded(mesh->tangents);
-
-                    elementArrayBuffer.bind();
-                    elementArrayBuffer.sendIfVaoEnabled(mesh->indicies);
-
-                    glDrawElements(GL_TRIANGLES, mesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr);
+                    mesh->bindTexturesPBR();
+                    mesh->bindVao();
+                    glDrawElements(GL_TRIANGLES, mesh->getIndiciesCount(), GL_UNSIGNED_SHORT, nullptr);
                 }
             }
             pbrShader->unuse();
 
             ModelViewProjection = Projection * View;
 
-            texCoordBuffer.unbind();
-            normalBuffer.unbind();
-            tangentBuffer.unbind();
-            elementArrayBuffer.unbind();
-
             /* DRAW LIGHTS
              * */
             basicShader->use();
             std::vector<glm::vec3> lightPos = {glm::vec3(0.3, 5.0, 0.6)};
+            vao.bind();
             posBuffer.bind();
             posBuffer.sendBufferToGPUifVaoBinded(lightPos);
 
@@ -195,6 +157,7 @@ void Application::main() {
 
             glPointSize(20);
             glDrawArrays(GL_POINTS, 0, lightPos.size());
+            vao.unbind();
             basicShader->unuse();
 
             /* DRAW SKYBOX
@@ -202,27 +165,19 @@ void Application::main() {
             skyBoxShader->use();
             skyboxTexture->bind(0);
 
-            posBuffer.bind();
-            posBuffer.sendBufferToGPUifVaoBinded(skyboxMesh->positions);
-
-            elementArrayBuffer.bind();
-            elementArrayBuffer.sendIfVaoEnabled(skyboxMesh->indicies);
+            skyboxMesh->bindVao();
 
             skyShaderBuffer.bind();
             skyShaderBuffer.bakeData();
             skyShaderBuffer.sendBufferToGPU();
 
-            glDrawElements(GL_TRIANGLES, skyboxMesh->indicies.size(), GL_UNSIGNED_SHORT, nullptr);
+            glDrawElements(GL_TRIANGLES, skyboxMesh->getIndiciesCount(), GL_UNSIGNED_SHORT, nullptr);
 
             skyBoxShader->unuse();
             window.swapBuffers();
         }
         windowInputSystem.pollEvents();
     }
-
-    elementArrayBuffer.unbind();
-    posBuffer.unbind();
-    vao.unbind();
 }
 
 Application::~Application() {

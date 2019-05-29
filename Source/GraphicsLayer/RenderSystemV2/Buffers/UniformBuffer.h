@@ -19,9 +19,9 @@
 class UniformBuffer : public Buffer{
 friend class UniformBufferFactory;
 public:
-    void bind() override;
+    void bind();
 
-    void unbind() override;
+    void unbind();
 
     void sendBufferToGPU();
     void bakeData();
