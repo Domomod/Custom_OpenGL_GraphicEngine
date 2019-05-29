@@ -11,7 +11,7 @@
 #include "Source/GraphicsLayer/RenderSystemV2/Metadata/AttributeMetadata.h"
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/UniformBuffer.h"
 
-#include "Source/DataLayer/DataTypes/Assets/MeshGenerator.h"
+#include "Source/DataLayer/DataTypes/Assets/Mesh/MeshGenerator.h"
 #include "Source/DataLayer/DataTypes/Assets/ModelLoader.h"
 #include "Source/DataLayer/DataTypes/Assets/Model.h"
 #include "Source/DataLayer/DataTypes/Assets/Textures/Texture.h"

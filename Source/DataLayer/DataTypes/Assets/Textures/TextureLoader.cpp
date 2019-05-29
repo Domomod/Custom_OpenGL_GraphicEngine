@@ -13,8 +13,8 @@
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/AttributeBuffer.h"
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/UniformBuffer.h"
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/ElementArrayBuffer.h"
-#include "Source/DataLayer/DataTypes/Assets/MeshGenerator.h"
-#include "Source/DataLayer/DataTypes/Assets/Mesh.h"
+#include "Source/DataLayer/DataTypes/Assets/Mesh/MeshGenerator.h"
+#include "Source/DataLayer/DataTypes/Assets/Mesh/Mesh.h"
 
 #include "Texture.h"
 #include "CubicTexture.h"

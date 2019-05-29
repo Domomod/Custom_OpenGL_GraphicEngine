@@ -11,8 +11,8 @@
 #include <assimp/Importer.hpp>
 
 #include "Model.h"
-#include "MeshLoader.h"
-#include "MaterialsLoader.h"
+#include "Source/DataLayer/DataTypes/Assets/Mesh/MeshLoader.h"
+#include "Source/DataLayer/DataTypes/Assets/Textures/MaterialsLoader.h"
 #include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonLoader.h"
 #include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimation.h"
 #include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.h"

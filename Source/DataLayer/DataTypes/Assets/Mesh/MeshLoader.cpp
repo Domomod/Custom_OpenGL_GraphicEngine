@@ -10,10 +10,10 @@
 
 #include <sstream>
 
-#include "Model.h"
+#include "Source/DataLayer/DataTypes/Assets/Model.h"
 #include "Mesh.h"
 
-#include "AssimpConversion.h"
+#include "Source/DataLayer/DataTypes/Assets/AssimpConversion.h"
 #include "Source/MyExceptions.h"
 
 void MeshLoader::loadBasicMeshInfo(const aiMesh *aMesh) {

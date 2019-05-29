@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "Source/MyExceptions.h"
-#include "Source/DataLayer/DataTypes/Assets/Mesh.h"
+#include "Source/DataLayer/DataTypes/Assets/Mesh/Mesh.h"
 #include "ModelMatricesBuffer.h"
 
 /* This class stores pointers to Meshes and maps them to vectors of Models, it's use case is when user want's to render,

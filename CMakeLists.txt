@@ -80,8 +80,8 @@ set(    SOURCES_AND_HEADERS
         Source/DataLayer/DataTypes/GameLogic/Entity.h                                   Source/DataLayer/DataTypes/GameLogic/Entity.cpp
 
         Source/DataLayer/DataTypes/Assets/ModelLoader.h                                 Source/DataLayer/DataTypes/Assets/ModelLoader.cpp
-        Source/DataLayer/DataTypes/Assets/MaterialsLoader.h                             Source/DataLayer/DataTypes/Assets/MaterialsLoader.cpp
-        Source/DataLayer/DataTypes/Assets/MeshLoader.h                                  Source/DataLayer/DataTypes/Assets/MeshLoader.cpp
+        Source/DataLayer/DataTypes/Assets/Textures/MaterialsLoader.h Source/DataLayer/DataTypes/Assets/Textures/MaterialsLoader.cpp
+        Source/DataLayer/DataTypes/Assets/Mesh/MeshLoader.h Source/DataLayer/DataTypes/Assets/Mesh/MeshLoader.cpp
         Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonLoader.h               Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonLoader.cpp
         Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonAnimationLoader.h      Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonAnimationLoader.cpp
         Source/DataLayer/DataTypes/Assets/Textures/Texture.h                            Source/DataLayer/DataTypes/Assets/Textures/Texture.cpp
@@ -91,13 +91,13 @@ set(    SOURCES_AND_HEADERS
         Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimation.h            Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimation.cpp
         Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonConstants.h
         Source/DataLayer/DataTypes/Assets/Model.h                                       Source/DataLayer/DataTypes/Assets/Model.cpp
-        Source/DataLayer/DataTypes/Assets/Mesh.h                                        Source/DataLayer/DataTypes/Assets/Mesh.cpp
-        Source/DataLayer/DataTypes/Assets/MeshGenerator.h                               Source/DataLayer/DataTypes/Assets/MeshGenerator.cpp
+        Source/DataLayer/DataTypes/Assets/Mesh/Mesh.h Source/DataLayer/DataTypes/Assets/Mesh/Mesh.cpp
+        Source/DataLayer/DataTypes/Assets/Mesh/MeshGenerator.h Source/DataLayer/DataTypes/Assets/Mesh/MeshGenerator.cpp
 
 
         Source/SampleApps/RenderV2Sample/Application.h                                  Source/SampleApps/RenderV2Sample/Application.cpp
         Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.h             Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.cpp Source/DataLayer/DataTypes/Assets/Textures/CubicTexture.cpp Source/DataLayer/DataTypes/Assets/Textures/CubicTexture.h Source/GraphicsLayer/Window/KeyStateGetter.cpp Source/GraphicsLayer/Window/KeyStateGetter.h
-        Source/DataLayer/DataTypes/Assets/MeshFactory.cpp Source/DataLayer/DataTypes/Assets/MeshFactory.h)
+        Source/DataLayer/DataTypes/Assets/Mesh/MeshFactory.cpp Source/DataLayer/DataTypes/Assets/Mesh/MeshFactory.h)
 
 add_executable(RenderV2 Source/SampleApps/RenderV2Sample/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS}    )
 target_include_directories(RenderV2 PUBLIC ${CMAKE_SOURCE_DIR})

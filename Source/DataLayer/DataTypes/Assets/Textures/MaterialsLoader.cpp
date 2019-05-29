@@ -7,11 +7,11 @@
 #include <assimp/scene.h>
 #include <TinyXML2/tinyxml2.h>
 
-#include "Model.h"
-#include "Textures/Texture.h"
-#include "Textures/TextureLoader.h"
+#include "Source/DataLayer/DataTypes/Assets/Model.h"
+#include "Texture.h"
+#include "TextureLoader.h"
 
-#include "AssimpConversion.h"
+#include "Source/DataLayer/DataTypes/Assets/AssimpConversion.h"
 
 
 #ifndef XMLCheckResult

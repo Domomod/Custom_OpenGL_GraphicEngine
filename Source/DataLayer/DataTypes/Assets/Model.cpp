@@ -4,7 +4,7 @@
 
 #include "Model.h"
 
-#include "Mesh.h"
+#include "Source/DataLayer/DataTypes/Assets/Mesh/Mesh.h"
 #include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/Skeleton.h"
 #include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimation.h"
 #include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.h"
