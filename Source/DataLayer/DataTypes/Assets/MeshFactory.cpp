@@ -65,3 +65,23 @@ MeshFactory &MeshFactory::addBoneData(int vertId, int boneId, float weight) {
     }
     throw MeshLoadingException("Vertex affected by more than 4 bones.");
 }
+
+void MeshFactory::setNormalMap(const std::shared_ptr<Texture> &normalMap) {
+    MeshFactory::normalMap = normalMap;
+}
+
+void MeshFactory::setAoMap(const std::shared_ptr<Texture> &aoMap) {
+    MeshFactory::aoMap = aoMap;
+}
+
+void MeshFactory::setAlbedoMap(const std::shared_ptr<Texture> &albedoMap) {
+    MeshFactory::albedoMap = albedoMap;
+}
+
+void MeshFactory::setMetallnessMap(const std::shared_ptr<Texture> &metallnessMap) {
+    MeshFactory::metallnessMap = metallnessMap;
+}
+
+void MeshFactory::setRoughnessMap(const std::shared_ptr<Texture> &roughnessMap) {
+    MeshFactory::roughnessMap = roughnessMap;
+}

@@ -8,6 +8,8 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 
+#include <sstream>
+
 #include "Model.h"
 #include "Mesh.h"
 
@@ -16,152 +18,108 @@
 
 void MeshLoader::loadBasicMeshInfo(const aiMesh *aMesh) {
     assimpMesh = aMesh;
-    constructedMesh = std::make_shared<Mesh>();
-
-    constructedMesh->name = assimpToEngine(aMesh->mName);
+    matId = assimpMesh->mMaterialIndex;
 
     for(unsigned int vertIdx = 0; vertIdx < assimpMesh->mNumVertices; vertIdx++){
+        if(!assimpMesh->HasPositions() || !assimpMesh->HasNormals() || !assimpMesh->HasTangentsAndBitangents() ){
+            std::stringstream ss;
+            ss << "hasPositions : "<< std::boolalpha << assimpMesh->HasPositions()             << "\n"
+               << "hasNormal : "   << std::boolalpha << assimpMesh->HasNormals()               << "\n"
+               << "hasTangent : "  << std::boolalpha << assimpMesh->HasTangentsAndBitangents() << "\n";
 
-        aiVector3D pos = assimpMesh->mVertices[vertIdx];
-        constructedMesh->positions.emplace_back(
-                pos.x,
-                pos.y,
-                pos.z
-        );
+            throw MeshLoadingException("Loaded mesh is invalid" + assimpToEngine(assimpMesh->mName) + "\n"
+                                       "Mesh state:\n" + ss.str() );
+        }
+        /*Positions are always included, Normals and Tangents are included or calculated*/
+        aiVector3D position = assimpMesh->mVertices[vertIdx];
+        aiVector3D normal   = assimpMesh->mNormals[vertIdx];
+        aiVector3D tangent  = assimpMesh->mTangents[vertIdx];
 
-        aiVector3D normals = assimpMesh->mNormals[vertIdx];
+        meshFactory.addPosition(glmCast(position));
+        meshFactory.addNormal(glmCast(normal));
+        meshFactory.addTangent(glmCast(tangent));
 
-        constructedMesh->normals.emplace_back(
-                normals.x,
-                normals.y,
-                normals.z
-        );
+        /*Always add an color, because it's cheap*/
+        aiColor4D  color    = assimpMesh->HasVertexColors(0) ? assimpMesh->mColors[0][vertIdx] :
+                                                               aiColor4D(1,0,0,1);
+        meshFactory.addColor(glmCast(color));
 
-        aiVector3D tangent = assimpMesh->mTangents[vertIdx];
-
-        constructedMesh->tangents.emplace_back(
-                tangent.x,
-                tangent.y,
-                tangent.z
-        );
-
-
+        /*Do not create your own tex coords, they won't have any sense when visualised anyway*/
         if(assimpMesh->HasTextureCoords(0)){
-            aiVector3D uvs = assimpMesh->mTextureCoords[0][vertIdx];
-            /* OpenGl describes textures startign from left down corner while most
-             * file formats start from left upper corner. Flipping the coordinates is
-             * faster than flipping actual images.
-             * */
-            constructedMesh->uv.emplace_back(
-                    uvs.x,
-                    1 - uvs.y
-            );
-        } else {
-            constructedMesh->uv.emplace_back(
-                    0,
-                    0
-            );
+            aiVector3D uv = assimpMesh->mTextureCoords[0][vertIdx];
+            meshFactory.addUv(glmTexCoordCast(uv));
         }
 
-        if(assimpMesh->HasVertexColors(0)){
-            aiColor4D color = assimpMesh->mColors[0][vertIdx];
-            constructedMesh->colors.emplace_back(
-                    color.r,
-                    color.g,
-                    color.b,
-                    color.a
-            );
-        }
-        else {
-            constructedMesh->colors.emplace_back(
-                    1,
-                    0,
-                    0,
-                    1
-            );
-        }
     }
 
     for (unsigned int f = 0; f<assimpMesh->mNumFaces; f++)
     {
         aiFace face = assimpMesh->mFaces[f];
-        constructedMesh->indicies.push_back(static_cast<unsigned short &&>(face.mIndices[0]));
-        constructedMesh->indicies.push_back(static_cast<unsigned short &&>(face.mIndices[1]));
-        constructedMesh->indicies.push_back(static_cast<unsigned short &&>(face.mIndices[2]));
+        meshFactory.addFace(face.mIndices[0],
+                            face.mIndices[1],
+                            face.mIndices[2]);
     }
 }
 
 void MeshLoader::addBoneInfo(const std::map<std::__cxx11::string, int> &boneNameToIndexMap) {
-    if(isMeshInitialised() == false){
-        throw MeshLoadingException("Tried to add per vertex bone info to mesh before adding basic vertex info.");
-    }
-    /* At this point Model Loader has already filled the
-     * basic mesh info (positions, color, etc...). Bone info
-     * will be added in a very chaotic way (because of the way
-     * assimp stores bone weights) therefore we need resize boneInfo
-     * vectors right now (to avoid SIGABRT :<).
+    /* At this point Model Loader should have already filled the
+     * basic mesh info (positions, color, etc...). If not bone data
+     * this stage will be ignored.
      * */
-    auto vertexCount = constructedMesh->positions.size();
-    assert(vertexCount!=0);
-    constructedMesh->boneIds.resize(vertexCount, glm::ivec4(0,0,0,0));
-    constructedMesh->boneWeights.resize(vertexCount, glm::vec4(0.f,0.f,0.f,0.f));
-    /* For each bone in mesh;
-     * */
-    for(int i = 0; i < assimpMesh->mNumBones; i++){
-        aiBone* bone = assimpMesh->mBones[i];
-        std::string boneName = assimpToEngine(bone->mName);
-        auto iteratorToBone = boneNameToIndexMap.find(boneName);
-        int boneIdx = iteratorToBone->second;
-        /* For each vertex the bone affects
+    try{
+         /*Bone info will be added unordered (because of the way
+         * assimp stores bone weights) therefore we need to allocate memory
+         * for bone data.
          * */
-        for(int j = 0; j < bone->mNumWeights; j++){
-            aiVertexWeight weight =  bone->mWeights[j];
-            constructedMesh->addBoneData(
-                    weight.mVertexId,
-                    boneIdx,
-                    weight.mWeight
-            );
+        meshFactory.allocateMemoryForBoneData();
+        /* For each bone in mesh;
+         * */
+        for(int i = 0; i < assimpMesh->mNumBones; i++){
+            aiBone* bone = assimpMesh->mBones[i];
+            std::string boneName = assimpToEngine(bone->mName);
+            auto iteratorToBone = boneNameToIndexMap.find(boneName);
+            int boneIdx = iteratorToBone->second;
+            /* For each vertex the bone affects
+             * */
+            for(int j = 0; j < bone->mNumWeights; j++){
+                aiVertexWeight weight =  bone->mWeights[j];
+                meshFactory.addBoneData(
+                        weight.mVertexId,
+                        boneIdx,
+                        weight.mWeight
+                );
+            }
         }
+    }
+    catch (MeshLoadingException& e){
+        std::cerr << "Ignored mesh bone data because of an error:\n" << e.what();
     }
 }
 
 
 std::shared_ptr<Mesh> MeshLoader::make() {
-    if( isMeshInitialised()==false ){
-        throw MeshLoadingException("Tried to return an invalid (empty) mesh");
-    }
-    std::shared_ptr returnPtr = constructedMesh;
-    constructedMesh = nullptr;
-    return returnPtr;
+    std::string name = assimpToEngine(assimpMesh->mName);
+    return meshFactory.make(name);
 }
 
 MeshLoader::MeshLoader() {}
 
 void MeshLoader::addNormalTextures(const std::vector<std::shared_ptr<Texture>> &textures) {
-    addTexture(textures, constructedMesh->normalMap);
+    meshFactory.setNormalMap(textures[matId]);
 }
 
 void MeshLoader::addBaseColorTexture(const std::vector<std::shared_ptr<Texture>> &textures) {
-    addTexture(textures, constructedMesh->albedoMap);
+    meshFactory.setAlbedoMap(textures[matId]);
 }
 
 void MeshLoader::addAOTextures(const std::vector<std::shared_ptr<Texture>> &textures) {
-    addTexture(textures, constructedMesh->aoMap);
+    meshFactory.setAoMap(textures[matId]);
 }
 
 void MeshLoader::addMetallnessTexture(const std::vector<std::shared_ptr<Texture>> &textures) {
-    addTexture(textures, constructedMesh->metallnessMap);
+    meshFactory.setMetallnessMap(textures[matId]);
 }
 
 void MeshLoader::addRoughnessTexture(const std::vector<std::shared_ptr<Texture>> &textures) {
-    addTexture(textures, constructedMesh->roughnessMap);
+    meshFactory.setRoughnessMap(textures[matId]);
 }
-
-
-void MeshLoader::addTexture(const std::vector<std::shared_ptr<Texture>> &textures, std::shared_ptr<Texture> & destinatedTexture) {
-    unsigned int matId = assimpMesh->mMaterialIndex;
-    destinatedTexture = textures[matId];
-}
-
-
-

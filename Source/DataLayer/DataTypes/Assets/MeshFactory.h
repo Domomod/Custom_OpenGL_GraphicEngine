@@ -47,6 +47,16 @@ public:
         return mesh;
     }
 
+    void setNormalMap(const std::shared_ptr<Texture> &normalMap);
+
+    void setAoMap(const std::shared_ptr<Texture> &aoMap);
+
+    void setAlbedoMap(const std::shared_ptr<Texture> &albedoMap);
+
+    void setMetallnessMap(const std::shared_ptr<Texture> &metallnessMap);
+
+    void setRoughnessMap(const std::shared_ptr<Texture> &roughnessMap);
+
 private:
     void clear(){
         positions.clear();

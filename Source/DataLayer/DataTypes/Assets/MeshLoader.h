@@ -9,6 +9,8 @@
 #include <map>
 #include <vector>
 
+#include "MeshFactory.h"
+
 class Mesh;
 class aiMesh;
 class Texture;
@@ -34,11 +36,9 @@ public:
     void addRoughnessTexture(const std::vector<std::shared_ptr<Texture>> & textures);
     std::shared_ptr<Mesh> make();
 private:
-    void addTexture(const std::vector<std::shared_ptr<Texture>> & textures, std::shared_ptr<Texture> & destinatedTexture);
 
-    std::shared_ptr<Mesh> constructedMesh;
-    bool isMeshInitialised(){ return constructedMesh != nullptr; }
-
+    MeshFactory meshFactory;
+    unsigned int matId;
     const aiMesh* assimpMesh;
 };
 
