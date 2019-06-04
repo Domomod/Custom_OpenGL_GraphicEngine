@@ -65,7 +65,7 @@ float calculateCompleteGeometryOcclusion_Smith(float NdotV, float NdotL, float r
 void main() {
 
     /*Temporary data*/
-    vec3 lightCol = vec3 (1.0, 1.0, 1.0);
+    vec3 lightCol = vec3 (0.0, 1.0, 0.0);
     /**/
     vec3 albedo     = texture(albedoMap   , fs_in.fragTexCoord).rgb;
     vec3 ao         = texture(ambientMap  , fs_in.fragTexCoord).rgb;
@@ -115,7 +115,7 @@ void main() {
 
 
     vec3 color =  ambient + outcomingRadiance;
-    //color = color / (color + vec3(1.0)); /*HDR*/
+    color = color / (color + vec3(1.0)); /*HDR*/
     color = pow(color, vec3(1.0/2.2));   /*Gamma correction*/
 
 	fragColor = vec4(color, 1.0);

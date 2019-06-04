@@ -20,16 +20,9 @@
 
 Application::Application() {
 
-
-    basicShader         = std::make_shared<Shader>();
-    texturedShader      = std::make_shared<Shader>();
-    animationShader     = std::make_shared<Shader>();
-    pbrShader           = std::make_shared<Shader>();
-    skyBoxShader        = std::make_shared<Shader>();
-    equirSkyBoxShader   = std::make_shared<Shader>();
-    equirToSkyboxShader = std::make_shared<Shader>();
     loadShaders();
-    TextureLoader::setEquirToCubemapShaderSet(equirToSkyboxShader);
+    TextureLoader::setEquirToCubemapShaderSet(skyBoxFromEquirectangularImageShader);
+    TextureLoader::setEnviromentToDiffuseShader(diffuseIrradianceMapShader);
 
 
     windowInputSystem.connectToWindow(window);
@@ -59,6 +52,7 @@ Application::Application() {
         entitySystem.addEntity("C1", entitySystem.entityFactory.make("Cowboy", glm::vec3(1.5, 0, 0), 3.0f));
 
 
+
     } catch (MeshLoadingException& e){
         std::cerr << e.getMessage();
         exit(1);
@@ -67,15 +61,18 @@ Application::Application() {
 
 void Application::main() {
 
-    std::shared_ptr<Texture> cowboyTexture = TextureLoader::loadTexture("Textures/cowboy.png");
-
+    auto cowboyTexture = TextureLoader::loadTexture("Textures/cowboy.png");
+    auto waterfallEquirectangular = TextureLoader::loadTexture("Textures/equirectangular/Frozen_Waterfall/Frozen_Waterfall_HiRes_TMap.jpg");
+    auto waterfallCubeMap = TextureLoader::calculateCubeMapFromEquirectangularTexture(waterfallEquirectangular);
+    auto skyboxTexture = TextureLoader::loadCubicTexture({"Textures/bricks2.jpg",
+                                                          "Textures/bricks2.jpg",
+                                                          "Textures/bricks2.jpg",
+                                                          "Textures/bricks2.jpg",
+                                                          "Textures/bricks2.jpg",
+                                                          "Textures/bricks2.jpg"});
+    auto diffuseIrradianceMap = TextureLoader::calculateDiffuseIrradianceMapFromEnviromentMap(waterfallCubeMap);
     auto skyboxMesh = MeshGenerator::generateSkyBox();
-    std::shared_ptr<CubicTexture> skyboxTexture = TextureLoader::loadCubicTexture({"Textures/skybox/right.jpg",
-                                                                                   "Textures/skybox/left.jpg",
-                                                                                   "Textures/skybox/top.jpg",
-                                                                                   "Textures/skybox/bottom.jpg",
-                                                                                   "Textures/skybox/front.jpg",
-                                                                                   "Textures/skybox/back.jpg"});
+
 
 
     std::vector<std::shared_ptr<Entity>> entities;
@@ -122,6 +119,7 @@ void Application::main() {
 
 
             basicShaderBuffer.bind();
+
             pbrShader->use();
             for (auto &entity : entities) {
                 ModelViewProjection = Projection * View * entity->getModelSpaceMatrix();
@@ -143,27 +141,27 @@ void Application::main() {
             pbrShader->unuse();
 
             ModelViewProjection = Projection * View;
-
-            /* DRAW LIGHTS
-             * */
-            basicShader->use();
-            std::vector<glm::vec3> lightPos = {glm::vec3(0.3, 5.0, 0.6)};
-            vao.bind();
-            posBuffer.bind();
-            posBuffer.sendBufferToGPUifVaoBinded(lightPos);
-
-            basicShaderBuffer.bakeData();
-            basicShaderBuffer.sendBufferToGPU();
-
-            glPointSize(20);
-            glDrawArrays(GL_POINTS, 0, lightPos.size());
-            vao.unbind();
-            basicShader->unuse();
+//
+//            /* DRAW LIGHTS
+//             * */
+//            basicShader->use();
+//            std::vector<glm::vec3> lightPos = {glm::vec3(0.3, 5.0, 0.6)};
+//            vao.bind();
+//            posBuffer.bind();
+//            posBuffer.sendBufferToGPUifVaoBinded(lightPos);
+//
+//            basicShaderBuffer.bakeData();
+//            basicShaderBuffer.sendBufferToGPU();
+//
+//            glPointSize(20);
+//            glDrawArrays(GL_POINTS, 0, lightPos.size());
+//            vao.unbind();
+//            basicShader->unuse();
 
             /* DRAW SKYBOX
              * */
             skyBoxShader->use();
-            skyboxTexture->bind(0);
+            waterfallCubeMap->bind(0);
 
             skyboxMesh->bindVao();
 
@@ -202,17 +200,17 @@ void Application::loadShaders() {
         pbrShader->loadFromFile(Shader::FRAGMENT, "../Shaders/FORWARD_PBR_RM_TANGENT_SPACE/fragment.glsl");
         pbrShader->createAndLinkProgram();
 
-        skyBoxShader->loadFromFile(Shader::VERTEX, "../Shaders/SkyBox/vertex.glsl");
-        skyBoxShader->loadFromFile(Shader::FRAGMENT, "../Shaders/SkyBox/fragment.glsl");
+        skyBoxShader->loadFromFile(Shader::VERTEX, "../Shaders/CubeMaps/centered_cube_map_vertex.glsl");
+        skyBoxShader->loadFromFile(Shader::FRAGMENT, "../Shaders/CubeMaps/SkyBox/fragment.glsl");
         skyBoxShader->createAndLinkProgram();
 
-        equirSkyBoxShader->loadFromFile(Shader::VERTEX, "../Shaders/EquirSkyBox/vertex.glsl");
-        equirSkyBoxShader->loadFromFile(Shader::FRAGMENT, "../Shaders/EquirSkyBox/fragment.glsl");
-        equirSkyBoxShader->createAndLinkProgram();
+        skyBoxFromEquirectangularImageShader->loadFromFile(Shader::VERTEX, "../Shaders/CubeMaps/centered_cube_map_vertex.glsl");
+        skyBoxFromEquirectangularImageShader->loadFromFile(Shader::FRAGMENT, "../Shaders/CubeMaps/EquirSkyBox/fragment.glsl");
+        skyBoxFromEquirectangularImageShader->createAndLinkProgram();
 
-        equirToSkyboxShader->loadFromFile(Shader::VERTEX, "../Shaders/EquiretangularToCubemap/vertex.glsl");
-        equirToSkyboxShader->loadFromFile(Shader::FRAGMENT, "../Shaders/EquiretangularToCubemap/fragment.glsl");
-        equirToSkyboxShader->createAndLinkProgram();
+        diffuseIrradianceMapShader->loadFromFile(Shader::VERTEX,   "../Shaders/CubeMaps/centered_cube_map_vertex.glsl");
+        diffuseIrradianceMapShader->loadFromFile(Shader::FRAGMENT, "../Shaders/CubeMaps/DiffuseIrradianceMap/fragment.glsl");
+        diffuseIrradianceMapShader->createAndLinkProgram();
 
         shadersCompiled = true;
     } catch( MyException& e) { /*TODO: add hierarchy for shader exceptions*/
@@ -227,6 +225,5 @@ void Application::freeResources() {
     animationShader->deleteProgram();
     pbrShader->deleteProgram();
     skyBoxShader->deleteProgram();
-    equirSkyBoxShader->deleteProgram();
-    equirToSkyboxShader->deleteProgram();
+    skyBoxFromEquirectangularImageShader->deleteProgram();
 }

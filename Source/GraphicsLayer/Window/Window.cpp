@@ -23,7 +23,6 @@ Window::Window(std::string title, int width, int height) {
 
 
 Window::~Window() {
-    //TODO: move to a method
     glfwDestroyWindow(window);
 }
 

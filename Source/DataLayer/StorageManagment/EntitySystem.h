@@ -19,7 +19,6 @@
  *
  *  It consists of samller classes that do the actual storing, sorting, acquiring.
  *
- *  TODO: fix those:
  *  TODO: acquiring an entity or model is not ideal yet as it's an O(log n) op.
  *  TODO: not baking data requires the user to refer to pointer to a pointer to modify model data.
  * */

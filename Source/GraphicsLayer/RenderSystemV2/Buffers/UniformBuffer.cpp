@@ -37,6 +37,11 @@ UniformBuffer::UniformBuffer(GLuint binding, size_t bakedDataSize, const std::ve
                                                                                      uniformsMetadata(
                                                                                              uniformsMetadata) {}
 
+void UniformBuffer::bindBakeSend() {
+    bind();
+    bakeData();
+    sendBufferToGPU();
+}
 
 
 //FACTORY

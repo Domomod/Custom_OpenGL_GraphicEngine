@@ -5,15 +5,12 @@
 #include "TextureLoader.h"
 
 #include <SOIL/SOIL.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 #include "Source/MyExceptions.h"
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/VertexArrayObject.h"
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/AttributeBuffer.h"
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/UniformBuffer.h"
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/ElementArrayBuffer.h"
-#include "Source/DataLayer/DataTypes/Assets/Mesh/MeshGenerator.h"
 #include "Source/DataLayer/DataTypes/Assets/Mesh/Mesh.h"
 
 #include "Texture.h"
@@ -66,67 +63,49 @@ std::shared_ptr<CubicTexture> TextureLoader::loadCubicTexture(const std::vector<
     return returnTexture;
 }
 
-std::shared_ptr<CubicTexture> TextureLoader::loadCubicTextureFromEquirectangluar(
+std::shared_ptr<CubicTexture> TextureLoader::calculateCubeMapFromEquirectangularTexture(
         const std::shared_ptr<Texture> &texture) {
+
     if(!isEquirToCubemapShaderSet){
         throw TextureConverterShaderNotSet("Tried to create a cubic texture from a "
                                            "equirectangular image, without providing a converter shader.\n");
     }
 
-    VertexArrayObject vao;
-    vao.bind();
+    texture->bind(0);
+    equirToCubemapShader->use();
+    unsigned int cubeMap = createCubeMap(512);
+    texture->bind(0);
+    cubeMap = renderToCubeMap(cubeMap, 512);
 
-    glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
-    glm::mat4 captureViews[] =
-            {
-                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
-                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
-                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
-            };
+    equirToCubemapShader->unuse();
+    return std::make_shared<CubicTexture>(cubeMap);
+}
 
-    auto skyboxMesh = MeshGenerator::generateSkyBox();
+std::shared_ptr<CubicTexture>TextureLoader::calculateDiffuseIrradianceMapFromEnviromentMap(
+        const std::shared_ptr<CubicTexture> &enviromentMap) {
 
-    GLint previousViewport[4];
-    glGetIntegerv( GL_VIEWPORT, previousViewport );
+    if(!isEnviromentToDiffuseShaderSet){
+        throw TextureConverterShaderNotSet("Tried to create a diffuse map from a "
+                                           "enviroment map, without providing a converter shader.\n");
+    }
 
-    skyboxMesh->bindVao();
+    enviromentToDiffuseShader->use();
+    unsigned int cubeMap = createCubeMap(512);
+    enviromentMap->bind(0);
+    cubeMap = renderToCubeMap(cubeMap, 512);
 
-    glm::mat4 Projection;
-    glm::mat4 View;
-    UniformBuffer basicShaderBuffer = UniformBufferFactory()
-            .setBinding(0)
-            .insert( UniformMetadata( &Projection, GL_FLOAT_MAT4 ) )
-            .insert( UniformMetadata( &View, GL_FLOAT_MAT4 ) )
-            .make();
+    enviromentToDiffuseShader->unuse();
+    return std::make_shared<CubicTexture>(cubeMap);
+}
 
-
-    /*Create framebuffers*/
-    unsigned int captureFBO, captureRBO;
-    glGenFramebuffers(1, &captureFBO);
-    glGenRenderbuffers(1, &captureRBO);
-
-    unsigned int cubeMapSize = 512;
-
-    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-    glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, cubeMapSize, cubeMapSize);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
+unsigned int TextureLoader::createCubeMap(unsigned int cubeMapSize) {
+    unsigned int cubeMap;
 
     /*Create cubemap*/
-    unsigned int cubeMap;
     glGenTextures(1, &cubeMap);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap);
 
     /*TODO: add mipmaps*/
-//    glTexStorage2D( GL_TEXTURE_CUBE_MAP,
-//                    1,
-//                    GL_RGBA32F,
-//                    cubeMapSize,
-//                    cubeMapSize
-//                    );
     for (unsigned int i = 0; i < 6; i++)
     {
         // note that we store each face with 16 bit floating point values
@@ -140,20 +119,49 @@ std::shared_ptr<CubicTexture> TextureLoader::loadCubicTextureFromEquirectangluar
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    /*Render to cube map*/
-    texture->bind(0);
-    glDepthFunc(GL_LEQUAL);
-    glViewport(0,0,cubeMapSize, cubeMapSize);
+    return cubeMap;
+}
+
+
+unsigned int TextureLoader::renderToCubeMap(unsigned int cubeMap, unsigned int cubeMapSize) {
+    GLint previousViewport[4];
+    glGetIntegerv(GL_VIEWPORT, previousViewport );
+
+    if(!isSkyboxGenerated) {
+        skyboxMesh = MeshGenerator::generateSkyBox();
+        isSkyboxGenerated = true;
+    }
+    skyboxMesh->bindVao();
+
+    glm::mat4 Projection;
+    glm::mat4 View;
+    UniformBuffer basicMatriciesBuffer = UniformBufferFactory()
+            .setBinding(0)
+            .insert( UniformMetadata( &Projection, GL_FLOAT_MAT4 ) )
+            .insert( UniformMetadata( &View, GL_FLOAT_MAT4 ) )
+            .make();
+
+
+
+    /*Create framebuffers*/
+    unsigned int captureFBO, captureRBO;
+    glGenFramebuffers(1, &captureFBO);
+    glGenRenderbuffers(1, &captureRBO);
+
     glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-    equirToCubemapShader->use();
+    glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, cubeMapSize, cubeMapSize);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
+
+    /*Render to cube map*/
+    glDepthFunc(GL_LEQUAL);
+    glViewport(0, 0, cubeMapSize, cubeMapSize);
+    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
     for(unsigned int face = 0; face < 6; face++){
         Projection = captureProjection;
         View = captureViews[face];
 
-        basicShaderBuffer.bind();
-        basicShaderBuffer.bakeData();
-        basicShaderBuffer.sendBufferToGPU();
-
+        basicMatriciesBuffer.bindBakeSend();
 
         glFramebufferTexture2D( GL_FRAMEBUFFER,
                                 GL_COLOR_ATTACHMENT0,
@@ -167,17 +175,31 @@ std::shared_ptr<CubicTexture> TextureLoader::loadCubicTextureFromEquirectangluar
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    equirToCubemapShader->unuse();
 
     glViewport(previousViewport[0],
                previousViewport[1],
                previousViewport[2],
-               previousViewport[3]);       
-
-    return std::make_shared<CubicTexture>(cubeMap);
+               previousViewport[3]);
+    return cubeMap;
 }
 
-void TextureLoader::setEquirToCubemapShaderSet(const std::shared_ptr<Shader> &equirToCubemapShaderSet) {
+
+TextureLoader::TextureLoader() {
+    if(!isSkyboxGenerated) {
+        skyboxMesh = MeshGenerator::generateSkyBox();
+        isSkyboxGenerated = true;
+    }
+}
+
+void TextureLoader::setEquirToCubemapShaderSet(const std::shared_ptr<Shader> &shader) {
     isEquirToCubemapShaderSet = true;
-    TextureLoader::equirToCubemapShader = equirToCubemapShaderSet;
+    equirToCubemapShader = shader;
 }
+
+void TextureLoader::setEnviromentToDiffuseShader(const std::shared_ptr<Shader> &shader) {
+    isEnviromentToDiffuseShaderSet = true;
+    enviromentToDiffuseShader = shader;
+}
+
+
+

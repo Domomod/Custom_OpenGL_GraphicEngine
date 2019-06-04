@@ -39,14 +39,14 @@ private:
     OnChangeListener<std::pair<int,int>> windowResizeListener;
     OnChangeListener<KeyInfo> keyActionListener;
 
-    std::shared_ptr<Shader> basicShader;
-    std::shared_ptr<Shader> waterShader;
-    std::shared_ptr<Shader> texturedShader;
-    std::shared_ptr<Shader> animationShader;
-    std::shared_ptr<Shader> pbrShader;
-    std::shared_ptr<Shader> skyBoxShader;
-    std::shared_ptr<Shader> equirSkyBoxShader;
-    std::shared_ptr<Shader> equirToSkyboxShader;
+    std::shared_ptr<Shader> basicShader                          = std::make_shared<Shader>();
+    std::shared_ptr<Shader> waterShader                          = std::make_shared<Shader>();
+    std::shared_ptr<Shader> texturedShader                       = std::make_shared<Shader>();
+    std::shared_ptr<Shader> animationShader                      = std::make_shared<Shader>();
+    std::shared_ptr<Shader> pbrShader                            = std::make_shared<Shader>();
+    std::shared_ptr<Shader> skyBoxShader                         = std::make_shared<Shader>();
+    std::shared_ptr<Shader> skyBoxFromEquirectangularImageShader = std::make_shared<Shader>();
+    std::shared_ptr<Shader> diffuseIrradianceMapShader           = std::make_shared<Shader>();
 
     bool shadersCompiled = false;
 

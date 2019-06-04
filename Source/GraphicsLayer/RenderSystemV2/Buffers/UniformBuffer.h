@@ -20,8 +20,9 @@ class UniformBuffer : public Buffer{
 friend class UniformBufferFactory;
 public:
     void bind();
-
     void unbind();
+
+    void bindBakeSend();
 
     void sendBufferToGPU();
     void bakeData();
