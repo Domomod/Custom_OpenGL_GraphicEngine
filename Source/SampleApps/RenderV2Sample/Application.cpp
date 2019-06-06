@@ -12,12 +12,11 @@
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/UniformBuffer.h"
 
 #include "Source/DataLayer/DataTypes/Assets/Mesh/MeshGenerator.h"
-#include "Source/DataLayer/DataTypes/Assets/ModelLoader.h"
 #include "Source/DataLayer/DataTypes/Assets/Model.h"
 #include "Source/DataLayer/DataTypes/Assets/Textures/Texture.h"
 #include "Source/DataLayer/DataTypes/Assets/Textures/CubicTexture.h"
 #include "Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.h"
-
+#include "Source/DataLayer/DataTypes/Assets/Textures/MaterialsLoader.h"
 Application::Application() {
 
     loadShaders();
@@ -45,13 +44,32 @@ Application::Application() {
     window.getResizeNotifierPtr()->addListener(&windowResizeListener);
 
     try {
-        entitySystem.addModel("Mech", ModelLoader::loadModel("Models/CleanMetalKnight/Knight.obj"));
-        entitySystem.addEntity("M1", entitySystem.entityFactory.make("Mech", glm::vec3(-1.5, 0, 0), 3.0f));
+        /*TODO: add material alliasses to only load one knight*/
+        entitySystem.addModel("Mech", modelLoader.loadEmbededMaterials()
+                                                 .loadModel("Models/CleanMetalKnight/Knight.obj"));
+        entitySystem.addEntity("M1", entitySystem.entityFactory.make("Mech", glm::vec3(-1.5, -0.5, -1), 3.0f));
 
-        entitySystem.addModel("Cowboy", ModelLoader::loadModel("Models/WornMetalKnight/Knight.obj"));
-        entitySystem.addEntity("C1", entitySystem.entityFactory.make("Cowboy", glm::vec3(1.5, 0, 0), 3.0f));
+        entitySystem.addModel("Cowboy", modelLoader.loadEmbededMaterials()
+                                                   .loadModel("Models/WornMetalKnight/Knight.obj"));
+        entitySystem.addEntity("C1", entitySystem.entityFactory.make("Cowboy", glm::vec3(1.5, -0.5, -1), 3.0f));
 
-
+        MaterialsLoader materialsLoader;
+//
+//        entitySystem.addModel("Sphere1", modelLoader.loadModel("Meshes/smooth_sphere.dae"));
+//        entitySystem.getModel("Sphere1")->meshes[0]->setMaterial(materialsLoader);
+//        entitySystem.addEntity("Sphere1", entitySystem.entityFactory.make("Sphere1", glm::vec3( 3.0, -0.5, 2.0)));
+//
+//        entitySystem.addModel("Sphere2", modelLoader.loadModel("Meshes/smooth_sphere.dae"));
+//        entitySystem.addEntity("Sphere2", entitySystem.entityFactory.make("Sphere2", glm::vec3( 1.5, -0.5, 2.0)));
+//
+//        entitySystem.addModel("Sphere3", modelLoader.loadModel("Meshes/smooth_sphere.dae"));
+//        entitySystem.addEntity("Sphere3", entitySystem.entityFactory.make("Sphere3", glm::vec3( 0.0, -0.5, 2.0)));
+//
+//        entitySystem.addModel("Sphere4", modelLoader.loadModel("Meshes/smooth_sphere.dae"));
+//        entitySystem.addEntity("Sphere4", entitySystem.entityFactory.make("Sphere4", glm::vec3(-1.5, -0.5, 2.0)));
+//
+//        entitySystem.addModel("Sphere5", modelLoader.loadModel("Meshes/smooth_sphere.dae"));
+//        entitySystem.addEntity("Sphere5", entitySystem.entityFactory.make("Sphere5", glm::vec3(-3.0, -0.5, 2.0)));
 
     } catch (MeshLoadingException& e){
         std::cerr << e.getMessage();
@@ -62,17 +80,16 @@ Application::Application() {
 void Application::main() {
 
     auto cowboyTexture = TextureLoader::loadTexture("Textures/cowboy.png");
-    auto waterfallEquirectangular = TextureLoader::loadTexture("Textures/equirectangular/Frozen_Waterfall/Frozen_Waterfall_HiRes_TMap.jpg");
-    auto waterfallCubeMap = TextureLoader::calculateCubeMapFromEquirectangularTexture(waterfallEquirectangular);
-    auto skyboxTexture = TextureLoader::loadCubicTexture({"Textures/bricks2.jpg",
-                                                          "Textures/bricks2.jpg",
-                                                          "Textures/bricks2.jpg",
-                                                          "Textures/bricks2.jpg",
-                                                          "Textures/bricks2.jpg",
-                                                          "Textures/bricks2.jpg"});
-    auto diffuseIrradianceMap = TextureLoader::calculateDiffuseIrradianceMapFromEnviromentMap(waterfallCubeMap);
-    auto skyboxMesh = MeshGenerator::generateSkyBox();
-
+//    auto waterfallEquirectangular = TextureLoader::loadTexture("Textures/equirectangular/Frozen_Waterfall/Frozen_Waterfall_HiRes_TMap.jpg");
+//    auto waterfallCubeMap = TextureLoader::calculateCubeMapFromEquirectangularTexture(waterfallEquirectangular);
+//    auto skyboxTexture = TextureLoader::loadCubicTexture({"Textures/bricks2.jpg",
+//                                                          "Textures/bricks2.jpg",
+//                                                          "Textures/bricks2.jpg",
+//                                                          "Textures/bricks2.jpg",
+//                                                          "Textures/bricks2.jpg",
+//                                                          "Textures/bricks2.jpg"});
+//    auto diffuseIrradianceMap = TextureLoader::calculateDiffuseIrradianceMapFromEnviromentMap(waterfallCubeMap);
+//    auto skyboxMesh = MeshGenerator::generateSkyBox();
 
 
     std::vector<std::shared_ptr<Entity>> entities;
@@ -160,18 +177,18 @@ void Application::main() {
 
             /* DRAW SKYBOX
              * */
-            skyBoxShader->use();
-            waterfallCubeMap->bind(0);
+//            skyBoxShader->use();
+//            waterfallCubeMap->bind(0);
+//
+//            skyboxMesh->bindVao();
+//
+//            skyShaderBuffer.bind();
+//            skyShaderBuffer.bakeData();
+//            skyShaderBuffer.sendBufferToGPU();
+//
+//            glDrawElements(GL_TRIANGLES, skyboxMesh->getIndiciesCount(), GL_UNSIGNED_SHORT, nullptr);
 
-            skyboxMesh->bindVao();
-
-            skyShaderBuffer.bind();
-            skyShaderBuffer.bakeData();
-            skyShaderBuffer.sendBufferToGPU();
-
-            glDrawElements(GL_TRIANGLES, skyboxMesh->getIndiciesCount(), GL_UNSIGNED_SHORT, nullptr);
-
-            skyBoxShader->unuse();
+//            skyBoxShader->unuse();
             window.swapBuffers();
         }
         windowInputSystem.pollEvents();

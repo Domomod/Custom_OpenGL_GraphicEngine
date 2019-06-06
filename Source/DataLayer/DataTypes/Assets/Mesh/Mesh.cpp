@@ -6,6 +6,7 @@
 
 #include "Source/DataLayer/DataTypes/Assets/Textures/Texture.h"
 #include "Source/MyExceptions.h"
+#include "Source/DataLayer/DataTypes/Assets/Textures/MaterialsLoader.h"
 
 
 Mesh::Mesh(const std::string &name,
@@ -69,3 +70,12 @@ void Mesh::unbindColors()  { colorsB.unbind( vao.getVaoName());     }
 void Mesh::unbindUvs()     { uvB.unbind( vao.getVaoName());         }
 void Mesh::unbindBoneInfo(){ boneIdsB.unbind( vao.getVaoName());
                              boneWeightsB.unbind( vao.getVaoName());}
+
+void Mesh::setMaterial(MaterialsLoader& materialsLoader) {
+    /*TODO: add a new class Material*/
+    albedoMap       = materialsLoader.albedoMaps[0];
+    aoMap           = materialsLoader.ambientMaps[0];
+    metallnessMap   = materialsLoader.metalnessMaps[0];
+    roughnessMap    = materialsLoader.roughnessMaps[0];
+    normalMap       = materialsLoader.normalMaps[0];
+}

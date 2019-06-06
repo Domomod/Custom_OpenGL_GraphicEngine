@@ -9,6 +9,7 @@
 #include <assimp/scene.h>
 
 #include <sstream>
+#include <Source/DataLayer/DataTypes/Assets/Textures/MaterialsLoader.h>
 
 #include "Source/DataLayer/DataTypes/Assets/Model.h"
 #include "Mesh.h"
@@ -122,4 +123,12 @@ void MeshLoader::addMetallnessTexture(const std::vector<std::shared_ptr<Texture>
 
 void MeshLoader::addRoughnessTexture(const std::vector<std::shared_ptr<Texture>> &textures) {
     meshFactory.setRoughnessMap(textures[matId]);
+}
+
+void MeshLoader::addMaterial(const MaterialsLoader &materialLoader, unsigned int matID) {
+    meshFactory.setNormalMap(       materialLoader.normalMaps[matID]);
+    meshFactory.setAlbedoMap(       materialLoader.albedoMaps[matID]);
+    meshFactory.setAoMap(           materialLoader.ambientMaps[matID]);
+    meshFactory.setMetallnessMap(   materialLoader.metalnessMaps[matID]);
+    meshFactory.setRoughnessMap(    materialLoader.roughnessMaps[matID]);
 }

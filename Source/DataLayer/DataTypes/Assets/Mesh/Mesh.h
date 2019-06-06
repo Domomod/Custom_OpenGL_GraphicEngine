@@ -14,6 +14,7 @@
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/ElementArrayBuffer.h"
 
 class Texture;
+class MaterialsLoader;
 
 class Mesh {
 public:
@@ -47,6 +48,8 @@ public:
     void unbindUvs();
     void unbindBoneInfo();
 
+
+    void setMaterial(MaterialsLoader& materialsLoader);
 
     unsigned int getIndiciesCount() const;
 

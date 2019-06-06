@@ -27,6 +27,7 @@ public:
     std::vector< std::shared_ptr<Texture> > roughnessMaps;
 
     void loadMaterials();
+    void loadMaterial(const std::string & filePath);
 
     void setScene(const aiScene *scene);
 

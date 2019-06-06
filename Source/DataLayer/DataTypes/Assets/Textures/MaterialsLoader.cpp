@@ -57,33 +57,8 @@ void MaterialsLoader::setDirectory(const std::string &directory) {
 
 
 void MaterialsLoader::loadMaterialXML(aiMaterial * assimpMaterial) {
-    using namespace tinyxml2;
-
     std::string filePath = getPathToMaterial(assimpMaterial);
-
-    XMLDocument xmlDocument;
-    XMLError xmlResult = xmlDocument.LoadFile(filePath.c_str());
-    XMLCheckResult(xmlResult);
-
-    XMLNode * xmlMaterial = xmlDocument.FirstChildElement("material");
-
-    XMLElement * xmlAlbedo    = xmlMaterial->FirstChildElement("albedo");
-    XMLElement * xmlAmbient   = xmlMaterial->FirstChildElement("ambient");
-    XMLElement * xmlMetalness = xmlMaterial->FirstChildElement("metalness");
-    XMLElement * xmlRoughness = xmlMaterial->FirstChildElement("roughness");
-    XMLElement * xmlNormal    = xmlMaterial->FirstChildElement("normal");
-
-    std::string albedoPath    = elementTextToString(xmlAlbedo);
-    std::string ambientPath   = elementTextToString(xmlAmbient);
-    std::string metalnessPath = elementTextToString(xmlMetalness);
-    std::string roughnessPath = elementTextToString(xmlRoughness);
-    std::string normalPath    = elementTextToString(xmlNormal);
-
-    loadMaterialAtribute(albedoMaps, albedoPath);
-    loadMaterialAtribute(ambientMaps, ambientPath);
-    loadMaterialAtribute(metalnessMaps, metalnessPath);
-    loadMaterialAtribute(roughnessMaps, roughnessPath);
-    loadMaterialAtribute(normalMaps, normalPath);
+    loadMaterial(filePath);
 }
 
 
@@ -121,6 +96,34 @@ std::string MaterialsLoader::getPathToMaterialTexture(const std::string &texture
 #error "OS not supported"
 #endif
     return filePath;
+}
+
+void MaterialsLoader::loadMaterial(const std::string &  filePath) {
+    using namespace tinyxml2;
+
+    XMLDocument xmlDocument;
+    XMLError xmlResult = xmlDocument.LoadFile(filePath.c_str());
+    XMLCheckResult(xmlResult);
+
+    XMLNode * xmlMaterial = xmlDocument.FirstChildElement("material");
+
+    XMLElement * xmlAlbedo    = xmlMaterial->FirstChildElement("albedo");
+    XMLElement * xmlAmbient   = xmlMaterial->FirstChildElement("ambient");
+    XMLElement * xmlMetalness = xmlMaterial->FirstChildElement("metalness");
+    XMLElement * xmlRoughness = xmlMaterial->FirstChildElement("roughness");
+    XMLElement * xmlNormal    = xmlMaterial->FirstChildElement("normal");
+
+    std::string albedoPath    = elementTextToString(xmlAlbedo);
+    std::string ambientPath   = elementTextToString(xmlAmbient);
+    std::string metalnessPath = elementTextToString(xmlMetalness);
+    std::string roughnessPath = elementTextToString(xmlRoughness);
+    std::string normalPath    = elementTextToString(xmlNormal);
+
+    loadMaterialAtribute(albedoMaps, albedoPath);
+    loadMaterialAtribute(ambientMaps, ambientPath);
+    loadMaterialAtribute(metalnessMaps, metalnessPath);
+    loadMaterialAtribute(roughnessMaps, roughnessPath);
+    loadMaterialAtribute(normalMaps, normalPath);
 }
 
 

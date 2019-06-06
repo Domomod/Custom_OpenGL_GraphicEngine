@@ -7,21 +7,20 @@
 
 #include <memory>
 #include <map>
+#include <assimp/cimport.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/Importer.hpp>
 
-class Model;
-class MeshLoader;
-class MaterialsLoader;
+#include "Model.h"
+#include "Source/DataLayer/DataTypes/Assets/Mesh/MeshLoader.h"
+#include "Source/DataLayer/DataTypes/Assets/Textures/MaterialsLoader.h"
+#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonLoader.h"
+#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimation.h"
+#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.h"
+#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonAnimationLoader.h"
 
 
-namespace SkeletalSystem{
-    class SkeletonLoader;
-    class SkeletonAnimationLoader;
-}
-
-namespace Assimp{
-    class Importer;
-}
-class aiScene;
 
 /* Assimp is able to load whole scenes containing hierarchy of meshes etc ... (formats 3ds, collada)
  * I decided the Game Engine will only load single Models, and leave the scene making
@@ -29,26 +28,43 @@ class aiScene;
  * */
 class ModelLoader {
 public:
-    static std::shared_ptr<Model> loadModel(const std::string &path);
+    std::shared_ptr<Model> loadModel(const std::string &path);
+
+    ModelLoader& loadEmbededMaterials(){
+        usingEmbededMaterials = true;
+        usingSpecifiedMaterial = false;
+        return *this;
+    }
+    ModelLoader& loadSpecificMaterial(const std::string& path){
+        usingEmbededMaterials = false;
+        usingSpecifiedMaterial = true;
+        materialPath = path;
+        return *this;
+    }
+
 private:
-    static const aiScene *scene;
-    static bool hasSkeleton;
-    static std::string directory;
+    const aiScene *scene;
+    bool hasSkeleton;
+    std::string directory;
 
-    static MeshLoader meshLoader;
-    static SkeletalSystem::SkeletonLoader skeletonLoader;
-    static SkeletalSystem::SkeletonAnimationLoader animationLoader;
-    static MaterialsLoader materialsLoader;
+    bool usingEmbededMaterials = false;
+    bool usingSpecifiedMaterial = false;
+    std::string materialPath;
 
-    static Assimp::Importer importer;
+    MeshLoader meshLoader;
+    SkeletalSystem::SkeletonLoader skeletonLoader;
+    SkeletalSystem::SkeletonAnimationLoader animationLoader;
+    MaterialsLoader materialsLoader;
 
-    static void loadSkeleton(const std::shared_ptr<Model> &thisModel);
+    Assimp::Importer importer;
 
-    static void loadSkeletalAnimations(const std::shared_ptr<Model> &thisModel);
+    void loadSkeleton(const std::shared_ptr<Model> &thisModel);
 
-    static void loadMeshes(const std::shared_ptr<Model> &thisModel);
+    void loadSkeletalAnimations(const std::shared_ptr<Model> &thisModel);
 
-    static void loadMaterials();
+    void loadMeshes(const std::shared_ptr<Model> &thisModel);
+
+    void loadMaterials();
 };
 
 

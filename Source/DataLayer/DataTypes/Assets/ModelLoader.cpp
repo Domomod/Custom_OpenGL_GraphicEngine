@@ -5,34 +5,10 @@
 #include "ModelLoader.h"
 
 #include <map>
-#include <assimp/cimport.h>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include <assimp/Importer.hpp>
-
-#include "Model.h"
-#include "Source/DataLayer/DataTypes/Assets/Mesh/MeshLoader.h"
-#include "Source/DataLayer/DataTypes/Assets/Textures/MaterialsLoader.h"
-#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonLoader.h"
-#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimation.h"
-#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.h"
-#include "Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonAnimationLoader.h"
 
 #include "Utility.h"
 #include "Source/MyExceptions.h"
 
-
-bool        ModelLoader::hasSkeleton = false;
-std::string ModelLoader::directory;
-
-MeshLoader      ModelLoader::meshLoader;
-MaterialsLoader ModelLoader::materialsLoader;
-
-SkeletalSystem::SkeletonLoader          ModelLoader::skeletonLoader;
-SkeletalSystem::SkeletonAnimationLoader ModelLoader::animationLoader;
-
-const aiScene   *ModelLoader::scene;
-Assimp::Importer ModelLoader::importer;
 
 
 std::shared_ptr<Model> ModelLoader::loadModel( const std::string &path ) {
@@ -68,8 +44,12 @@ std::shared_ptr<Model> ModelLoader::loadModel( const std::string &path ) {
 
     loadSkeleton(thisModel);
     loadSkeletalAnimations(thisModel);
+
     loadMaterials();
     loadMeshes(thisModel);
+
+    usingEmbededMaterials = false;
+    usingSpecifiedMaterial = false;
 
     return thisModel;
 }
@@ -81,11 +61,15 @@ void ModelLoader::loadMeshes(const std::shared_ptr<Model> &thisModel) {
         if(hasSkeleton)
             meshLoader.addBoneInfo(skeletonLoader.getBoneNameToboneIdMap());
 
-        meshLoader.addNormalTextures(    materialsLoader.normalMaps    );
-        meshLoader.addAOTextures(        materialsLoader.ambientMaps   );
-        meshLoader.addBaseColorTexture(  materialsLoader.albedoMaps    );
-        meshLoader.addMetallnessTexture( materialsLoader.metalnessMaps );
-        meshLoader.addRoughnessTexture(  materialsLoader.roughnessMaps );
+        if(usingEmbededMaterials) {
+            meshLoader.addNormalTextures(materialsLoader.normalMaps);
+            meshLoader.addAOTextures(materialsLoader.ambientMaps);
+            meshLoader.addBaseColorTexture(materialsLoader.albedoMaps);
+            meshLoader.addMetallnessTexture(materialsLoader.metalnessMaps);
+            meshLoader.addRoughnessTexture(materialsLoader.roughnessMaps);
+        } else if (usingSpecifiedMaterial){
+            meshLoader.addMaterial(materialsLoader, 0);
+        }
 
         thisModel->meshes.push_back(meshLoader.make());
     }
@@ -111,8 +95,12 @@ void ModelLoader::loadSkeleton(const std::shared_ptr<Model> &thisModel) {
 }
 
 void ModelLoader::loadMaterials() {
-    materialsLoader.setScene(scene);
-    materialsLoader.setDirectory(directory);
-    materialsLoader.loadMaterials();
+    if(usingEmbededMaterials){
+        materialsLoader.setScene(scene);
+        materialsLoader.setDirectory(directory);
+        materialsLoader.loadMaterials();
+    } else if (usingSpecifiedMaterial){
+        materialsLoader.loadMaterial(materialPath);
+    }
 }
 

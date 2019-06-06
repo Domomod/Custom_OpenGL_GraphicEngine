@@ -15,6 +15,7 @@
 #include "Source/GraphicsLayer/FreeCamera.h"
 
 #include "Source/DataLayer/StorageManagment/EntitySystem.h"
+#include "Source/DataLayer/DataTypes/Assets/ModelLoader.h"
 
 
 class Application {
@@ -35,6 +36,7 @@ private:
     WindowInputSystem windowInputSystem;
     FreeCamera        freeCamera;
     EntitySystem entitySystem;
+    ModelLoader modelLoader;
 
     OnChangeListener<std::pair<int,int>> windowResizeListener;
     OnChangeListener<KeyInfo> keyActionListener;
