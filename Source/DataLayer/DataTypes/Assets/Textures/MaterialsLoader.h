@@ -33,6 +33,8 @@ public:
 
     void setDirectory(const std::string &directory);
 
+    void clear();
+
 private:
 
     void loadMaterialAtribute(std::vector<std::shared_ptr<Texture> > &atributeVector,

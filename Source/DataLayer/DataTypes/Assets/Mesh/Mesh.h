@@ -76,6 +76,7 @@ private:
 
     bool hasColors;
     bool hasUvs;
+    bool hasTangents;
     bool hasBones;
 };
 

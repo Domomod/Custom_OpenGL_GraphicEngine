@@ -30,12 +30,12 @@ class ModelLoader {
 public:
     std::shared_ptr<Model> loadModel(const std::string &path);
 
-    ModelLoader& loadEmbededMaterials(){
+    ModelLoader& useEmbededMaterials(){
         usingEmbededMaterials = true;
         usingSpecifiedMaterial = false;
         return *this;
     }
-    ModelLoader& loadSpecificMaterial(const std::string& path){
+    ModelLoader& useSpecificMaterial(const std::string &path){
         usingEmbededMaterials = false;
         usingSpecifiedMaterial = true;
         materialPath = path;

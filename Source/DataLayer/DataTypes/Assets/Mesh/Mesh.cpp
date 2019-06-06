@@ -23,20 +23,31 @@ Mesh::Mesh(const std::string &name,
 
     vao.bind();
 
+    hasColors = !colors.empty();
+    hasUvs = !uvs.empty();
+    hasBones = !boneIds.empty();
+    hasTangents = !tangents.empty();
+
     positionsB.bufferData(positions);
-    colorsB.bufferData(colors);
-    uvB.bufferData(uvs);
     normalsB.bufferData(normals);
-    tangentsB.bufferData(tangents);
-    boneIdsB.bufferData(boneIds);
-    boneWeightsB.bufferData(boneWeights);
+
+    if (hasColors)
+        colorsB.bufferData(colors);
+
+    if (hasUvs)
+        uvB.bufferData(uvs);
+
+    if (hasTangents)
+        tangentsB.bufferData(tangents);
+
+    if (hasBones){
+        boneIdsB.bufferData(boneIds);
+        boneWeightsB.bufferData(boneWeights);
+    }
     indiciesB.bind();
     indiciesB.sendIfVaoEnabled(indicies);
     indiciesCount = static_cast<unsigned int>(indicies.size());
 
-    hasColors = !colors.empty();
-    hasUvs    = !uvs.empty();
-    hasBones  = !boneIds.empty();
 
     if(hasUvs && hasColors)
         unbindColors();

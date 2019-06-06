@@ -22,33 +22,35 @@ void MeshLoader::loadBasicMeshInfo(const aiMesh *aMesh) {
     matId = assimpMesh->mMaterialIndex;
 
     for(unsigned int vertIdx = 0; vertIdx < assimpMesh->mNumVertices; vertIdx++){
-        if(!assimpMesh->HasPositions() || !assimpMesh->HasNormals() || !assimpMesh->HasTangentsAndBitangents() ){
+        if(!assimpMesh->HasPositions() || !assimpMesh->HasNormals() ){
             std::stringstream ss;
             ss << "hasPositions : "<< std::boolalpha << assimpMesh->HasPositions()             << "\n"
-               << "hasNormal : "   << std::boolalpha << assimpMesh->HasNormals()               << "\n"
-               << "hasTangent : "  << std::boolalpha << assimpMesh->HasTangentsAndBitangents() << "\n";
+               << "hasNormal : "   << std::boolalpha << assimpMesh->HasNormals()               << "\n";
 
-            throw MeshLoadingException("Loaded mesh is invalid" + assimpToEngine(assimpMesh->mName) + "\n"
+            throw MeshLoadingException("Loaded mesh is invalid " + assimpToEngine(assimpMesh->mName) + "\n"
                                        "Mesh state:\n" + ss.str() );
         }
         /*Positions are always included, Normals and Tangents are included or calculated*/
         aiVector3D position = assimpMesh->mVertices[vertIdx];
         aiVector3D normal   = assimpMesh->mNormals[vertIdx];
-        aiVector3D tangent  = assimpMesh->mTangents[vertIdx];
 
         meshFactory.addPosition(glmCast(position));
         meshFactory.addNormal(glmCast(normal));
-        meshFactory.addTangent(glmCast(tangent));
 
         /*Always add an color, because it's cheap*/
         aiColor4D  color    = assimpMesh->HasVertexColors(0) ? assimpMesh->mColors[0][vertIdx] :
                                                                aiColor4D(1,0,0,1);
         meshFactory.addColor(glmCast(color));
 
-        /*Do not create your own tex coords, they won't have any sense when visualised anyway*/
+        /*Decided to not create my own tex coords, they won't have any sense when visualised anyway.
+         * Only textured objects have tangents*/
         if(assimpMesh->HasTextureCoords(0)){
             aiVector3D uv = assimpMesh->mTextureCoords[0][vertIdx];
             meshFactory.addUv(glmTexCoordCast(uv));
+
+            aiVector3D tangent  = assimpMesh->mTangents[vertIdx];
+            meshFactory.addTangent(glmCast(tangent));
+
         }
 
     }

@@ -50,6 +50,10 @@ private:
     std::shared_ptr<Shader> skyBoxFromEquirectangularImageShader = std::make_shared<Shader>();
     std::shared_ptr<Shader> diffuseIrradianceMapShader           = std::make_shared<Shader>();
 
+    std::vector<std::shared_ptr<Entity>> entities;
+    std::vector<std::shared_ptr<Entity>> entities2;
+    std::vector<std::shared_ptr<Entity>>* scene;
+
     bool shadersCompiled = false;
 
     glm::mat4 ModelViewProjection;

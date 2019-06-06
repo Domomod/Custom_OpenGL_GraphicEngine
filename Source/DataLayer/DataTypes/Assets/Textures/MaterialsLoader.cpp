@@ -13,6 +13,8 @@
 
 #include "Source/DataLayer/DataTypes/Assets/AssimpConversion.h"
 
+#include "Utility.h"
+
 
 #ifndef XMLCheckResult
 #define XMLCheckResult(a_eResult) if (a_eResult != tinyxml2::XML_SUCCESS) { printf("Error: %i\n", a_eResult); }
@@ -20,12 +22,6 @@
 
 
 void MaterialsLoader::loadMaterials() {
-    normalMaps.clear();
-    ambientMaps.clear();
-    albedoMaps.clear();
-    metalnessMaps.clear();
-    roughnessMaps.clear();
-
     for (int idx = 0; idx < scene->mNumMaterials; idx++) {
         aiMaterial *material = scene->mMaterials[idx];
         loadMaterialXML(material);
@@ -124,6 +120,14 @@ void MaterialsLoader::loadMaterial(const std::string &  filePath) {
     loadMaterialAtribute(metalnessMaps, metalnessPath);
     loadMaterialAtribute(roughnessMaps, roughnessPath);
     loadMaterialAtribute(normalMaps, normalPath);
+}
+
+void MaterialsLoader::clear() {
+    normalMaps.clear();
+    ambientMaps.clear();
+    albedoMaps.clear();
+    metalnessMaps.clear();
+    roughnessMaps.clear();
 }
 
 

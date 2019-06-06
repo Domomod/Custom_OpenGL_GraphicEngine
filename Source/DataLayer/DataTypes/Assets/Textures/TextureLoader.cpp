@@ -21,7 +21,7 @@ std::shared_ptr<Texture> TextureLoader::loadTexture(const std::string &filePath)
     unsigned char* data= SOIL_load_image(filePath.c_str(), &width, &height, 0, SOIL_LOAD_RGBA);
 
     if(data == nullptr){
-        throw FileNotFound(filePath + "not found");
+        throw FileNotFound(filePath + " error while loading\n" + SOIL_last_result());
     }
 
     std::shared_ptr<Texture> returnTexture = std::make_shared<Texture>(width, height, data);

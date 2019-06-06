@@ -51,6 +51,8 @@ std::shared_ptr<Model> ModelLoader::loadModel( const std::string &path ) {
     usingEmbededMaterials = false;
     usingSpecifiedMaterial = false;
 
+    materialsLoader.clear();
+
     return thisModel;
 }
 
@@ -100,6 +102,7 @@ void ModelLoader::loadMaterials() {
         materialsLoader.setDirectory(directory);
         materialsLoader.loadMaterials();
     } else if (usingSpecifiedMaterial){
+        materialsLoader.setDirectory(getFileDir(materialPath));
         materialsLoader.loadMaterial(materialPath);
     }
 }
