@@ -36,7 +36,7 @@ else()
     message(ASSIMP-FOUND : ${ASSIMP_INCLUDE_DIRS})
 ENDIF()
 
-include_directories( ${OPENGL_INCLUDE_DIRS} ${BOOST_INCLUDE_DIRS} ${ASSIMP_INCLUDE_DIRS} ${SOIL_INCLUDE_DIRS} OnChangeListenerTemplate /usr/local/include)
+include_directories( ${OPENGL_INCLUDE_DIRS} ${BOOST_INCLUDE_DIRS} ${ASSIMP_INCLUDE_DIRS} ${SOIL_INCLUDE_DIRS} OnChangeListenerTemplate /usr/local/include Source/)
 
 add_subdirectory(gl3w)
 
@@ -46,56 +46,56 @@ set(    SOURCES_AND_HEADERS
         Source/MyExceptions.h                                                           Source/MyExceptions.cpp
 
 
-        Source/GraphicsLayer/Window/Window.h                                            Source/GraphicsLayer/Window/Window.cpp
-        Source/GraphicsLayer/Window/InputSystem.h                                       Source/GraphicsLayer/Window/InputSystem.cpp
+        Source/Platform/OpenGL/Window/Window.h Source/Platform/OpenGL/Window/Window.cpp
+        Source/Platform/OpenGL/Window/InputSystem.h Source/Platform/OpenGL/Window/InputSystem.cpp
 
-        Source/GraphicsLayer/ShaderProgram/Shader.h                                     Source/GraphicsLayer/ShaderProgram/Shader.cpp
-        Source/GraphicsLayer/OpenGLinitializer.h                                        Source/GraphicsLayer/OpenGLinitializer.cpp
-        Source/GraphicsLayer/OpenGLinitializer.h                                        Source/GraphicsLayer/OpenGLinitializer.cpp
+        Source/Platform/OpenGL/ShaderProgram/Shader.h Source/Platform/OpenGL/ShaderProgram/Shader.cpp
+        Source/Platform/OpenGL/OpenGLinitializer.h Source/Platform/OpenGL/OpenGLinitializer.cpp
+        Source/Platform/OpenGL/OpenGLinitializer.h Source/Platform/OpenGL/OpenGLinitializer.cpp
         Source/GraphicsLayer/FreeCamera.h                                               Source/GraphicsLayer/FreeCamera.cpp
 
-        Source/GraphicsLayer/RenderSystemV2/Metadata/AttributeMetadata.h                Source/GraphicsLayer/RenderSystemV2/Metadata/AttributeMetadata.cpp
-        Source/GraphicsLayer/RenderSystemV2/Buffers/ElementArrayBuffer.h
-        Source/GraphicsLayer/RenderSystemV2/Buffers/Buffer.h
-        Source/GraphicsLayer/RenderSystemV2/Buffers/VertexArrayObject.h                 Source/GraphicsLayer/RenderSystemV2/Buffers/VertexArrayObject.cpp
-        Source/GraphicsLayer/RenderSystemV2/Buffers/AttributeBuffer.h                   Source/GraphicsLayer/RenderSystemV2/Buffers/AttributeBuffer.cpp
-        Source/GraphicsLayer/RenderSystemV2/Metadata/UniformMetadata.h                  Source/GraphicsLayer/RenderSystemV2/Metadata/UniformMetadata.cpp
-        Source/GraphicsLayer/RenderSystemV2/Buffers/UniformBuffer.h                     Source/GraphicsLayer/RenderSystemV2/Buffers/UniformBuffer.cpp
+        Source/Platform/OpenGL/Buffers/Metadata/AttributeMetadata.h Source/Platform/OpenGL/Buffers/Metadata/AttributeMetadata.cpp
+        Source/Platform/OpenGL/Buffers/ElementArrayBuffer.h
+        Source/Platform/OpenGL/Buffers/Buffer.h
+        Source/Platform/OpenGL/Buffers/VertexArrayObject.h
+        Source/Platform/OpenGL/Buffers/AttributeBuffer.h Source/Platform/OpenGL/Buffers/AttributeBuffer.cpp
+        Source/Platform/OpenGL/Buffers/Metadata/UniformMetadata.h Source/Platform/OpenGL/Buffers/Metadata/UniformMetadata.cpp
+        Source/Platform/OpenGL/Buffers/UniformBuffer.h Source/Platform/OpenGL/Buffers/UniformBuffer.cpp
 
 
-        Source/DataLayer/StorageManagment/ModelStorageManager.h
-        Source/DataLayer/StorageManagment/ModelToModelSpaceMatricesMap.h
-        Source/DataLayer/StorageManagment/ModelMatricesBuffer.h
-        Source/DataLayer/StorageManagment/EntitySystem.h                                Source/DataLayer/StorageManagment/EntitySystem.cpp
-        Source/DataLayer/StorageManagment/EntityStorageManager.h
-        Source/DataLayer/StorageManagment/StorageManagerTemplate.h
+        Source/EngineLogic/ModelStorageManager.h
+        Source/EngineLogic/ModelToModelSpaceMatricesMap.h
+        Source/EngineLogic/ModelMatricesBuffer.h
+        Source/EngineLogic/EntitySystem.h Source/EngineLogic/EntitySystem.cpp
+        Source/EngineLogic/EntityStorageManager.h
+        Source/EngineLogic/StorageManagerTemplate.h
 
-        Source/DataLayer/DataTypes/GameLogic/EntityFactory.h                            Source/DataLayer/DataTypes/GameLogic/EntityFactory.cpp
-        Source/DataLayer/DataTypes/GameLogic/Entity.h                                   Source/DataLayer/DataTypes/GameLogic/Entity.cpp
+        Source/EngineLogic/EntityFactory.h Source/EngineLogic/EntityFactory.cpp
+        Source/EngineLogic/Entity.h Source/EngineLogic/Entity.cpp
 
-        Source/DataLayer/DataTypes/Assets/ModelLoader.h                                 Source/DataLayer/DataTypes/Assets/ModelLoader.cpp
-        Source/DataLayer/DataTypes/Assets/Textures/MaterialsLoader.h Source/DataLayer/DataTypes/Assets/Textures/MaterialsLoader.cpp
-        Source/DataLayer/DataTypes/Assets/Mesh/MeshLoader.h Source/DataLayer/DataTypes/Assets/Mesh/MeshLoader.cpp
-        Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonLoader.h               Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonLoader.cpp
-        Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonAnimationLoader.h      Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonAnimationLoader.cpp
-        Source/DataLayer/DataTypes/Assets/Textures/Texture.h Source/DataLayer/DataTypes/Assets/Textures/Texture.cpp
-        Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.h                      Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.cpp
-        Source/DataLayer/DataTypes/Assets/AssimpConversion.h                            Source/DataLayer/DataTypes/Assets/AssimpConversion.cpp
-        Source/DataLayer/DataTypes/Assets/SkeletalSystem/Skeleton.h                     Source/DataLayer/DataTypes/Assets/SkeletalSystem/Skeleton.cpp
-        Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimation.h            Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimation.cpp
-        Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonConstants.h
-        Source/DataLayer/DataTypes/Assets/Model.h                                       Source/DataLayer/DataTypes/Assets/Model.cpp
-        Source/DataLayer/DataTypes/Assets/Mesh/Mesh.h Source/DataLayer/DataTypes/Assets/Mesh/Mesh.cpp
-        Source/DataLayer/DataTypes/Assets/Mesh/MeshGenerator.h Source/DataLayer/DataTypes/Assets/Mesh/MeshGenerator.cpp
+        Source/Assets/ModelLoader.h Source/Assets/ModelLoader.cpp
+        Source/Assets/Textures/MaterialsLoader.h Source/Assets/Textures/MaterialsLoader.cpp
+        Source/Assets/Mesh/MeshLoader.h Source/Assets/Mesh/MeshLoader.cpp
+        Source/Assets/SkeletalSystem/SkeletonLoader.h Source/Assets/SkeletalSystem/SkeletonLoader.cpp
+        Source/Assets/SkeletalSystem/SkeletonAnimationLoader.h Source/Assets/SkeletalSystem/SkeletonAnimationLoader.cpp
+        Source/Assets/Textures/Texture.h Source/Assets/Textures/Texture.cpp
+        Source/Assets/Textures/TextureLoader.h Source/Assets/Textures/TextureLoader.cpp
+        Source/Assets/AssimpConversion.h Source/Assets/AssimpConversion.cpp
+        Source/Assets/SkeletalSystem/Skeleton.h Source/Assets/SkeletalSystem/Skeleton.cpp
+        Source/Assets/SkeletalSystem/SkeletalAnimation.h Source/Assets/SkeletalSystem/SkeletalAnimation.cpp
+        Source/Assets/SkeletalSystem/SkeletonConstants.h
+        Source/Assets/Model.h Source/Assets/Model.cpp
+        Source/Assets/Mesh/Mesh.h Source/Assets/Mesh/Mesh.cpp
+        Source/Assets/Mesh/MeshGenerator.h Source/Assets/Mesh/MeshGenerator.cpp
 
 
-        Source/SampleApps/RenderV2Sample/Application.h                                  Source/SampleApps/RenderV2Sample/Application.cpp
-        Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.h             Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.cpp Source/GraphicsLayer/Window/KeyStateGetter.cpp Source/GraphicsLayer/Window/KeyStateGetter.h
-        Source/DataLayer/DataTypes/Assets/Mesh/MeshFactory.cpp Source/DataLayer/DataTypes/Assets/Mesh/MeshFactory.h Source/GraphicsLayer/RenderSystemV2/Buffers/SingleAtributeBuffer.cpp Source/GraphicsLayer/RenderSystemV2/Buffers/SingleAtributeBuffer.h OnChangeListenerTemplate/Utility.cpp
+        Source/Application.h Source/Application.cpp
+        Source/Assets/SkeletalSystem/SkeletalAnimator.h Source/Assets/SkeletalSystem/SkeletalAnimator.cpp Source/Platform/OpenGL/Window/KeyStateGetter.cpp Source/Platform/OpenGL/Window/KeyStateGetter.h
+        Source/Assets/Mesh/MeshFactory.cpp Source/Assets/Mesh/MeshFactory.h Source/Platform/OpenGL/Buffers/SingleAtributeBuffer.h OnChangeListenerTemplate/Utility.cpp
 
-        Source/Platform/OpenGL/Texture.h Source/Platform/OpenGL/Texture.cpp
-        Source/DataLayer/DataTypes/Assets/Textures/stb_image.h)
+        Source/Platform/OpenGL/Texture/Texture.h Source/Platform/OpenGL/Texture/Texture.cpp
+        Source/Assets/Textures/stb_image.h)
 
-add_executable(RenderV2 Source/SampleApps/RenderV2Sample/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS}    )
+add_executable(RenderV2 Source/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS}    )
 target_include_directories(RenderV2 PUBLIC ${CMAKE_SOURCE_DIR})
 target_link_libraries(RenderV2 ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} ${ASSIMP_LIBRARIES} glfw stdc++fs)

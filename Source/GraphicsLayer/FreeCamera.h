@@ -14,7 +14,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <GLFW/glfw3.h>
 
-#include "Source/GraphicsLayer/Window/InputMetadata.h"
+#include "Platform/OpenGL/Window/InputMetadata.h"
 #include "OnChangeListener.h"
 
 #include <iostream>
@@ -27,23 +27,24 @@ class KeyStateGetter;
  * look for those events. You can do it by assigning this class listeners to notifier of a class responsible
  * for user input.
  * */
-class FreeCamera {
+class FreeCamera
+{
 public:
     glm::mat4 calculateViewMatrix();
 
-    OnChangeListener<KeyStateGetter*> &getKeyboardStateListener();
+    OnChangeListener<KeyStateGetter *> &getKeyboardStateListener();
 
     OnChangeListener<MouseMovementInfo> &getMouseMovementListener();
 
-    explicit FreeCamera(const glm::vec3 &position= glm::vec3(0,0,0), const glm::vec3 &forward = glm::vec3(0,0,-1),
-               const glm::vec3 &up = glm::vec3(0,1,0), float speed=0.2);
+    explicit FreeCamera(const glm::vec3 &position = glm::vec3(0, 0, 0), const glm::vec3 &forward = glm::vec3(0, 0, -1),
+                        const glm::vec3 &up = glm::vec3(0, 1, 0), float speed = 0.2);
 
     const glm::vec3 &getPosition() const;
 
 private:
     void keyboardReaction(KeyStateGetter *keyStateGetter);
 
-    void mouseMovementReaction(MouseMovementInfo& mouseMovementInfo);
+    void mouseMovementReaction(MouseMovementInfo &mouseMovementInfo);
 
     float movementSpeed = 0.2;
 
@@ -51,7 +52,7 @@ private:
     glm::vec3 forward;
     glm::vec3 up;
 
-    OnChangeListener<KeyStateGetter*> keyboardStateListener;
+    OnChangeListener<KeyStateGetter *> keyboardStateListener;
     OnChangeListener<MouseMovementInfo> mouseMovementListener;
 };
 
