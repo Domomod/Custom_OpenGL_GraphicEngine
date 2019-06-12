@@ -39,12 +39,12 @@ void MaterialsLoader::setDirectory(const std::string &directory) {
 }
 
 
-    void MaterialsLoader::loadMaterialAtribute(std::vector<std::shared_ptr<Texture> > &atributeVector,
+    void MaterialsLoader::loadMaterialAtribute(std::vector<std::shared_ptr<Texture2D> > &atributeVector,
                                                const std::string &textureFileName) {
 
         if(textureFileName != ""){
             std::string fullPath = getPathToMaterialTexture(textureFileName);
-            atributeVector.push_back(TextureLoader::loadTexture(fullPath));
+            atributeVector.emplace_back(TextureLoader::loadTexture2D(fullPath));
         }
         else {
             atributeVector.push_back(TextureLoader::getDefaultTexture());

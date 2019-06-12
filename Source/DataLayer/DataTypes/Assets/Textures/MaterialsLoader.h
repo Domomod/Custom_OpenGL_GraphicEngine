@@ -12,7 +12,7 @@ class aiScene;
 class aiMaterial;
 
 class Model;
-class Texture;
+class Texture2D;
 
 namespace tinyxml2{
     class XMLElement;
@@ -20,11 +20,11 @@ namespace tinyxml2{
 
 class MaterialsLoader  {
 public:
-    std::vector< std::shared_ptr<Texture> > normalMaps;
-    std::vector< std::shared_ptr<Texture> > ambientMaps;
-    std::vector< std::shared_ptr<Texture> > albedoMaps;
-    std::vector< std::shared_ptr<Texture> > metalnessMaps;
-    std::vector< std::shared_ptr<Texture> > roughnessMaps;
+    std::vector< std::shared_ptr<Texture2D> > normalMaps;
+    std::vector< std::shared_ptr<Texture2D> > ambientMaps;
+    std::vector< std::shared_ptr<Texture2D> > albedoMaps;
+    std::vector< std::shared_ptr<Texture2D> > metalnessMaps;
+    std::vector< std::shared_ptr<Texture2D> > roughnessMaps;
 
     void loadMaterials();
     void loadMaterial(const std::string & filePath);
@@ -37,7 +37,7 @@ public:
 
 private:
 
-    void loadMaterialAtribute(std::vector<std::shared_ptr<Texture> > &atributeVector,
+    void loadMaterialAtribute(std::vector<std::shared_ptr<Texture2D> > &atributeVector,
                               const std::string &textureFileName);
     void loadMaterialXML(aiMaterial * assimpMaterial);
 

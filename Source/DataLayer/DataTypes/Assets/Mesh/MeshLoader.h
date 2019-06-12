@@ -13,7 +13,7 @@
 
 class Mesh;
 class aiMesh;
-class Texture;
+class Texture2D;
 class MaterialsLoader;
 
 /* Mesh Loader is designed to load one Mesh at a time. It can load
@@ -31,11 +31,11 @@ public:
     void addBoneInfo(const std::map<std::__cxx11::string, int> &boneNameToIndexMap);
 
     void addMaterial(const MaterialsLoader &materialLoader, unsigned int matID);
-    void addNormalTextures(const std::vector<std::shared_ptr<Texture>> & textures);
-    void addAOTextures(const std::vector<std::shared_ptr<Texture>> & textures);
-    void addBaseColorTexture(const std::vector<std::shared_ptr<Texture>> & textures);
-    void addMetallnessTexture(const std::vector<std::shared_ptr<Texture>> & textures);
-    void addRoughnessTexture(const std::vector<std::shared_ptr<Texture>> & textures);
+    void addNormalTextures(const std::vector<std::shared_ptr<Texture2D>> & textures);
+    void addAOTextures(const std::vector<std::shared_ptr<Texture2D>> & textures);
+    void addBaseColorTexture(const std::vector<std::shared_ptr<Texture2D>> & textures);
+    void addMetallnessTexture(const std::vector<std::shared_ptr<Texture2D>> & textures);
+    void addRoughnessTexture(const std::vector<std::shared_ptr<Texture2D>> & textures);
     std::shared_ptr<Mesh> make();
 private:
 

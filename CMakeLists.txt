@@ -84,7 +84,7 @@ set(    SOURCES_AND_HEADERS
         Source/DataLayer/DataTypes/Assets/Mesh/MeshLoader.h Source/DataLayer/DataTypes/Assets/Mesh/MeshLoader.cpp
         Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonLoader.h               Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonLoader.cpp
         Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonAnimationLoader.h      Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletonAnimationLoader.cpp
-        Source/DataLayer/DataTypes/Assets/Textures/Texture.h                            Source/DataLayer/DataTypes/Assets/Textures/Texture.cpp
+        Source/DataLayer/DataTypes/Assets/Textures/Texture.h Source/DataLayer/DataTypes/Assets/Textures/Texture.cpp
         Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.h                      Source/DataLayer/DataTypes/Assets/Textures/TextureLoader.cpp
         Source/DataLayer/DataTypes/Assets/AssimpConversion.h                            Source/DataLayer/DataTypes/Assets/AssimpConversion.cpp
         Source/DataLayer/DataTypes/Assets/SkeletalSystem/Skeleton.h                     Source/DataLayer/DataTypes/Assets/SkeletalSystem/Skeleton.cpp
@@ -96,7 +96,7 @@ set(    SOURCES_AND_HEADERS
 
 
         Source/SampleApps/RenderV2Sample/Application.h                                  Source/SampleApps/RenderV2Sample/Application.cpp
-        Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.h             Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.cpp Source/DataLayer/DataTypes/Assets/Textures/CubicTexture.cpp Source/DataLayer/DataTypes/Assets/Textures/CubicTexture.h Source/GraphicsLayer/Window/KeyStateGetter.cpp Source/GraphicsLayer/Window/KeyStateGetter.h
+        Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.h             Source/DataLayer/DataTypes/Assets/SkeletalSystem/SkeletalAnimator.cpp Source/GraphicsLayer/Window/KeyStateGetter.cpp Source/GraphicsLayer/Window/KeyStateGetter.h
         Source/DataLayer/DataTypes/Assets/Mesh/MeshFactory.cpp Source/DataLayer/DataTypes/Assets/Mesh/MeshFactory.h Source/GraphicsLayer/RenderSystemV2/Buffers/SingleAtributeBuffer.cpp Source/GraphicsLayer/RenderSystemV2/Buffers/SingleAtributeBuffer.h OnChangeListenerTemplate/Utility.cpp)
 
 add_executable(RenderV2 Source/SampleApps/RenderV2Sample/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS}    )

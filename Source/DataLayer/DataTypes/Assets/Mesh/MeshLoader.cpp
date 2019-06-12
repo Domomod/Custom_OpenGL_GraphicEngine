@@ -107,23 +107,23 @@ std::shared_ptr<Mesh> MeshLoader::make() {
 
 MeshLoader::MeshLoader() {}
 
-void MeshLoader::addNormalTextures(const std::vector<std::shared_ptr<Texture>> &textures) {
+void MeshLoader::addNormalTextures(const std::vector<std::shared_ptr<Texture2D>> &textures) {
     meshFactory.setNormalMap(textures[matId]);
 }
 
-void MeshLoader::addBaseColorTexture(const std::vector<std::shared_ptr<Texture>> &textures) {
+void MeshLoader::addBaseColorTexture(const std::vector<std::shared_ptr<Texture2D>> &textures) {
     meshFactory.setAlbedoMap(textures[matId]);
 }
 
-void MeshLoader::addAOTextures(const std::vector<std::shared_ptr<Texture>> &textures) {
+void MeshLoader::addAOTextures(const std::vector<std::shared_ptr<Texture2D>> &textures) {
     meshFactory.setAoMap(textures[matId]);
 }
 
-void MeshLoader::addMetallnessTexture(const std::vector<std::shared_ptr<Texture>> &textures) {
+void MeshLoader::addMetallnessTexture(const std::vector<std::shared_ptr<Texture2D>> &textures) {
     meshFactory.setMetallnessMap(textures[matId]);
 }
 
-void MeshLoader::addRoughnessTexture(const std::vector<std::shared_ptr<Texture>> &textures) {
+void MeshLoader::addRoughnessTexture(const std::vector<std::shared_ptr<Texture2D>> &textures) {
     meshFactory.setRoughnessMap(textures[matId]);
 }
 

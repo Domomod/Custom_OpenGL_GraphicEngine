@@ -13,7 +13,7 @@
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/SingleAtributeBuffer.h"
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/ElementArrayBuffer.h"
 
-class Texture;
+class Texture2D;
 class MaterialsLoader;
 
 class Mesh {
@@ -27,9 +27,9 @@ public:
          const std::vector<glm::vec3> &tangents,    const std::vector<glm::ivec4> &boneIds,
          const std::vector<glm::vec4> &boneWeights, const std::vector<GLushort> &indicies,
 
-         const std::shared_ptr<Texture> &normalMap, const std::shared_ptr<Texture> &aoMap,
-         const std::shared_ptr<Texture> &albedoMap, const std::shared_ptr<Texture> &metallnessMap,
-         const std::shared_ptr<Texture> &roughnessMap);
+         const std::shared_ptr<Texture2D> &normalMap, const std::shared_ptr<Texture2D> &aoMap,
+         const std::shared_ptr<Texture2D> &albedoMap, const std::shared_ptr<Texture2D> &metallnessMap,
+         const std::shared_ptr<Texture2D> &roughnessMap);
 
     void bindVao(){vao.bind();}
     void bindTexturesPBR();
@@ -68,11 +68,11 @@ private:
 
     unsigned int indiciesCount;
 
-    std::shared_ptr<Texture> normalMap;
-    std::shared_ptr<Texture> aoMap;
-    std::shared_ptr<Texture> albedoMap;
-    std::shared_ptr<Texture> metallnessMap;
-    std::shared_ptr<Texture> roughnessMap;
+    std::shared_ptr<Texture2D> normalMap;
+    std::shared_ptr<Texture2D> aoMap;
+    std::shared_ptr<Texture2D> albedoMap;
+    std::shared_ptr<Texture2D> metallnessMap;
+    std::shared_ptr<Texture2D> roughnessMap;
 
     bool hasColors;
     bool hasUvs;

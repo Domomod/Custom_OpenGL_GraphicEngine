@@ -5,56 +5,92 @@
 #include "Texture.h"
 #include <SOIL/SOIL.h>
 #include <cmath>
+#include <cassert>
 
-Texture::Texture(const int &width, const int &height, unsigned char *data) {
-    glGenTextures(1, &texID);
+GLuint format[] = {GL_STENCIL, GL_RED, GL_RG, GL_RGB, GL_RGBA};
 
-    glBindTexture(GL_TEXTURE_2D, texID);
-
-    //Allocate memory and fill it with the texture
-    glTextureStorage2D( texID,
-                        static_cast<GLsizei>(log2(width)), //make space for all mipmaps
-                        GL_RGBA32F,
-                        width,height
-                        );
-
-    glTextureSubImage2D( texID,
-                         0,            //mipmap level
-                         0,0,
-                         width, height, //size
-                         GL_RGBA,       //format of pixel data
-                         GL_UNSIGNED_BYTE,      //data type
-                         data
-                         );
-
-    //A mipmap does not take more than 1/3 original image, so I decided
-    //to generate on for all loaded textures
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-
-    //Each texture object has a sampler in it, for convenience I decided
-    //to store the data in it, ideally it schould be transfered to a diffrent class,
-    // allowing using same sample for multiple textures (less OpenGl context changes)
-    glTextureParameteri( texID,
-                         GL_TEXTURE_WRAP_R,
-                         GL_REPEAT);
-
-    //Trilinear interpolation for scaling the mipmapped texture up and down
-    glTextureParameteri( texID,
-                         GL_TEXTURE_MAG_FILTER,
-                         GL_LINEAR
-                         );
-
-    glTextureParameteri( texID,
-                         GL_TEXTURE_MIN_FILTER,
-                         GL_LINEAR
-    );
+void Texture::bind(unsigned int textureUnit)
+{
+    glBindTextureUnit(textureUnit, textureName);
 }
 
-Texture::~Texture() {
-    glDeleteTextures(1, &texID);
+Texture::Texture()
+{
+    glGenTextures(1, &textureName);
 }
 
-void Texture::bind(unsigned int bindPoint) {
-    glBindTextureUnit(bindPoint, texID);
+
+
+Texture2D::Texture2D(int width, int height, int valuesPerColor, bool compress, unsigned char *data)
+{
+    glBindTexture(GL_TEXTURE_2D, Texture::textureName);
+
+
+    GLuint internalFormat;
+    if(compress)
+    {
+        internalFormat = valuesPerColor < 4?  GL_COMPRESSED_RGB_S3TC_DXT1_EXT : GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+    }
+    else
+    {
+        internalFormat = valuesPerColor < 4?  GL_RGB8 : GL_RGBA8;
+    }
+
+    glTexStorage2D(GL_TEXTURE_2D, 1, internalFormat, width, height);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format[valuesPerColor], GL_UNSIGNED_BYTE, data);
+
+//    if(mipmas)
+//    {
+//        glGenerateMipmap(GL_TEXTURE_2D);
+//    }
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
+
+Texture2D::Texture2D(int width, int height, int valuesPerColor, bool compress, float *data)
+{
+    glBindTexture(GL_TEXTURE_2D, Texture::textureName);
+
+
+    GLuint internalFormat;
+    if(compress)
+    {
+        internalFormat = valuesPerColor < 4?  GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT : GL_RGBA16F;
+    }
+    else
+    {
+        internalFormat = valuesPerColor < 4?  GL_RGB16F : GL_RGBA16F;
+    }
+
+    glTexStorage2D(GL_TEXTURE_2D, 1, internalFormat, width, height);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format[valuesPerColor], GL_UNSIGNED_BYTE, data);
+
+//    if(mipmas)
+//    {
+//        glGenerateMipmap(GL_TEXTURE_2D);
+//    }
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+Texture2D::~Texture2D()
+{
+
+}
+
+
+TextureCube::TextureCube(GLuint textureName)  {}
+
+TextureCube::~TextureCube() {
+
+}
+

@@ -14,11 +14,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Texture.h"
-#include "CubicTexture.h"
 #include "Source/DataLayer/DataTypes/Assets/Mesh/MeshGenerator.h"
 
-class Texture;
-class CubicTexture;
+class Texture2D;
+class TextureCube;
 class Shader;
 
 #include "Source/GraphicsLayer/ShaderProgram/Shader.h"
@@ -31,21 +30,21 @@ public:
 
     static void                             setEnviromentToDiffuseShader(const std::shared_ptr<Shader> &shader);
 
-    static std::shared_ptr<Texture>         loadTexture(const std::string& filePath);
+    static Texture2D * loadTexture2D(const std::string &filePath);
 
-    static std::shared_ptr<CubicTexture>    loadCubicTexture(const std::vector<std::string> & filePaths);
+    static std::shared_ptr<TextureCube>    loadCubicTexture(const std::vector<std::string> & filePaths);
 
-    static std::shared_ptr<Texture>         getDefaultTexture();
+    static std::shared_ptr<Texture2D>         getDefaultTexture();
 
-    static std::shared_ptr<CubicTexture>    calculateCubeMapFromEquirectangularTexture(
-                                                    const std::shared_ptr<Texture> &texture);
+    static std::shared_ptr<TextureCube>    calculateCubeMapFromEquirectangularTexture(
+                                                    const std::shared_ptr<Texture2D> &texture);
 
-    static std::shared_ptr<CubicTexture>    calculateDiffuseIrradianceMapFromEnviromentMap(
-                                                    const std::shared_ptr<CubicTexture>& enviromentMap );
+    static std::shared_ptr<TextureCube>    calculateDiffuseIrradianceMapFromEnviromentMap(
+                                                    const std::shared_ptr<TextureCube>& enviromentMap );
 
 
     inline static std::string defaultTexturePath = "Textures/default.png"; // NOLINT(cert-err58-cpp)
-    inline static std::shared_ptr<Texture> defaultTexture;
+    inline static std::shared_ptr<Texture2D> defaultTexture;
     inline static bool isDefaultTextureLoaded = false;
 
 private:
@@ -75,6 +74,7 @@ private:
 
 
 };
+
 
 #endif //GAMEENGINE_TEXTURELOADER_H
 

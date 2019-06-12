@@ -15,9 +15,9 @@ Mesh::Mesh(const std::string &name,
            const std::vector<glm::vec3> &tangents,    const std::vector<glm::ivec4> &boneIds,
            const std::vector<glm::vec4> &boneWeights, const std::vector<GLushort> &indicies,
 
-           const std::shared_ptr<Texture> &normalMap, const std::shared_ptr<Texture> &aoMap,
-           const std::shared_ptr<Texture> &albedoMap, const std::shared_ptr<Texture> &metallnessMap,
-           const std::shared_ptr<Texture> &roughnessMap):  name(name),
+           const std::shared_ptr<Texture2D> &normalMap, const std::shared_ptr<Texture2D> &aoMap,
+           const std::shared_ptr<Texture2D> &albedoMap, const std::shared_ptr<Texture2D> &metallnessMap,
+           const std::shared_ptr<Texture2D> &roughnessMap):  name(name),
                                                            normalMap(normalMap), aoMap(aoMap), albedoMap(albedoMap),
                                                            metallnessMap(metallnessMap), roughnessMap(roughnessMap) {
 

@@ -47,15 +47,15 @@ public:
         return mesh;
     }
 
-    void setNormalMap(const std::shared_ptr<Texture> &normalMap);
+    void setNormalMap(const std::shared_ptr<Texture2D> &normalMap);
 
-    void setAoMap(const std::shared_ptr<Texture> &aoMap);
+    void setAoMap(const std::shared_ptr<Texture2D> &aoMap);
 
-    void setAlbedoMap(const std::shared_ptr<Texture> &albedoMap);
+    void setAlbedoMap(const std::shared_ptr<Texture2D> &albedoMap);
 
-    void setMetallnessMap(const std::shared_ptr<Texture> &metallnessMap);
+    void setMetallnessMap(const std::shared_ptr<Texture2D> &metallnessMap);
 
-    void setRoughnessMap(const std::shared_ptr<Texture> &roughnessMap);
+    void setRoughnessMap(const std::shared_ptr<Texture2D> &roughnessMap);
 
 private:
     void clear(){
@@ -80,11 +80,11 @@ private:
 
     std::string name;
 
-    std::shared_ptr<Texture> normalMap;
-    std::shared_ptr<Texture> aoMap;
-    std::shared_ptr<Texture> albedoMap;
-    std::shared_ptr<Texture> metallnessMap;
-    std::shared_ptr<Texture> roughnessMap;
+    std::shared_ptr<Texture2D> normalMap;
+    std::shared_ptr<Texture2D> aoMap;
+    std::shared_ptr<Texture2D> albedoMap;
+    std::shared_ptr<Texture2D> metallnessMap;
+    std::shared_ptr<Texture2D> roughnessMap;
 };
 
 

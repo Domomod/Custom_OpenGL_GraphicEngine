@@ -7,15 +7,39 @@
 
 #include <GL/gl3w.h>
 
+
 class Texture {
+public:
+    Texture();
+
+    virtual ~Texture() = default;;
+
+    void bind(unsigned int textureUnit);
+
+protected:
+    GLuint textureName;
+};
+
+class Texture2D : public Texture{
     friend class TextureLoader;
 public:
-    GLuint texID;
-    void bind(unsigned int bindPoint);
 
-    virtual ~Texture();
+    Texture2D(int width, int height, int valuesPerColor, bool compress, unsigned char* data);
+    Texture2D(int widt, int height, int valuesPerColor, bool compress, float* data);
 
-    Texture(const int &width, const int &height, unsigned char *data);
+    ~Texture2D() override;
+
 private:
 };
+
+class TextureCube : public Texture{
+    friend class TextureLoader;
+public:
+    explicit TextureCube(GLuint textureName);
+
+    ~TextureCube() override;
+
+
+};
+
 #endif //GAMEENGINE_TEXTURE_H

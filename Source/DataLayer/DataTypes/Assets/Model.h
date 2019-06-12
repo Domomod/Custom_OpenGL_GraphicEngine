@@ -9,7 +9,7 @@
 #include <memory>
 
 class Mesh;
-class Texture;
+class Texture2D;
 namespace SkeletalSystem{
     class SkeletalAnimator;
     class SkeletalAnimation;
