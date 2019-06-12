@@ -4,7 +4,8 @@
 
 #include "TextureLoader.h"
 
-#include <SOIL/SOIL.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 #include "Source/MyExceptions.h"
 #include "Source/GraphicsLayer/RenderSystemV2/Buffers/VertexArrayObject.h"
@@ -19,15 +20,15 @@
 
 std::shared_ptr<Texture2D> TextureLoader::loadTexture2D(const std::string &filePath) {
     int width, height, valuesPerColor;
-    unsigned char* data= SOIL_load_image(filePath.c_str(), &width, &height, 0, SOIL_LOAD_RGBA);
+    unsigned char* data= stbi_load(filePath.c_str(), &width, &height, &valuesPerColor, 0);
 
     if(data == nullptr){
-        throw FileNotFound(filePath + " error while loading\n" + SOIL_last_result());
+        throw FileNotFound(filePath + " error while loading\n" + stbi__g_failure_reason);
     }
 
-    Texture2D* texture = Texture2D::Create(width, height, 4, data, RUM_COMPRESS);
+    Texture2D* texture = Texture2D::Create(width, height, valuesPerColor, data, RUM_COMPRESS);
 
-    SOIL_free_image_data(data);
+    stbi_image_free(data);
     return std::shared_ptr<Texture2D>( texture );
 }
 
@@ -45,25 +46,26 @@ std::shared_ptr<TextureCube> TextureLoader::loadCubicTexture(const std::vector<s
         throw InvalidData("To create a cubic texture you need to pass at least 6 paths texture\n.");
     }
 
-    int width[6], height[6];
+    int width[6], height[6], valuesPerColor[6];
     unsigned char* data[6];
 
     for(int i = 0; i < 6; i++){
-        data[i] = SOIL_load_image(filePaths[i].c_str(), &width[i], &height[i], 0, SOIL_LOAD_RGBA);
+        data[i]= stbi_load(filePaths[i].c_str(), &width[i], &height[i], &valuesPerColor[i], 0);
 
-        if(width[0] != width[i] || height[0] != height[i]){
-            throw InvalidData("Not all cubic faces textures are of the same size.");
+
+        if(width[0] != width[i] || height[0] != height[i] || valuesPerColor[0] != valuesPerColor[i]){
+            throw InvalidData("Provided images do not have the same size or same number of channels.");
         }
     }
 
-    TextureCube* texture = TextureCube::Create(width[0], height[0], 4, data, RUM_COMPRESS);
+    TextureCube* texture = TextureCube::Create(width[0], height[0], valuesPerColor[0], data, RUM_COMPRESS);
 
-    SOIL_free_image_data(data[0]);
-    SOIL_free_image_data(data[1]);
-    SOIL_free_image_data(data[2]);
-    SOIL_free_image_data(data[3]);
-    SOIL_free_image_data(data[4]);
-    SOIL_free_image_data(data[5]);
+    stbi_image_free(data[0]);
+    stbi_image_free(data[1]);
+    stbi_image_free(data[2]);
+    stbi_image_free(data[3]);
+    stbi_image_free(data[4]);
+    stbi_image_free(data[5]);
 
     return std::shared_ptr<TextureCube>( texture );
 }

@@ -68,7 +68,7 @@ void main() {
     vec3 lightCol = vec3 (1.0, 1.0, 1.0);
     /**/
     vec3 albedo     = texture(albedoMap   , fs_in.fragTexCoord).rgb;
-    vec3 ao         = texture(ambientMap  , fs_in.fragTexCoord).rgb;
+    vec3 ao         = texture(ambientMap  , fs_in.fragTexCoord).rrr;
     float metalness = texture(metalnessMap, fs_in.fragTexCoord).r;
     float roughness = texture(roughnessMap, fs_in.fragTexCoord).r;
 
