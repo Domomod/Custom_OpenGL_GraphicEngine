@@ -30,14 +30,14 @@ public:
 
     static void                             setEnviromentToDiffuseShader(const std::shared_ptr<Shader> &shader);
 
-    static Texture2D * loadTexture2D(const std::string &filePath);
+    static std::shared_ptr<Texture2D> loadTexture2D(const std::string &filePath);
 
-    static std::shared_ptr<TextureCube>    loadCubicTexture(const std::vector<std::string> & filePaths);
+    static std::shared_ptr<TextureCube> loadCubicTexture(const std::vector<std::string> &filePaths);
 
     static std::shared_ptr<Texture2D>         getDefaultTexture();
 
-    static std::shared_ptr<TextureCube>    calculateCubeMapFromEquirectangularTexture(
-                                                    const std::shared_ptr<Texture2D> &texture);
+    static std::shared_ptr<TextureCube> calculateCubeMapFromEquirectangularTexture(
+            const std::shared_ptr<Texture2D> &texture);
 
     static std::shared_ptr<TextureCube>    calculateDiffuseIrradianceMapFromEnviromentMap(
                                                     const std::shared_ptr<TextureCube>& enviromentMap );
@@ -74,6 +74,7 @@ private:
 
 
 };
+
 
 
 #endif //GAMEENGINE_TEXTURELOADER_H

@@ -8,37 +8,33 @@
 #include <GL/gl3w.h>
 
 
-class Texture {
-public:
-    Texture();
-
-    virtual ~Texture() = default;;
-
-    void bind(unsigned int textureUnit);
-
-protected:
-    GLuint textureName;
+enum {
+    RUM_COMPRESS = 1 << 0,
+    RUM_GEN_MIPMAPS = 1 << 1
 };
 
-class Texture2D : public Texture{
+class Texture2D {
     friend class TextureLoader;
 public:
+    static Texture2D* Create(int width, int height, int valuesPerColor,  unsigned char* data, char flags = 0) ;
+    static Texture2D* Create(int widt, int height, int valuesPerColor,  float* data, char flags = 0);
 
-    Texture2D(int width, int height, int valuesPerColor, bool compress, unsigned char* data);
-    Texture2D(int widt, int height, int valuesPerColor, bool compress, float* data);
+    virtual ~Texture2D() = default;
 
-    ~Texture2D() override;
-
-private:
+    virtual void bind(unsigned int textureUnit) = 0;
 };
 
-class TextureCube : public Texture{
+class TextureCube {
     friend class TextureLoader;
 public:
-    explicit TextureCube(GLuint textureName);
+    static TextureCube* Create(int width, int height, int valuesPerColor, unsigned char** data, char flags = 0);
+    static TextureCube* Create(int width, int height, int valuesPerColor, float** data, char flags = 0);
+    static TextureCube* Create(unsigned int textureName);
 
-    ~TextureCube() override;
+    virtual  ~TextureCube() = default;;
 
+
+    virtual void bind(unsigned int textureUnit) = 0;
 
 };
 
