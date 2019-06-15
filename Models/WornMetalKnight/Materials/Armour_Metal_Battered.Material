@@ -8,6 +8,6 @@
 
 	<roughness>T_Armour_Worn_Metal_Roughness.png</roughness>
 
-	<normal>T_Armour_Worn_Metal_NOpenGL.png</normal>
+	<normal>Textures_HQ/T_Armour_Worn_Metal_NOpenGL.png</normal>
 </material>
 

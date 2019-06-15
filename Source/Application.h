@@ -16,7 +16,7 @@
 
 #include "EngineLogic/EntitySystem.h"
 #include "Assets/ModelLoader.h"
-
+#include "Assets/Textures/TextureLoader.h"
 
 class Application
 {
@@ -39,6 +39,7 @@ private:
     FreeCamera freeCamera;
     EntitySystem entitySystem;
     ModelLoader modelLoader;
+    TextureLoader textureLoader;
 
     OnChangeListener<std::pair<int, int>> windowResizeListener;
     OnChangeListener<KeyInfo> keyActionListener;

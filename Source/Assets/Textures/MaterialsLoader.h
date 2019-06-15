@@ -5,6 +5,8 @@
 #ifndef GAMEENGINE_MATERIALSLOADER_H
 #define GAMEENGINE_MATERIALSLOADER_H
 
+#include "TextureLoader.h"
+
 #include <vector>
 #include <memory>
 
@@ -36,6 +38,8 @@ public:
     void clear();
 
 private:
+    TextureLoader textureLoader;
+
 
     void loadMaterialAtribute(std::vector<std::shared_ptr<Texture2D> > &atributeVector,
                               const std::string &textureFileName);

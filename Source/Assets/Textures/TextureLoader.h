@@ -15,6 +15,7 @@
 
 #include "Texture.h"
 #include "Source/Assets/Mesh/MeshGenerator.h"
+#include "Source/Platform/OpenGL/ShaderProgram/Shader.h"
 
 class Texture2D;
 class TextureCube;
@@ -25,41 +26,35 @@ class Shader;
 class TextureLoader {
 public:
     TextureLoader();
+    std::shared_ptr<Texture2D> loadTexture2D(const std::string &filePath);
+    std::shared_ptr<Texture2D> loadTexture2D_F(const std::string &filePath);
 
-    static void                             setEquirToCubemapShaderSet(const std::shared_ptr<Shader> &shader);
+    std::shared_ptr<TextureCube> loadCubicTexture(const std::vector<std::string> &filePaths);
+    std::shared_ptr<TextureCube> loadCubicTexture_F(const std::vector<std::string> &filePaths);
+    std::shared_ptr<TextureCube> loadCubicTexture_KTX(const std::string &filePath);
 
-    static void                             setEnviromentToDiffuseShader(const std::shared_ptr<Shader> &shader);
+    std::shared_ptr<Texture2D>         getDefaultTexture();
 
-    static std::shared_ptr<Texture2D> loadTexture2D(const std::string &filePath);
-
-    static std::shared_ptr<TextureCube> loadCubicTexture(const std::vector<std::string> &filePaths);
-
-    static std::shared_ptr<Texture2D>         getDefaultTexture();
-
-    static std::shared_ptr<TextureCube> calculateCubeMapFromEquirectangularTexture(
+    std::shared_ptr<TextureCube> calculateCubeMapFromEquirectangularTexture(
             const std::shared_ptr<Texture2D> &texture);
 
-    static std::shared_ptr<TextureCube>    calculateDiffuseIrradianceMapFromEnviromentMap(
+    std::shared_ptr<TextureCube>    calculateDiffuseIrradianceMapFromEnviromentMap(
                                                     const std::shared_ptr<TextureCube>& enviromentMap );
 
-
-    inline static std::string defaultTexturePath = "Textures/default.png"; // NOLINT(cert-err58-cpp)
-    inline static std::shared_ptr<Texture2D> defaultTexture;
-    inline static bool isDefaultTextureLoaded = false;
+    std::shared_ptr<TextureCube>    calculatePrefilteredEnviromentMap(
+            const std::shared_ptr<TextureCube>& enviromentMap );
 
 private:
-    static unsigned int renderToCubeMap(unsigned int cubeMap,  unsigned int cubeMapSize);
-    static unsigned int createCubeMap(unsigned int cubeMapSize);
+    unsigned int renderToCubeMap(unsigned int cubeMap, unsigned int cubeMapSize, bool mipmaps = false);
+    unsigned int createCubeMap(unsigned int cubeMapSize);
 
-    inline static bool isEquirToCubemapShaderSet = false;
-    inline static std::shared_ptr<Shader> equirToCubemapShader;
-
-    inline static bool isEnviromentToDiffuseShaderSet = false;
-    inline static std::shared_ptr<Shader> enviromentToDiffuseShader;
+    Shader equirToCubemapShader;
+    Shader diffuseMapShader;
+    Shader prefilteredMapShader;
 
 
-    inline static glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
-    inline static glm::mat4 captureViews[] =
+     inline static glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+     inline static glm::mat4 captureViews[] =
             {
                     glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
                     glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
@@ -69,10 +64,12 @@ private:
                     glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
             };
 
-    inline static std::shared_ptr<Mesh> skyboxMesh;
-    inline static bool isSkyboxGenerated = false;
+    std::shared_ptr<Mesh> skyboxMesh;
+    bool isSkyboxGenerated = false;
 
-
+    std::string defaultTexturePath = "Textures/default.png"; // NOLINT(cert-err58-cpp)
+    std::shared_ptr<Texture2D> defaultTexture;
+    bool isDefaultTextureLoaded = false;
 };
 
 

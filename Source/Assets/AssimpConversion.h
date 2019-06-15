@@ -30,7 +30,7 @@ static inline glm::vec3 glmCast(const aiVector3D &v)
 
 static inline glm::vec2 glmTexCoordCast(const aiVector3D &v)
 {
-    return glm::vec2(v.x, 1 - v.y);
+    return glm::vec2(v.x, v.y);
 } // it's aiVector3D because assimp's texture coordinates use that
 static inline glm::quat glmCast(const aiQuaternion &q)
 {

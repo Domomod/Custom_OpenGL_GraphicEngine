@@ -94,7 +94,8 @@ set(    SOURCES_AND_HEADERS
         Source/Assets/Mesh/MeshFactory.cpp Source/Assets/Mesh/MeshFactory.h Source/Platform/OpenGL/Buffers/SingleAtributeBuffer.h OnChangeListenerTemplate/Utility.cpp
 
         Source/Platform/OpenGL/Texture/Texture.h Source/Platform/OpenGL/Texture/Texture.cpp
-        Source/Assets/Textures/stb_image.h)
+        Source/Assets/Textures/stb_image.h
+        Source/Platform/OpenGL/Texture/sb7ktx.h Source/Platform/OpenGL/Texture/sb7ktx.cpp)
 
 add_executable(RenderV2 Source/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS}    )
 target_include_directories(RenderV2 PUBLIC ${CMAKE_SOURCE_DIR})

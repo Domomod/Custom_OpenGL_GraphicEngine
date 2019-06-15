@@ -3,6 +3,9 @@
 //
 
 #include "Texture.h"
+#include "sb7ktx.h"
+
+
 #include <cmath>
 #include <cassert>
 
@@ -36,7 +39,12 @@ OGL_Texture2D::OGL_Texture2D(int width, int height, int valuesPerColor, unsigned
         internalFormat = valuesPerColor < 4 ? GL_RGB8 : GL_RGBA8;
     }
 
-    glTexStorage2D(GL_TEXTURE_2D, 1, internalFormat, width, height);
+    if (flags & RUM_GEN_MIPMAPS)
+    {
+        Texture2D::mipmapCount = static_cast<unsigned short>(log(width));
+    }
+
+    glTexStorage2D(GL_TEXTURE_2D, Texture2D::mipmapCount, internalFormat, width, height);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format[valuesPerColor], GL_UNSIGNED_BYTE, data);
 
     if (flags & RUM_GEN_MIPMAPS)
@@ -67,8 +75,13 @@ OGL_Texture2D::OGL_Texture2D(int width, int height, int valuesPerColor, float *d
         internalFormat = valuesPerColor < 4 ? GL_RGB16F : GL_RGBA16F;
     }
 
-    glTexStorage2D(GL_TEXTURE_2D, 1, internalFormat, width, height);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format[valuesPerColor], GL_UNSIGNED_BYTE, data);
+    if (flags & RUM_GEN_MIPMAPS)
+    {
+        Texture2D::mipmapCount = static_cast<unsigned short>(log(width));
+    }
+
+    glTexStorage2D(GL_TEXTURE_2D, Texture2D::mipmapCount, internalFormat, width, height);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format[valuesPerColor], GL_FLOAT, data);
 
     if (flags & RUM_GEN_MIPMAPS)
     {
@@ -102,10 +115,15 @@ OGL_TextureCube::OGL_TextureCube(int width, int height, int valuesPerColor, unsi
     }
     else
     {
-        internalFormat = valuesPerColor < 4 ? GL_RGB16F : GL_RGBA16F;
+        internalFormat = valuesPerColor < 4 ? GL_RGB16 : GL_RGBA16;
     }
 
-    glTexStorage2D(GL_TEXTURE_2D, 1, internalFormat, width, height);
+    if (flags & RUM_GEN_MIPMAPS)
+    {
+        TextureCube::mipmapCount = static_cast<unsigned short>(log(width));
+    }
+
+    glTexStorage2D(GL_TEXTURE_2D, TextureCube::mipmapCount, internalFormat, width, height);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format[valuesPerColor], GL_UNSIGNED_BYTE, data);
 
     if (flags & RUM_GEN_MIPMAPS)
@@ -139,12 +157,17 @@ OGL_TextureCube::OGL_TextureCube(int width, int height, int valuesPerColor, floa
         internalFormat = valuesPerColor < 4 ? GL_RGB16F : GL_RGBA16F;
     }
 
-    glTexStorage2D(GL_TEXTURE_2D, 1, internalFormat, width, height);
+    if (flags & RUM_GEN_MIPMAPS)
+    {
+        TextureCube::mipmapCount = static_cast<unsigned short>(log(width));
+    }
 
+
+    glTexStorage2D(GL_TEXTURE_2D, TextureCube::mipmapCount, internalFormat, width, height);
     for (unsigned int i = 0; i < 6; i++)
     {
         glTexSubImage2D(static_cast<GLenum>(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i), 0, 0, 0,
-                        width, height, format[valuesPerColor], GL_UNSIGNED_BYTE, data[i]);
+                        width, height, format[valuesPerColor], GL_FLOAT, data[i]);
     }
 
     if (flags & RUM_GEN_MIPMAPS)
@@ -161,6 +184,13 @@ OGL_TextureCube::OGL_TextureCube(int width, int height, int valuesPerColor, floa
 
 }
 
+OGL_TextureCube::OGL_TextureCube(const std::string & path)
+{
+    glGenTextures(1, &textureName);
+    sb7::ktx::file::load(path.c_str(), textureName);
+    TextureCube::mipmapCount = 7; /*TODO: */
+}
+
 OGL_TextureCube::~OGL_TextureCube()
 {
 
@@ -169,3 +199,5 @@ OGL_TextureCube::~OGL_TextureCube()
 OGL_TextureCube::OGL_TextureCube(GLuint textureName) : textureName(textureName)
 {
 }
+
+
