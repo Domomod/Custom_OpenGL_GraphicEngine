@@ -11,11 +11,15 @@
 #include "Platform/OpenGL/Buffers/Metadata/AttributeMetadata.h"
 #include "Platform/OpenGL/Buffers/UniformBuffer.h"
 
+#include "Assets/UsedDirectories.h"
 #include "Assets/Mesh/MeshGenerator.h"
 #include "Assets/Model.h"
+#include "Assets/Textures/Material.h"
 #include "Assets/Textures/Texture.h"
 #include "Assets/Textures/TextureLoader.h"
 #include "Assets/Textures/MaterialsLoader.h"
+
+#include "MyExceptions.h"
 
 Application::Application()
 {
@@ -62,32 +66,16 @@ Application::Application()
 
     try
     {
-        /*TODO: add material alliasses to only load one model with many materials to choose*/
-        entitySystem.addModel("Mech", modelLoader.useEmbededMaterials()
-                .loadModel("Models/CleanMetalKnight/Knight.obj"));
-        entitySystem.addEntity("M1", entitySystem.entityFactory.make("Mech", glm::vec3(-1.5, -0.5, -1), 3.0f));
+        /*TODO: switch Knight.obj to .dae in Knight.model to debug skeleton loading bug ()*/
+        entitySystem.addModel("Knight", modelLoader.loadModel("Knight.model"));
+//        entitySystem.addModel("Cowboy", modelLoader.loadModel("Cowboy.model"));
+//        entitySystem.addModel("Sphere", modelLoader.loadModel("Sphere.model"));
 
-        entitySystem.addModel("Cowboy", modelLoader.useEmbededMaterials()
-                                                   .loadModel("Models/WornMetalKnight/Knight.obj"));
-        entitySystem.addEntity("C1", entitySystem.entityFactory.make("Cowboy", glm::vec3(1.5, -0.5, -1), 3.0f));
-
-        entitySystem.addModel("Sphere1", modelLoader.useSpecificMaterial("Materials/grimy_metal/grimy_metal.Material")
-                                                    .loadModel("Meshes/low_poly_sphere.obj"));
-        entitySystem.addEntity("S1", entitySystem.entityFactory.make("Sphere1", glm::vec3( 3.0, -0.5, 2.0)));
-
-        entitySystem.addModel("Sphere3", modelLoader.useSpecificMaterial("Materials/metal_slpotchy/metal_slpotchy.Material")
-                                                    .loadModel("Meshes/low_poly_sphere.obj"));
-        entitySystem.addEntity("S3", entitySystem.entityFactory.make("Sphere3", glm::vec3( 0.0, -0.5, 2.0)));
-
-
-        entitySystem.addModel("Sphere5", modelLoader.useSpecificMaterial("Materials/scuffed_plastic/scuffed_plastic_pink.Material")
-                                                    .loadModel("Meshes/low_poly_sphere.obj"));
-        entitySystem.addEntity("S5", entitySystem.entityFactory.make("Sphere5", glm::vec3(-3.0, -0.5, 2.0)));
-
-        entitySystem.addModel("Plane", modelLoader.useSpecificMaterial("Materials/mirror/mirror.Material")
-                .loadModel("Meshes/verticalPlane.obj"));
-        entitySystem.addEntity("P1", entitySystem.entityFactory.make("Plane", glm::vec3(-3.0, -0.5, -2.0)));
-
+        entitySystem.addEntity("Knight1", entitySystem.entityFactory.make("Knight", glm::vec3(-1.5, -0.5, -1), 3.0f));
+        entitySystem.addEntity("Knight2", entitySystem.entityFactory.make("Knight", glm::vec3(1.5, -0.5, -1), 3.0f));
+//        entitySystem.addEntity("Cowboy1", entitySystem.entityFactory.make("Sphere", glm::vec3( 3.0, -0.5, 2.0)));
+//        entitySystem.addEntity("Sphere1", entitySystem.entityFactory.make("Sphere", glm::vec3( 0.0, -0.5, 2.0)));
+//        entitySystem.addEntity("Sphere2", entitySystem.entityFactory.make("Sphere", glm::vec3(-3.0, -0.5, 2.0)));
     }
     catch (MeshLoadingException &e)
     {
@@ -99,25 +87,21 @@ Application::Application()
 void Application::main()
 {
     auto waterfallSkybox = textureLoader.calculateCubeMapFromEquirectangularTexture(
-            textureLoader.loadTexture2D_F("Textures/equirectangular/Frozen_Waterfall/Waterfall_Skybox.hdr") );
+            textureLoader.loadTexture2D_F("Textures/equirectangular/Frozen_Waterfall/Waterfall_Skybox.hdr")
+            );
 
     auto waterfallIrradiance = textureLoader.calculateCubeMapFromEquirectangularTexture(
-            textureLoader.loadTexture2D_F("Textures/equirectangular/Frozen_Waterfall/Waterfall_Irradiance.hdr") );
+            textureLoader.loadTexture2D_F("Textures/equirectangular/Frozen_Waterfall/Waterfall_Irradiance.hdr")
+            );
 
-    auto waterfallRadiance = textureLoader.calculatePrefilteredEnviromentMap(waterfallSkybox);
+    auto waterfallRadiance =  textureLoader.calculatePrefilteredEnviromentMap(waterfallSkybox);
 
 
     auto brdfLUT = textureLoader.loadTexture2D("Textures/ibl_brdf_lut.png");
 
     auto skyboxMesh = MeshGenerator::generateSkyBox();
 
-    entities.push_back(entitySystem.getEntity("M1"));
-    entities.push_back(entitySystem.getEntity("C1"));
-
-    entities2.push_back(entitySystem.getEntity("S1"));
-    entities2.push_back(entitySystem.getEntity("S3"));
-    entities2.push_back(entitySystem.getEntity("S5"));
-    entities2.push_back(entitySystem.getEntity("P1"));
+    entities.push_back(entitySystem.getEntity("Knight1"));
 
     scene = &entities;
 
@@ -175,6 +159,7 @@ void Application::main()
             pbrShader->use();
             for (auto &entity : *scene)
             {
+
                 ModelViewProjection = Projection * View * entity->getModelSpaceMatrix();
                 Model = entity->getModelSpaceMatrix();
 
@@ -187,7 +172,8 @@ void Application::main()
                  * */
                 for (auto &mesh : entity->getModel()->meshes)
                 {
-                    mesh->bindTexturesPBR();
+                    unsigned int matID = mesh->getMatId();
+                    entity->getModel()->metrialAliasses[0][matID]->bind();
                     mesh->bindVao();
                     glDrawElements(GL_TRIANGLES, mesh->getIndiciesCount(), GL_UNSIGNED_SHORT, nullptr);
                 }

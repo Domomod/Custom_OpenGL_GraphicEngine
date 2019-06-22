@@ -6,7 +6,6 @@
 
 #include "Entity.h"
 #include "ModelStorageManager.h"
-#include "ModelToModelSpaceMatricesMap.h"
 
 std::shared_ptr<Entity>
 EntityFactory::make(const std::string &modelName, const glm::vec3 &position, const glm::vec3 &rotation,
@@ -15,7 +14,6 @@ EntityFactory::make(const std::string &modelName, const glm::vec3 &position, con
     std::shared_ptr<Model> model = associatedMeshStorageManager->getObject(modelName);
     return std::make_shared<Entity>(
             model,
-            associatedMeshToModelMap->allocateModel(modelName),
             position,
             rotation,
             scaling
@@ -29,7 +27,6 @@ EntityFactory::make(const std::string &modelName, const glm::vec3 &position, con
     std::shared_ptr<Model> model = associatedMeshStorageManager->getObject(modelName);
     return std::make_shared<Entity>(
             model,
-            associatedMeshToModelMap->allocateModel(modelName),
             position,
             rotation,
             glm::vec3(scaling)
@@ -41,9 +38,5 @@ void EntityFactory::setAssociatedMeshStorageManager(ModelStorageManager &associa
     EntityFactory::associatedMeshStorageManager = &associatedMeshStorageManager;
 }
 
-void EntityFactory::setAssociatedMeshToModelMap(ModelToModelSpaceMatricesMap &associatedMeshToModelMap)
-{
-    EntityFactory::associatedMeshToModelMap = &associatedMeshToModelMap;
-}
 
 

@@ -17,7 +17,6 @@ using namespace SkeletalSystem;
 void SkeletonLoader::loadSkeleton(aiMesh **assimpMeshTable, unsigned int tableSize)
 {
 
-
     bool hasSkeleton = false;
     for (unsigned int idx = 0; idx < tableSize; idx++)
     {
@@ -27,6 +26,7 @@ void SkeletonLoader::loadSkeleton(aiMesh **assimpMeshTable, unsigned int tableSi
             hasSkeleton = true;
         }
     }
+
     if (hasSkeleton == false)
     {
         constructedSkeleton = nullptr;

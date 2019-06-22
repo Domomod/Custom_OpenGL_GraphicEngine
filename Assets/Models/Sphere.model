@@ -1,0 +1,25 @@
+<?xml version = "1.0"?>
+<model name="Sphere">
+	<geometry>smooth_sphere.dae</geometry>
+	<alias>
+		<material name="grimy_metal">grimy_metal.Material</material>
+	</alias>
+	<alias>
+		<material name="iron_scuffed">iron_scuffed.Material</material>
+	</alias>
+	<alias>
+		<material name="metal_slpotchy">metal_slpotchy.Material</material>
+	</alias>
+	<alias>
+		<material name="mirror">mirror.Material</material>
+	</alias>
+	<alias>
+		<material name="rusted_iron">rusted_iron.Material</material>
+	</alias>
+	<alias>
+		<material name="scuffed_plastic_pink">scuffed_plastic_pink.Material</material>
+	</alias>
+	<alias>
+		<material name="synth_rubber">synth_rubber.Material</material>
+	</alias>
+</model>

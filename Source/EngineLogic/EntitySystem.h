@@ -10,7 +10,6 @@
 #include "EntityFactory.h"
 #include "EntityStorageManager.h"
 #include "ModelStorageManager.h"
-#include "ModelToModelSpaceMatricesMap.h"
 #include "Assets/Mesh/MeshGenerator.h"
 
 
@@ -41,13 +40,10 @@ public:
 
     std::shared_ptr<Model> getModel(const std::string &modelName);
 
-    const std::vector<glm::mat4> *getAllFromModelSpaceMatricesForModel(const std::string &meshName) const;
-
     EntityFactory entityFactory;
 private:
     EntityStorageManager entityStorageManager;
     ModelStorageManager modelStorageManager;
-    ModelToModelSpaceMatricesMap modelToModelSpaceMatriceslMap;
 };
 
 

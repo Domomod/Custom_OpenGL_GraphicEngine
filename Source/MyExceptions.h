@@ -167,6 +167,17 @@ public:
     }
 };
 
+
+class MaterialLoadingException : public ModelLoadingException
+{
+public:
+    MaterialLoadingException(const std::string &msg = "No message was set\n") : ModelLoadingException(msg,
+                                                                                                  "MaterialLoadingException")
+    {
+    }
+};
+
+
 class SkeletonLoadingException : public ModelLoadingException
 {
 public:

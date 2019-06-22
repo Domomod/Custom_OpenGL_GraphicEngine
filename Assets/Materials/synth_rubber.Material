@@ -1,0 +1,13 @@
+<?xml version = "1.0"?>
+<material type="PBR_MR">
+	<albedo>synth_rubber/albedo.png</albedo>
+
+	<ambient>white.png</ambient>
+
+	<metalness>black.png</metalness>
+
+	<roughness>synth_rubber/roughness.png</roughness>
+
+	<normal>synth_rubber/normal.png</normal>
+</material>
+

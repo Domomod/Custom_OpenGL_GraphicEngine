@@ -10,16 +10,16 @@
 
 
 Mesh::Mesh(const std::string &name,
-           const std::vector<glm::vec3> &positions, const std::vector<glm::vec4> &colors,
-           const std::vector<glm::vec2> &uvs, const std::vector<glm::vec3> &normals,
-           const std::vector<glm::vec3> &tangents, const std::vector<glm::ivec4> &boneIds,
-           const std::vector<glm::vec4> &boneWeights, const std::vector<GLushort> &indicies,
-
-           const std::shared_ptr<Texture2D> &normalMap, const std::shared_ptr<Texture2D> &aoMap,
-           const std::shared_ptr<Texture2D> &albedoMap, const std::shared_ptr<Texture2D> &metallnessMap,
-           const std::shared_ptr<Texture2D> &roughnessMap) : name(name),
-                                                             normalMap(normalMap), aoMap(aoMap), albedoMap(albedoMap),
-                                                             metallnessMap(metallnessMap), roughnessMap(roughnessMap)
+           unsigned int matId,
+           const std::vector<glm::vec3> &positions,
+           const std::vector<glm::vec4> &colors,
+           const std::vector<glm::vec2> &uvs,
+           const std::vector<glm::vec3> &normals,
+           const std::vector<glm::vec3> &tangents,
+           const std::vector<glm::ivec4> &boneIds,
+           const std::vector<glm::vec4> &boneWeights,
+           const std::vector<GLushort> &indicies
+           ) : name(name),matId(matId)
 {
     vao.bind();
 
@@ -55,18 +55,14 @@ Mesh::Mesh(const std::string &name,
     vao.unbind();
 }
 
+void Mesh::bindVao()
+{
+    vao.bind();
+}
+
 unsigned int Mesh::getIndiciesCount() const
 {
     return indiciesCount;
-}
-
-void Mesh::bindTexturesPBR()
-{
-    albedoMap->bind(0);
-    aoMap->bind(1);
-    metallnessMap->bind(2);
-    roughnessMap->bind(3);
-    normalMap->bind(4);
 }
 
 void Mesh::bindPositon()
@@ -131,12 +127,8 @@ void Mesh::unbindBoneInfo()
     boneWeightsB.unbind(vao.getVaoName());
 }
 
-void Mesh::setMaterial(MaterialsLoader &materialsLoader)
+unsigned int Mesh::getMatId() const
 {
-    /*TODO: add a new class Material*/
-    albedoMap = materialsLoader.albedoMaps[0];
-    aoMap = materialsLoader.ambientMaps[0];
-    metallnessMap = materialsLoader.metalnessMaps[0];
-    roughnessMap = materialsLoader.roughnessMaps[0];
-    normalMap = materialsLoader.normalMaps[0];
+    return matId;
 }
+

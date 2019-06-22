@@ -1,0 +1,13 @@
+<?xml version = "1.0"?>
+<material type="PBR_MR">
+	<albedo>Knight_Worn/Cloth_albedo.png</albedo>
+
+	<ambient>Knight_Worn/Cloth_ambient.png</ambient>
+
+	<metalness>Knight_Worn/Cloth_metalness.png</metalness>
+
+	<roughness>Knight_Worn/Cloth_roughness.png</roughness>
+
+	<normal>Knight_Worn_HQ/Cloth_normal.png</normal>
+</material>
+

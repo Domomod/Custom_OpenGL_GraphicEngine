@@ -24,22 +24,13 @@ public:
 
     std::string name;
 
-    Mesh(const std::string &name,
+    Mesh(const std::string &name, unsigned int matId,
          const std::vector<glm::vec3> &positions, const std::vector<glm::vec4> &colors,
          const std::vector<glm::vec2> &uvs, const std::vector<glm::vec3> &normals,
          const std::vector<glm::vec3> &tangents, const std::vector<glm::ivec4> &boneIds,
-         const std::vector<glm::vec4> &boneWeights, const std::vector<GLushort> &indicies,
+         const std::vector<glm::vec4> &boneWeights, const std::vector<GLushort> &indicies);
 
-         const std::shared_ptr<Texture2D> &normalMap, const std::shared_ptr<Texture2D> &aoMap,
-         const std::shared_ptr<Texture2D> &albedoMap, const std::shared_ptr<Texture2D> &metallnessMap,
-         const std::shared_ptr<Texture2D> &roughnessMap);
-
-    void bindVao()
-    {
-        vao.bind();
-    }
-
-    void bindTexturesPBR();
+    void bindVao();
 
     void bindPositon();
 
@@ -65,10 +56,9 @@ public:
 
     void unbindBoneInfo();
 
-
-    void setMaterial(MaterialsLoader &materialsLoader);
-
     unsigned int getIndiciesCount() const;
+
+    unsigned int getMatId() const;
 
 private:
     VertexArrayObject vao;
@@ -84,12 +74,7 @@ private:
     ElementArrayBuffer indiciesB;
 
     unsigned int indiciesCount;
-
-    std::shared_ptr<Texture2D> normalMap;
-    std::shared_ptr<Texture2D> aoMap;
-    std::shared_ptr<Texture2D> albedoMap;
-    std::shared_ptr<Texture2D> metallnessMap;
-    std::shared_ptr<Texture2D> roughnessMap;
+    unsigned int matId;
 
     bool hasColors;
     bool hasUvs;

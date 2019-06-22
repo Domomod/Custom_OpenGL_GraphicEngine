@@ -31,14 +31,7 @@ public:
 private:
     void setAssociatedMeshStorageManager(ModelStorageManager &associatedMeshStorageManager);
 
-public:
-    void setAssociatedMeshToModelMap(ModelToModelSpaceMatricesMap &associatedMeshToModelMap);
-
-private:
-
     ModelStorageManager *associatedMeshStorageManager;
-    ModelToModelSpaceMatricesMap *associatedMeshToModelMap;
-
 };
 
 

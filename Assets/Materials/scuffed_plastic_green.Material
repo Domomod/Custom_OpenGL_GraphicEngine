@@ -1,0 +1,13 @@
+<?xml version = "1.0"?>
+<material type="PBR_MR">
+	<albedo>green.png</albedo>
+
+	<ambient>white.png</ambient>
+
+	<metalness>black.png</metalness>
+
+	<roughness>scuffed_plastic/roughness.png</roughness>
+
+	<normal>scuffed_plastic/normal.png</normal>
+</material>
+

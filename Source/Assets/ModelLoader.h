@@ -30,26 +30,11 @@ class ModelLoader {
 public:
     std::shared_ptr<Model> loadModel(const std::string &path);
 
-    ModelLoader& useEmbededMaterials(){
-        usingEmbededMaterials = true;
-        usingSpecifiedMaterial = false;
-        return *this;
-    }
-    ModelLoader& useSpecificMaterial(const std::string &path){
-        usingEmbededMaterials = false;
-        usingSpecifiedMaterial = true;
-        materialPath = path;
-        return *this;
-    }
-
 private:
+    std::shared_ptr<Model> model;
+
     const aiScene *scene;
     bool hasSkeleton;
-    std::string directory;
-
-    bool usingEmbededMaterials = false;
-    bool usingSpecifiedMaterial = false;
-    std::string materialPath;
 
     MeshLoader meshLoader;
     SkeletalSystem::SkeletonLoader skeletonLoader;
@@ -58,13 +43,13 @@ private:
 
     Assimp::Importer importer;
 
-    void loadSkeleton(const std::shared_ptr<Model> &thisModel);
+    void loadSkeleton();
 
-    void loadSkeletalAnimations(const std::shared_ptr<Model> &thisModel);
+    void loadSkeletalAnimations();
 
-    void loadMeshes(const std::shared_ptr<Model> &thisModel);
+    void loadMeshes();
 
-    void loadMaterials();
+    void loadMaterials(tinyxml2::XMLElement *materialAlias);
 };
 
 

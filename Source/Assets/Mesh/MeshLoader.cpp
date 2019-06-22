@@ -111,44 +111,11 @@ void MeshLoader::addBoneInfo(const std::map<std::__cxx11::string, int> &boneName
 
 std::shared_ptr<Mesh> MeshLoader::make()
 {
+    meshFactory.setMatID(matId);
     std::string name = assimpToEngine(assimpMesh->mName);
     return meshFactory.make(name);
 }
 
 MeshLoader::MeshLoader()
 {
-}
-
-void MeshLoader::addNormalTextures(const std::vector<std::shared_ptr<Texture2D>> &textures)
-{
-    meshFactory.setNormalMap(textures[matId]);
-}
-
-void MeshLoader::addBaseColorTexture(const std::vector<std::shared_ptr<Texture2D>> &textures)
-{
-    meshFactory.setAlbedoMap(textures[matId]);
-}
-
-void MeshLoader::addAOTextures(const std::vector<std::shared_ptr<Texture2D>> &textures)
-{
-    meshFactory.setAoMap(textures[matId]);
-}
-
-void MeshLoader::addMetallnessTexture(const std::vector<std::shared_ptr<Texture2D>> &textures)
-{
-    meshFactory.setMetallnessMap(textures[matId]);
-}
-
-void MeshLoader::addRoughnessTexture(const std::vector<std::shared_ptr<Texture2D>> &textures)
-{
-    meshFactory.setRoughnessMap(textures[matId]);
-}
-
-void MeshLoader::addMaterial(const MaterialsLoader &materialLoader, unsigned int matID)
-{
-    meshFactory.setNormalMap(materialLoader.normalMaps[matID]);
-    meshFactory.setAlbedoMap(materialLoader.albedoMaps[matID]);
-    meshFactory.setAoMap(materialLoader.ambientMaps[matID]);
-    meshFactory.setMetallnessMap(materialLoader.metalnessMaps[matID]);
-    meshFactory.setRoughnessMap(materialLoader.roughnessMaps[matID]);
 }

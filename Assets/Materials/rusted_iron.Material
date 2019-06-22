@@ -1,0 +1,13 @@
+<?xml version = "1.0"?>
+<material type="PBR_MR">
+	<albedo>rusted_iron/albedo.png</albedo>
+
+	<ambient>white.png</ambient>
+
+	<metalness>rusted_iron/metalness.png</metalness>
+
+	<roughness>rusted_iron/roughness.png</roughness>
+
+	<normal>rusted_iron/normal.png</normal>
+</material>
+

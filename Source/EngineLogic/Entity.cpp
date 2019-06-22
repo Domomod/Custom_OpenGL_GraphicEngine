@@ -6,13 +6,11 @@
 
 #include "Assets/Model.h"
 
-Entity::Entity(std::shared_ptr<Model> model, glm::mat4 **modelMatrixPtrPtr, glm::vec3 position, glm::vec3 rotation,
-               glm::vec3 scale)
-        : model(std::move(model)),
-          modelMatrixPtrPtr(modelMatrixPtrPtr),
-          position(position),
-          rotation(rotation),
-          scale(scale)
+Entity::Entity(std::shared_ptr<Model> model,
+               glm::vec3 position,
+               glm::vec3 rotation,
+               glm::vec3 scale
+               ) : model(std::move(model)), position(position), rotation(rotation), scale(scale)
 {
 
     auto rotationMatrix = glm::mat4(1.0f);
@@ -21,9 +19,9 @@ Entity::Entity(std::shared_ptr<Model> model, glm::mat4 **modelMatrixPtrPtr, glm:
     rotationMatrix *= glm::rotate(rotationMatrix, rotation.z, glm::vec3(0, 0, 1));
 
 
-    **modelMatrixPtrPtr = glm::translate(**modelMatrixPtrPtr, position);
-    **modelMatrixPtrPtr = **modelMatrixPtrPtr * rotationMatrix;
-    **modelMatrixPtrPtr = glm::scale(**modelMatrixPtrPtr, scale);
+    modelMatrix = glm::translate(glm::mat4(1), position);
+    modelMatrix = modelMatrix * rotationMatrix;
+    modelMatrix = glm::scale(modelMatrix, scale);
 
 }
 
@@ -34,7 +32,7 @@ const std::shared_ptr<Model> Entity::getModel() const
 
 const glm::mat4 Entity::getModelSpaceMatrix() const
 {
-    return **modelMatrixPtrPtr;
+    return modelMatrix;
 }
 
 void Entity::setModel(const std::shared_ptr<Model> &model)
@@ -42,7 +40,7 @@ void Entity::setModel(const std::shared_ptr<Model> &model)
     Entity::model = model;
 }
 
-void Entity::setModelMatrix(glm::mat4 modelMatrixPtrPtr)
+void Entity::setModelMatrix(glm::mat4 modelMatrix)
 {
-    **Entity::modelMatrixPtrPtr = modelMatrixPtrPtr;
+    Entity::modelMatrix = modelMatrix;
 }

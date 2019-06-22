@@ -38,6 +38,7 @@ public:
     {
         std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(
                 name,
+                matID,
                 positions,
                 colors,
                 uv,
@@ -45,26 +46,13 @@ public:
                 tangents,
                 boneIds,
                 boneWeights,
-                indicies,
-                normalMap,
-                aoMap,
-                albedoMap,
-                metallnessMap,
-                roughnessMap
+                indicies
         );
         clear();
         return mesh;
     }
 
-    void setNormalMap(const std::shared_ptr<Texture2D> &normalMap);
-
-    void setAoMap(const std::shared_ptr<Texture2D> &aoMap);
-
-    void setAlbedoMap(const std::shared_ptr<Texture2D> &albedoMap);
-
-    void setMetallnessMap(const std::shared_ptr<Texture2D> &metallnessMap);
-
-    void setRoughnessMap(const std::shared_ptr<Texture2D> &roughnessMap);
+    void setMatID(unsigned int matID);
 
 private:
     void clear()
@@ -89,12 +77,7 @@ private:
     std::vector<GLushort> indicies;
 
     std::string name;
-
-    std::shared_ptr<Texture2D> normalMap;
-    std::shared_ptr<Texture2D> aoMap;
-    std::shared_ptr<Texture2D> albedoMap;
-    std::shared_ptr<Texture2D> metallnessMap;
-    std::shared_ptr<Texture2D> roughnessMap;
+    unsigned int matID;
 };
 
 

@@ -9,7 +9,7 @@
 #include <memory>
 
 class Mesh;
-
+class Material;
 class Texture2D;
 
 namespace SkeletalSystem
@@ -29,6 +29,8 @@ public:
     }
 
     std::vector<std::shared_ptr<Mesh> > meshes;
+
+    std::vector<std::vector<std::shared_ptr<Material>>> metrialAliasses;
 
     /* A Model might or might not have a Skeletal system
      * */
