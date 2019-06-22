@@ -1,13 +1,7 @@
 <?xml version = "1.0"?>
-<material type="PBR_MR">
-	<albedo>Knight_Worn/Metal_albedo.png</albedo>
+<material type="PHONG">
+	<color>cowboy.png</color>
 
-	<ambient>Knight_Worn/Metal_ambient.png</ambient>
-
-	<metalness>Knight_Worn/Metal_metalness.png</metalness>
-
-	<roughness>Knight_Worn/Metal_roughness.png</roughness>
-
-	<normal>Knight_Worn_HQ/Metal_normal.png</normal>
+	<normal>normal.png</normal>
 </material>
 

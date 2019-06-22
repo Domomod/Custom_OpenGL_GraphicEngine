@@ -22,8 +22,11 @@ public:
     virtual ~Material();
     virtual void bind() = 0;
 
+    Type getType() const;
+
 protected:
     Material();
+    Type type;
 };
 
 

@@ -68,12 +68,12 @@ Application::Application()
     {
         /*TODO: switch Knight.obj to .dae in Knight.model to debug skeleton loading bug ()*/
         entitySystem.addModel("Knight", modelLoader.loadModel("Knight.model"));
-//        entitySystem.addModel("Cowboy", modelLoader.loadModel("Cowboy.model"));
+        entitySystem.addModel("Cowboy", modelLoader.loadModel("Cowboy.model"));
 //        entitySystem.addModel("Sphere", modelLoader.loadModel("Sphere.model"));
 
         entitySystem.addEntity("Knight1", entitySystem.entityFactory.make("Knight", glm::vec3(-1.5, -0.5, -1), 3.0f));
         entitySystem.addEntity("Knight2", entitySystem.entityFactory.make("Knight", glm::vec3(1.5, -0.5, -1), 3.0f));
-//        entitySystem.addEntity("Cowboy1", entitySystem.entityFactory.make("Sphere", glm::vec3( 3.0, -0.5, 2.0)));
+        entitySystem.addEntity("Cowboy1", entitySystem.entityFactory.make("Cowboy", glm::vec3( 3.0, -0.5, 2.0)));
 //        entitySystem.addEntity("Sphere1", entitySystem.entityFactory.make("Sphere", glm::vec3( 0.0, -0.5, 2.0)));
 //        entitySystem.addEntity("Sphere2", entitySystem.entityFactory.make("Sphere", glm::vec3(-3.0, -0.5, 2.0)));
     }
@@ -105,6 +105,7 @@ void Application::main()
 
     scene = &entities;
 
+    auto Cowboy = entitySystem.getEntity("Cowboy1");
 
     VertexArrayObject vao;
     vao.bind();
@@ -155,18 +156,14 @@ void Application::main()
             basicShaderBuffer.bind();
 
 
-
             pbrShader->use();
             for (auto &entity : *scene)
             {
-
                 ModelViewProjection = Projection * View * entity->getModelSpaceMatrix();
                 Model = entity->getModelSpaceMatrix();
 
-
                 basicShaderBuffer.bakeData();
                 basicShaderBuffer.sendBufferToGPU();
-
 
                 /* DRAW KNIGHTS
                  * */

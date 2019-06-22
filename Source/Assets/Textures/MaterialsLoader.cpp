@@ -42,8 +42,21 @@ void MaterialsLoader::loadMaterials(tinyxml2::XMLElement *multipleMaterialsXML)
         {
             throw MaterialLoadingException("Could not parse XML file: " + (GEOMETRY_DIRECTORY + elementTextToString(materialPathXML)));
         }
-        loadMaterialPBR(materialXML);
+
+        std::string type = materialXML->Attribute("type");
         materialPathXML = materialPathXML->NextSiblingElement();
+        if(type == "PBR_MR")
+        {
+            loadMaterialPBR(materialXML);
+        }
+        else if (type == "PHONG")
+        {
+            loadMaterialPHONG(materialXML);
+        }
+        else
+        {
+            throw MaterialLoadingException("Unsuported material type:\t" + type + "\n");
+        }
     }
 }
 
@@ -77,6 +90,25 @@ void MaterialsLoader::loadMaterialPBR(tinyxml2::XMLElement *materialXML)
 }
 
 
+void MaterialsLoader::loadMaterialPHONG(tinyxml2::XMLElement *materialXML)
+{
+    using  namespace tinyxml2;
+
+    XMLElement * colorXML    = materialXML->FirstChildElement("color");
+    XMLElement * normalXML   = materialXML->FirstChildElement("normal");
+
+    std::string colorPath    = TEXTURE_DIRECTORY + elementTextToString(colorXML   );
+    std::string normalPath   = TEXTURE_DIRECTORY + elementTextToString(normalXML  );
+
+    std::shared_ptr<Texture2D> colorMap    = textureLoader.loadTexture2D(colorPath   );
+    std::shared_ptr<Texture2D> normalMap   = textureLoader.loadTexture2D(normalPath  );
+
+    this->materials.push_back(
+            std::shared_ptr<Material>(new MaterialPHONG(colorMap,normalMap))
+            );
+}
+
+
 void MaterialsLoader::clear()
 {
     materials.clear();
@@ -86,4 +118,3 @@ const std::vector<std::shared_ptr<Material>> &MaterialsLoader::getMaterials() co
 {
     return materials;
 }
-

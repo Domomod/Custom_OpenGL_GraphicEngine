@@ -29,6 +29,7 @@ MaterialPBR::MaterialPBR(const std::shared_ptr<Texture2D> &albedo,
                          ) :
                          albedo(albedo), ambient(ambient), metalness(metalness),  roughness(roughness), normal(normal)
 {
+    type = Type::PBR;
 }
 
 
@@ -44,6 +45,7 @@ MaterialPHONG::MaterialPHONG(const std::shared_ptr<Texture2D> &color,
                              const std::shared_ptr<Texture2D> &normal
                              ) : color(color), normal(normal)
 {
+    type = Type::PHONG;
 }
 
 
@@ -52,7 +54,6 @@ MaterialPHONG::~MaterialPHONG()
 
 void MaterialFUR::bind()
 {
-
 }
 
 MaterialFUR::MaterialFUR(const std::shared_ptr<Texture2D> &color,
@@ -60,6 +61,7 @@ MaterialFUR::MaterialFUR(const std::shared_ptr<Texture2D> &color,
                          const std::shared_ptr<Texture2D> &height
                          ) : color(color), normal(normal), height(height)
 {
+    type = Type::FUR;
 }
 
 
@@ -79,3 +81,8 @@ MaterialCUSTOM::MaterialCUSTOM(const std::vector<std::pair<std::shared_ptr<Textu
 
 MaterialCUSTOM::~MaterialCUSTOM()
 = default;
+
+Material::Type Material::getType() const
+{
+    return type;
+}

@@ -35,6 +35,7 @@ private:
     TextureLoader textureLoader;
 
     void loadMaterialPBR(tinyxml2::XMLElement *materialXML);
+    void loadMaterialPHONG(tinyxml2::XMLElement *materialXML);
 
     std::vector< std::shared_ptr<Material> > materials;
 };

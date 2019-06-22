@@ -2,6 +2,6 @@
 <model name="Cowboy">
 	<geometry>cowboy.dae</geometry>
 	<alias>
-		<material name="cowboy">cowboy.Material</material>
+		<material name="cowboy">Cowboy.Material</material>
 	</alias>
 </model>

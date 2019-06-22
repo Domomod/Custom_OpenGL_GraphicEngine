@@ -55,6 +55,7 @@ MeshFactory &MeshFactory::allocateMemoryForBoneData()
         );
     }
     boneIds.resize(positions.size());
+    boneWeights.resize(positions.size());
     return *this;
 }
 
