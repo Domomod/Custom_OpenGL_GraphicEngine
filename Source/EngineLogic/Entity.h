@@ -19,7 +19,7 @@ class Model;
  * */
 class Entity {
 public:
-    Entity(std::shared_ptr<Model> model, glm::mat4 **modelMatrixPtrPtr,
+    Entity(std::shared_ptr<Model> model,
             glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
     const std::shared_ptr<Model> getModel() const;
@@ -28,11 +28,11 @@ public:
 
     void setModel(const std::shared_ptr<Model> &model);
 
-    void setModelMatrix(glm::mat4 modelMatrixPtrPtr);
+    void setModelMatrix(glm::mat4 modelMatrix);
 
 private:
     std::shared_ptr<Model> model;
-    glm::mat4** modelMatrixPtrPtr;
+    glm::mat4 modelMatrix;
     glm::vec3 position;
     glm::vec3 rotation;
     glm::vec3 scale;

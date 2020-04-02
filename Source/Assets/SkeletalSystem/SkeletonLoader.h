@@ -41,7 +41,7 @@ namespace SkeletalSystem
 
         void loadSkeleton(aiMesh **assimpMeshTable, unsigned int tableSize);
 
-        const std::map<std::__cxx11::string, int> &getBoneNameToboneIdMap() const;
+        const std::map<std::string, int> &getBoneNameToboneIdMap() const;
 
         std::shared_ptr<SkeletalSystem::Skeleton> make();
 
@@ -71,7 +71,7 @@ namespace SkeletalSystem
         std::map<std::string, int> boneNameToboneIdMap;
         std::map<std::string, glm::mat4> boneNameToOffsetMap;
         int nextBoneIndexToBeAssigned;
-        bool returnedInitialisedSkeleton;
+        bool returnedInitialisedSkeleton = false;
         std::shared_ptr<SkeletalSystem::Skeleton> constructedSkeleton;
 
         /* Helper structure for searching for skeleton in assimp node hierarchy.

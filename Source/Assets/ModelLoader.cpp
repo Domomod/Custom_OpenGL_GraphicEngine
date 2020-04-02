@@ -8,15 +8,30 @@
 
 #include "Utility.h"
 #include "MyExceptions.h"
+#include "myXML.h"
+#include "UsedDirectories.h"
 
+#ifndef XMLCheckResult
+#define XMLCheckResult(a_eResult) if (a_eResult != tinyxml2::XML_SUCCESS) { printf("Error: %i\n", a_eResult); }
+#endif
 
 std::shared_ptr<Model> ModelLoader::loadModel(const std::string &path)
 {
-    std::shared_ptr<Model> thisModel = std::make_shared<Model>();
+    using namespace tinyxml2;
 
-    directory = getFileDir(path);
+    hasSkeleton = false;
 
-    scene = importer.ReadFile(path.c_str(),
+    XMLDocument documentXML;
+    XMLError resultXML = documentXML.LoadFile((MODEL_DIRECTORY + path).c_str());
+    XMLCheckResult(resultXML);
+
+    XMLElement * modelXML = documentXML.RootElement();
+
+    std::string modelName = modelXML->Attribute("name");
+
+    XMLElement * geometry = modelXML->FirstChildElement("geometry");
+
+    scene = importer.ReadFile( (GEOMETRY_DIRECTORY + elementTextToString(geometry)).c_str(),
                               aiProcess_CalcTangentSpace |
                               aiProcess_GenSmoothNormals |
                               aiProcess_JoinIdenticalVertices |
@@ -38,26 +53,28 @@ std::shared_ptr<Model> ModelLoader::loadModel(const std::string &path)
 
     if (!scene)
     {
-        throw ModelLoadingException("Could not load file: " + path);
+        throw ModelLoadingException("Could not load file: " + (GEOMETRY_DIRECTORY + elementTextToString(geometry)));
     }
 
     auto debugInsightScene = scene;
 
-    loadSkeleton(thisModel);
-    loadSkeletalAnimations(thisModel);
 
-    loadMaterials();
-    loadMeshes(thisModel);
+    model = std::make_shared<Model>();
 
-    usingEmbededMaterials = false;
-    usingSpecifiedMaterial = false;
+    loadSkeleton();
+    loadSkeletalAnimations();
+
+    loadMeshes();
+
+    XMLElement * firstMaterialAlias = modelXML->FirstChildElement("alias");
+    loadMaterials(firstMaterialAlias);
 
     materialsLoader.clear();
 
-    return thisModel;
+    return model;
 }
 
-void ModelLoader::loadMeshes(const std::shared_ptr<Model> &thisModel)
+void ModelLoader::loadMeshes()
 {
     for (unsigned int idx = 0; idx < scene->mNumMeshes; idx++)
     {
@@ -66,24 +83,11 @@ void ModelLoader::loadMeshes(const std::shared_ptr<Model> &thisModel)
         if (hasSkeleton)
             meshLoader.addBoneInfo(skeletonLoader.getBoneNameToboneIdMap());
 
-        if (usingEmbededMaterials)
-        {
-            meshLoader.addNormalTextures(materialsLoader.normalMaps);
-            meshLoader.addAOTextures(materialsLoader.ambientMaps);
-            meshLoader.addBaseColorTexture(materialsLoader.albedoMaps);
-            meshLoader.addMetallnessTexture(materialsLoader.metalnessMaps);
-            meshLoader.addRoughnessTexture(materialsLoader.roughnessMaps);
-        }
-        else if (usingSpecifiedMaterial)
-        {
-            meshLoader.addMaterial(materialsLoader, 0);
-        }
-
-        thisModel->meshes.push_back(meshLoader.make());
+        model->meshes.push_back(meshLoader.make());
     }
 }
 
-void ModelLoader::loadSkeletalAnimations(const std::shared_ptr<Model> &thisModel)
+void ModelLoader::loadSkeletalAnimations()
 {
     if (hasSkeleton)
     {
@@ -91,33 +95,28 @@ void ModelLoader::loadSkeletalAnimations(const std::shared_ptr<Model> &thisModel
         {
             animationLoader.loadAnimation(scene->mAnimations[idx],
                                           skeletonLoader.getBoneNameToboneIdMap());
-            thisModel->skeletalAnimations.push_back(animationLoader.make());
+            model->skeletalAnimations.push_back(animationLoader.make());
         }
     }
 }
 
-void ModelLoader::loadSkeleton(const std::shared_ptr<Model> &thisModel)
+void ModelLoader::loadSkeleton()
 {
     skeletonLoader.setScene(scene);
     skeletonLoader.loadSkeleton(scene->mMeshes, scene->mNumMeshes);
     hasSkeleton = skeletonLoader.isSkeletonInitialised();
-    thisModel->skeleton = skeletonLoader.make();
+    model->skeleton = skeletonLoader.make();
     if (hasSkeleton)
-        thisModel->animator = std::make_shared<SkeletalSystem::SkeletalAnimator>(thisModel->skeleton);
+        model->animator = std::make_shared<SkeletalSystem::SkeletalAnimator>(model->skeleton);
 }
 
-void ModelLoader::loadMaterials()
+void ModelLoader::loadMaterials(tinyxml2::XMLElement *materialAlias)
 {
-    if (usingEmbededMaterials)
-    {
-        materialsLoader.setScene(scene);
-        materialsLoader.setDirectory(directory);
-        materialsLoader.loadMaterials();
-    }
-    else if (usingSpecifiedMaterial)
-    {
-        materialsLoader.setDirectory(getFileDir(materialPath));
-        materialsLoader.loadMaterial(materialPath);
+    while(materialAlias != nullptr){
+        materialsLoader.loadMaterials(materialAlias);
+        model->metrialAliasses.push_back(materialsLoader.getMaterials());
+        materialsLoader.clear();
+        materialAlias = materialAlias->NextSiblingElement("alias");
     }
 }
 

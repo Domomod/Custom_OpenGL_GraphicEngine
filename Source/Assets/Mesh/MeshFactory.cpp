@@ -55,6 +55,7 @@ MeshFactory &MeshFactory::allocateMemoryForBoneData()
         );
     }
     boneIds.resize(positions.size());
+    boneWeights.resize(positions.size());
     return *this;
 }
 
@@ -79,27 +80,7 @@ MeshFactory &MeshFactory::addBoneData(int vertId, int boneId, float weight)
     throw MeshLoadingException("Vertex affected by more than 4 bones.");
 }
 
-void MeshFactory::setNormalMap(const std::shared_ptr<Texture2D> &normalMap)
+void MeshFactory::setMatID(unsigned int matID)
 {
-    MeshFactory::normalMap = normalMap;
-}
-
-void MeshFactory::setAoMap(const std::shared_ptr<Texture2D> &aoMap)
-{
-    MeshFactory::aoMap = aoMap;
-}
-
-void MeshFactory::setAlbedoMap(const std::shared_ptr<Texture2D> &albedoMap)
-{
-    MeshFactory::albedoMap = albedoMap;
-}
-
-void MeshFactory::setMetallnessMap(const std::shared_ptr<Texture2D> &metallnessMap)
-{
-    MeshFactory::metallnessMap = metallnessMap;
-}
-
-void MeshFactory::setRoughnessMap(const std::shared_ptr<Texture2D> &roughnessMap)
-{
-    MeshFactory::roughnessMap = roughnessMap;
+    MeshFactory::matID = matID;
 }

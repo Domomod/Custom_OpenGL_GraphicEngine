@@ -13,12 +13,12 @@
 #include <assimp/Importer.hpp>
 
 #include "Model.h"
-#include "Source/Assets/Mesh/MeshLoader.h"
-#include "Source/Assets/Textures/MaterialsLoader.h"
-#include "Source/Assets/SkeletalSystem/SkeletonLoader.h"
-#include "Source/Assets/SkeletalSystem/SkeletalAnimation.h"
-#include "Source/Assets/SkeletalSystem/SkeletalAnimator.h"
-#include "Source/Assets/SkeletalSystem/SkeletonAnimationLoader.h"
+#include "Assets/Mesh/MeshLoader.h"
+#include "Assets/Textures/MaterialsLoader.h"
+#include "Assets/SkeletalSystem/SkeletonLoader.h"
+#include "Assets/SkeletalSystem/SkeletalAnimation.h"
+#include "Assets/SkeletalSystem/SkeletalAnimator.h"
+#include "Assets/SkeletalSystem/SkeletonAnimationLoader.h"
 
 
 
@@ -30,26 +30,11 @@ class ModelLoader {
 public:
     std::shared_ptr<Model> loadModel(const std::string &path);
 
-    ModelLoader& useEmbededMaterials(){
-        usingEmbededMaterials = true;
-        usingSpecifiedMaterial = false;
-        return *this;
-    }
-    ModelLoader& useSpecificMaterial(const std::string &path){
-        usingEmbededMaterials = false;
-        usingSpecifiedMaterial = true;
-        materialPath = path;
-        return *this;
-    }
-
 private:
+    std::shared_ptr<Model> model;
+
     const aiScene *scene;
     bool hasSkeleton;
-    std::string directory;
-
-    bool usingEmbededMaterials = false;
-    bool usingSpecifiedMaterial = false;
-    std::string materialPath;
 
     MeshLoader meshLoader;
     SkeletalSystem::SkeletonLoader skeletonLoader;
@@ -58,13 +43,13 @@ private:
 
     Assimp::Importer importer;
 
-    void loadSkeleton(const std::shared_ptr<Model> &thisModel);
+    void loadSkeleton();
 
-    void loadSkeletalAnimations(const std::shared_ptr<Model> &thisModel);
+    void loadSkeletalAnimations();
 
-    void loadMeshes(const std::shared_ptr<Model> &thisModel);
+    void loadMeshes();
 
-    void loadMaterials();
+    void loadMaterials(tinyxml2::XMLElement *materialAlias);
 };
 
 

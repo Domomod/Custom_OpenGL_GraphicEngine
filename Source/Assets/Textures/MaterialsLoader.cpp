@@ -7,127 +7,114 @@
 #include <assimp/scene.h>
 #include <TinyXML2/tinyxml2.h>
 
-#include "Source/Assets/Model.h"
+#include "Assets/UsedDirectories.h"
+#include "Assets/myXML.h"
+#include "Assets/Model.h"
+#include "Material.h"
 #include "Texture.h"
 #include "TextureLoader.h"
 
-#include "Source/Assets/AssimpConversion.h"
+#include "Assets/AssimpConversion.h"
 
 #include "Utility.h"
+#include "MyExceptions.h"
 
 
 #ifndef XMLCheckResult
 #define XMLCheckResult(a_eResult) if (a_eResult != tinyxml2::XML_SUCCESS) { printf("Error: %i\n", a_eResult); }
 #endif
 
+void MaterialsLoader::loadMaterials(tinyxml2::XMLElement *multipleMaterialsXML)
+{
+    using  namespace tinyxml2;
 
-void MaterialsLoader::loadMaterials() {
-    for (int idx = 0; idx < scene->mNumMaterials; idx++) {
-        aiMaterial *material = scene->mMaterials[idx];
-        loadMaterialXML(material);
-    }
-}
-
-
-void MaterialsLoader::setScene(const aiScene *scene) {
-    MaterialsLoader::scene = scene;
-}
-
-
-void MaterialsLoader::setDirectory(const std::string &directory) {
-    MaterialsLoader::directory = directory;
-}
-
-
-    void MaterialsLoader::loadMaterialAtribute(std::vector<std::shared_ptr<Texture2D> > &atributeVector,
-                                               const std::string &textureFileName) {
-
-        if(textureFileName != ""){
-            std::string fullPath = getPathToMaterialTexture(textureFileName);
-            atributeVector.emplace_back(TextureLoader::loadTexture2D(fullPath));
+    XMLElement * materialPathXML = multipleMaterialsXML->FirstChildElement("material");
+    while(materialPathXML != nullptr){
+        XMLDocument documentXML;
+        std::string test = (MATERIAL_DIRECTORY + elementTextToString(materialPathXML));
+        XMLError error = documentXML.LoadFile( (MATERIAL_DIRECTORY + elementTextToString(materialPathXML)).c_str());
+        XMLElement * materialXML = documentXML.FirstChildElement("material");
+        if (error == XML_ERROR_FILE_NOT_FOUND)
+        {
+            throw FileNotFound("Could not load file: " + (GEOMETRY_DIRECTORY + elementTextToString(materialPathXML)));
         }
-        else {
-            atributeVector.push_back(TextureLoader::getDefaultTexture());
+        else if (error != XML_SUCCESS)
+        {
+            throw MaterialLoadingException("Could not parse XML file: " + (GEOMETRY_DIRECTORY + elementTextToString(materialPathXML)));
+        }
+
+        std::string type = materialXML->Attribute("type");
+        materialPathXML = materialPathXML->NextSiblingElement();
+        if(type == "PBR_MR")
+        {
+            loadMaterialPBR(materialXML);
+        }
+        else if (type == "PHONG")
+        {
+            loadMaterialPHONG(materialXML);
+        }
+        else
+        {
+            throw MaterialLoadingException("Unsuported material type:\t" + type + "\n");
         }
     }
-
-
-void MaterialsLoader::loadMaterialXML(aiMaterial * assimpMaterial) {
-    std::string filePath = getPathToMaterial(assimpMaterial);
-    loadMaterial(filePath);
 }
 
 
-std::string MaterialsLoader::elementTextToString(tinyxml2::XMLElement *xmlElement) const {
-    using namespace tinyxml2;
-    const char* elementText = xmlElement->GetText();
-    if(elementText == nullptr){
-        return "";
-    }
-    return elementText;
+void MaterialsLoader::loadMaterialPBR(tinyxml2::XMLElement *materialXML)
+{
+    using  namespace tinyxml2;
+
+    XMLElement * albedoXML    = materialXML->FirstChildElement("albedo");
+    XMLElement * ambientXML   = materialXML->FirstChildElement("ambient");
+    XMLElement * metalnessXML = materialXML->FirstChildElement("metalness");
+    XMLElement * roughnessXML = materialXML->FirstChildElement("roughness");
+    XMLElement * normalXML    = materialXML->FirstChildElement("normal");
+
+    std::string albedoPath    = TEXTURE_DIRECTORY + elementTextToString(albedoXML   );
+    std::string ambientPath   = TEXTURE_DIRECTORY + elementTextToString(ambientXML  );
+    std::string metalnessPath = TEXTURE_DIRECTORY + elementTextToString(metalnessXML);
+    std::string roughnessPath = TEXTURE_DIRECTORY + elementTextToString(roughnessXML);
+    std::string normalPath    = TEXTURE_DIRECTORY + elementTextToString(normalXML   );
+
+    std::shared_ptr<Texture2D> albedoMap    = textureLoader.loadTexture2D(albedoPath   );
+    std::shared_ptr<Texture2D> ambientMap   = textureLoader.loadTexture2D(ambientPath  );
+    std::shared_ptr<Texture2D> metalnessMap = textureLoader.loadTexture2D(metalnessPath);
+    std::shared_ptr<Texture2D> roughnessMap = textureLoader.loadTexture2D(roughnessPath);
+    std::shared_ptr<Texture2D> normalMap    = textureLoader.loadTexture2D(normalPath   );
+
+    this->materials.push_back(
+            std::shared_ptr<Material>(new MaterialPBR(albedoMap,ambientMap,metalnessMap,roughnessMap,normalMap))
+            );
+
 }
 
 
-std::string MaterialsLoader::getPathToMaterial(const aiMaterial *assimpMaterial) const {
-    aiString materialName;
-    assimpMaterial->Get(AI_MATKEY_NAME, materialName);
-#ifdef __linux__
-    std::__cxx11::string filePath = directory + "/Materials/" + assimpToEngine(materialName) + ".Material";
-#elif _WIN32
-    std::string filePath = directory + "\\Materials\\" + assimpToEngine(materialName) + ".Material";
-#else
-#error "OS not supported"
-#endif
+void MaterialsLoader::loadMaterialPHONG(tinyxml2::XMLElement *materialXML)
+{
+    using  namespace tinyxml2;
 
-    return filePath;
-}
+    XMLElement * colorXML    = materialXML->FirstChildElement("color");
+    XMLElement * normalXML   = materialXML->FirstChildElement("normal");
 
-std::string MaterialsLoader::getPathToMaterialTexture(const std::string &textureFileName) const {
+    std::string colorPath    = TEXTURE_DIRECTORY + elementTextToString(colorXML   );
+    std::string normalPath   = TEXTURE_DIRECTORY + elementTextToString(normalXML  );
 
-#ifdef __linux__
-    std::__cxx11::string filePath = directory + "/Textures/" + textureFileName;
-#elif _WIN32
-    std::__cxx11::string filePath = directory + "\\Textures\\" + textureFileName;
-#else
-#error "OS not supported"
-#endif
-    return filePath;
-}
+    std::shared_ptr<Texture2D> colorMap    = textureLoader.loadTexture2D(colorPath   );
+    std::shared_ptr<Texture2D> normalMap   = textureLoader.loadTexture2D(normalPath  );
 
-void MaterialsLoader::loadMaterial(const std::string &  filePath) {
-    using namespace tinyxml2;
-
-    XMLDocument xmlDocument;
-    XMLError xmlResult = xmlDocument.LoadFile(filePath.c_str());
-    XMLCheckResult(xmlResult);
-
-    XMLNode * xmlMaterial = xmlDocument.FirstChildElement("material");
-
-    XMLElement * xmlAlbedo    = xmlMaterial->FirstChildElement("albedo");
-    XMLElement * xmlAmbient   = xmlMaterial->FirstChildElement("ambient");
-    XMLElement * xmlMetalness = xmlMaterial->FirstChildElement("metalness");
-    XMLElement * xmlRoughness = xmlMaterial->FirstChildElement("roughness");
-    XMLElement * xmlNormal    = xmlMaterial->FirstChildElement("normal");
-
-    std::string albedoPath    = elementTextToString(xmlAlbedo);
-    std::string ambientPath   = elementTextToString(xmlAmbient);
-    std::string metalnessPath = elementTextToString(xmlMetalness);
-    std::string roughnessPath = elementTextToString(xmlRoughness);
-    std::string normalPath    = elementTextToString(xmlNormal);
-
-    loadMaterialAtribute(albedoMaps, albedoPath);
-    loadMaterialAtribute(ambientMaps, ambientPath);
-    loadMaterialAtribute(metalnessMaps, metalnessPath);
-    loadMaterialAtribute(roughnessMaps, roughnessPath);
-    loadMaterialAtribute(normalMaps, normalPath);
-}
-
-void MaterialsLoader::clear() {
-    normalMaps.clear();
-    ambientMaps.clear();
-    albedoMaps.clear();
-    metalnessMaps.clear();
-    roughnessMaps.clear();
+    this->materials.push_back(
+            std::shared_ptr<Material>(new MaterialPHONG(colorMap,normalMap))
+            );
 }
 
 
+void MaterialsLoader::clear()
+{
+    materials.clear();
+}
+
+const std::vector<std::shared_ptr<Material>> &MaterialsLoader::getMaterials() const
+{
+    return materials;
+}

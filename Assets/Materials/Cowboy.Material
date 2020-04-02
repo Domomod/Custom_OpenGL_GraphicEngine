@@ -1,0 +1,7 @@
+<?xml version = "1.0"?>
+<material type="PHONG">
+	<color>cowboy.png</color>
+
+	<normal>normal.png</normal>
+</material>
+

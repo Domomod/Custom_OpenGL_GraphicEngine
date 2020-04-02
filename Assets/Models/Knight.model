@@ -1,0 +1,12 @@
+<?xml version = "1.0"?>
+<model name="Knight">
+	<geometry>Knight.obj</geometry>
+	<alias>
+		<material name="Cloth">CleanKnight_cloth.Material</material>
+		<material name="Metal">CleanKnight_metal.Material</material>
+	</alias>
+	<alias>
+		<material name="Cloth">WornKnight_cloth.Material</material>
+		<material name="Metal">WornKnight_metal.Material</material>
+	</alias>
+</model>

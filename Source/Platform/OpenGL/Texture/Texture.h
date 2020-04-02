@@ -37,6 +37,8 @@ public:
 
     OGL_TextureCube(int width, int height, int valuesPerColor, float **data, char flags = 0);
 
+    OGL_TextureCube(const std::string & path);
+
     explicit OGL_TextureCube(GLuint textureName);
 
     virtual void bind(unsigned int textureUnit);

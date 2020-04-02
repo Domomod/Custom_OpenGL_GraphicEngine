@@ -1,0 +1,7 @@
+<?xml version = "1.0"?>
+<model name="Grass">
+	<geometry>verticalPlane.obj</geometry>
+	<alias>
+		<material name="grass">grass.Material</material>
+	</alias>
+</model>

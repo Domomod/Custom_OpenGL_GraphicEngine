@@ -1,0 +1,13 @@
+<?xml version = "1.0"?>
+<material type="PBR_MR">
+	<albedo>metal_slpotchy/albedo.png</albedo>
+
+	<ambient>white.png</ambient>
+
+	<metalness>metal_slpotchy/metalness.png</metalness>
+
+	<roughness>metal_slpotchy/roughness.png</roughness>
+
+	<normal>metal_slpotchy/normal.png</normal>
+</material>
+
