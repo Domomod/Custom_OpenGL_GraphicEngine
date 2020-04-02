@@ -36,12 +36,12 @@ else()
     message(ASSIMP-FOUND : ${ASSIMP_INCLUDE_DIRS})
 ENDIF()
 
-include_directories( ${OPENGL_INCLUDE_DIRS} ${BOOST_INCLUDE_DIRS} ${ASSIMP_INCLUDE_DIRS} ${SOIL_INCLUDE_DIRS} OnChangeListenerTemplate /usr/local/include Source/)
+include_directories( ${OPENGL_INCLUDE_DIRS} ${BOOST_INCLUDE_DIRS} ${ASSIMP_INCLUDE_DIRS} ${SOIL_INCLUDE_DIRS} /usr/local/include Source/ OnChangeListenerTemplate/)
 
-add_subdirectory(gl3w)
+add_subdirectory(Dependencies)
 
 set(    SOURCES_AND_HEADERS
-        TinyXML2/tinyxml2.h                                                             TinyXML2/tinyxml2.cpp
+        Dependencies/include/TinyXML2/tinyxml2.h Dependencies/include/TinyXML2/tinyxml2.cpp
 
         Source/MyExceptions.h                                                           Source/MyExceptions.cpp
 
@@ -97,6 +97,7 @@ set(    SOURCES_AND_HEADERS
         Source/Assets/Textures/stb_image.h
         Source/Platform/OpenGL/Texture/sb7ktx.h Source/Platform/OpenGL/Texture/sb7ktx.cpp Source/Assets/Textures/Material.cpp Source/Assets/Textures/Material.h)
 
+message(Headers: " ${INCLUDE_DIRS}")
 add_executable(RenderV2 Source/main.cpp ${SOURCE} ${HEADERS} ${SOURCES_AND_HEADERS}    )
-target_include_directories(RenderV2 PUBLIC ${CMAKE_SOURCE_DIR})
+target_include_directories(RenderV2 PUBLIC ${INCLUDE_DIRS} )
 target_link_libraries(RenderV2 ${OPENGL_LIBRARIES} ${CMAKE_DL_LIBS} ${BOOST_LIBRARIES} ${GLM_LIBRARIES} ${ASSIMP_LIBRARIES} glfw stdc++fs)

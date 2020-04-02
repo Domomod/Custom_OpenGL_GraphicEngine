@@ -10,7 +10,7 @@
 #include <memory>
 #include <map>
 
-#include "OnChangeListenerTemplate/OnChangeNotifier.h"
+#include "OnChangeNotifier.h"
 
 class Window
 {

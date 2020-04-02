@@ -13,12 +13,12 @@
 #include <assimp/Importer.hpp>
 
 #include "Model.h"
-#include "Source/Assets/Mesh/MeshLoader.h"
-#include "Source/Assets/Textures/MaterialsLoader.h"
-#include "Source/Assets/SkeletalSystem/SkeletonLoader.h"
-#include "Source/Assets/SkeletalSystem/SkeletalAnimation.h"
-#include "Source/Assets/SkeletalSystem/SkeletalAnimator.h"
-#include "Source/Assets/SkeletalSystem/SkeletonAnimationLoader.h"
+#include "Assets/Mesh/MeshLoader.h"
+#include "Assets/Textures/MaterialsLoader.h"
+#include "Assets/SkeletalSystem/SkeletonLoader.h"
+#include "Assets/SkeletalSystem/SkeletalAnimation.h"
+#include "Assets/SkeletalSystem/SkeletalAnimator.h"
+#include "Assets/SkeletalSystem/SkeletonAnimationLoader.h"
 
 
 

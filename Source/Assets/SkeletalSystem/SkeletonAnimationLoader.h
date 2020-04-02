@@ -18,7 +18,7 @@ namespace SkeletalSystem
     class SkeletonAnimationLoader
     {
     public:
-        void loadAnimation(aiAnimation *aAnimation, const std::map<std::__cxx11::string, int> &boneNameToIndexMap);
+        void loadAnimation(aiAnimation *aAnimation, const std::map<std::string, int> &boneNameToIndexMap);
 
         std::shared_ptr<SkeletalSystem::SkeletalAnimation> make();
 

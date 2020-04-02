@@ -8,6 +8,7 @@
 #include <memory>
 #include <map>
 #include <vector>
+#include <string>
 
 #include "MeshFactory.h"
 
@@ -33,7 +34,7 @@ public:
 
     void loadBasicMeshInfo(const aiMesh *aMesh);
 
-    void addBoneInfo(const std::map<std::__cxx11::string, int> &boneNameToIndexMap);
+    void addBoneInfo(const std::map<std::string, int> &boneNameToIndexMap);
 
     std::shared_ptr<Mesh> make();
 

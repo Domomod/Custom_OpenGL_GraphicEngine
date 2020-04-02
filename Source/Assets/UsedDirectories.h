@@ -5,9 +5,9 @@
 #ifndef GAMEENGINE_USEDDIRECTORIES_H
 #define GAMEENGINE_USEDDIRECTORIES_H
 
-#define TEXTURE_DIRECTORY "../Assets/Materials/Textures/"
-#define MODEL_DIRECTORY "../Assets/Models/"
-#define GEOMETRY_DIRECTORY "../Assets/Geometry/"
-#define MATERIAL_DIRECTORY "../Assets/Materials/"
+#define TEXTURE_DIRECTORY "Assets/Materials/Textures/"
+#define MODEL_DIRECTORY "Assets/Models/"
+#define GEOMETRY_DIRECTORY "Assets/Geometry/"
+#define MATERIAL_DIRECTORY "Assets/Materials/"
 
 #endif //GAMEENGINE_USEDDIRECTORIES_H

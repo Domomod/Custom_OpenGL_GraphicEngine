@@ -13,7 +13,7 @@
 using namespace SkeletalSystem;
 
 void SkeletonAnimationLoader::loadAnimation(aiAnimation *aAnimation,
-                                            const std::map<std::__cxx11::string, int> &boneNameToIndexMap)
+                                            const std::map<std::string, int> &boneNameToIndexMap)
 {
     if (aAnimation->mNumChannels == 0)
     {

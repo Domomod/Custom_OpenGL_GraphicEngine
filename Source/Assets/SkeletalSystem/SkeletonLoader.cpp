@@ -238,7 +238,7 @@ std::shared_ptr<SkeletalSystem::Skeleton> SkeletonLoader::make()
     return returnSkeleton;
 }
 
-const std::map<std::__cxx11::string, int> &SkeletonLoader::getBoneNameToboneIdMap() const
+const std::map<std::string, int> &SkeletonLoader::getBoneNameToboneIdMap() const
 {
     if (isSkeletonInitialised() == false)
     {

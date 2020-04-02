@@ -1,6 +1,6 @@
 #include "Texture.h"
 
-#include "Source/Platform/OpenGL/Texture/Texture.h"
+#include "Platform/OpenGL/Texture/Texture.h"
 
 TextureCube* TextureCube::Create(int width, int height, int valuesPerColor, unsigned char **data, char flags) {
     return new OGL_TextureCube(width, height, valuesPerColor, data, flags);

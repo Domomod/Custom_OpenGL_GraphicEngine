@@ -224,34 +224,34 @@ void Application::loadShaders()
     freeResources();
     try
     {
-        basicShader->loadFromFile(Shader::VERTEX, "../Shaders/basic.vs");
+        basicShader->loadFromFile(Shader::VERTEX, "Shaders/basic.vs");
         basicShader->createAndLinkProgram();
 
-        texturedShader->loadFromFile(Shader::VERTEX, "../Shaders/BasicTextured/basic.vs");
-        texturedShader->loadFromFile(Shader::FRAGMENT, "../Shaders/BasicTextured/basic.fs");
+        texturedShader->loadFromFile(Shader::VERTEX, "Shaders/BasicTextured/basic.vs");
+        texturedShader->loadFromFile(Shader::FRAGMENT, "Shaders/BasicTextured/basic.fs");
         texturedShader->createAndLinkProgram();
 
-        animationShader->loadFromFile(Shader::VERTEX, "../Shaders/AnimationShader/animated.vs");
-        animationShader->loadFromFile(Shader::FRAGMENT, "../Shaders/AnimationShader/animated.fs");
+        animationShader->loadFromFile(Shader::VERTEX, "Shaders/AnimationShader/animated.vs");
+        animationShader->loadFromFile(Shader::FRAGMENT, "Shaders/AnimationShader/animated.fs");
         animationShader->createAndLinkProgram();
 
-        pbrShader->loadFromFile(Shader::VERTEX, "../Shaders/FORWARD_PBR_IBL/vertex.glsl");
-        pbrShader->loadFromFile(Shader::FRAGMENT, "../Shaders/FORWARD_PBR_IBL/fragment.glsl");
+        pbrShader->loadFromFile(Shader::VERTEX, "Shaders/FORWARD_PBR_IBL/vertex.glsl");
+        pbrShader->loadFromFile(Shader::FRAGMENT, "Shaders/FORWARD_PBR_IBL/fragment.glsl");
         pbrShader->createAndLinkProgram();
 
-        skyBoxShader->loadFromFile(Shader::VERTEX, "../Shaders/CubeMaps/centered_cube_map_vertex.glsl");
-        skyBoxShader->loadFromFile(Shader::FRAGMENT, "../Shaders/CubeMaps/SkyBox/fragment.glsl");
+        skyBoxShader->loadFromFile(Shader::VERTEX, "Shaders/CubeMaps/centered_cube_map_vertex.glsl");
+        skyBoxShader->loadFromFile(Shader::FRAGMENT, "Shaders/CubeMaps/SkyBox/fragment.glsl");
         skyBoxShader->createAndLinkProgram();
 
         skyBoxFromEquirectangularImageShader->loadFromFile(Shader::VERTEX,
-                                                           "../Shaders/CubeMaps/centered_cube_map_vertex.glsl");
+                                                           "Shaders/CubeMaps/centered_cube_map_vertex.glsl");
         skyBoxFromEquirectangularImageShader->loadFromFile(Shader::FRAGMENT,
-                                                           "../Shaders/CubeMaps/EquirSkyBox/fragment.glsl");
+                                                           "Shaders/CubeMaps/EquirSkyBox/fragment.glsl");
         skyBoxFromEquirectangularImageShader->createAndLinkProgram();
 
-        diffuseIrradianceMapShader->loadFromFile(Shader::VERTEX, "../Shaders/CubeMaps/centered_cube_map_vertex.glsl");
+        diffuseIrradianceMapShader->loadFromFile(Shader::VERTEX, "Shaders/CubeMaps/centered_cube_map_vertex.glsl");
         diffuseIrradianceMapShader->loadFromFile(Shader::FRAGMENT,
-                                                 "../Shaders/CubeMaps/DiffuseIrradianceMap/fragment.glsl");
+                                                 "Shaders/CubeMaps/DiffuseIrradianceMap/fragment.glsl");
         diffuseIrradianceMapShader->createAndLinkProgram();
 
         shadersCompiled = true;

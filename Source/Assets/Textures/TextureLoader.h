@@ -14,8 +14,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Texture.h"
-#include "Source/Assets/Mesh/MeshGenerator.h"
-#include "Source/Platform/OpenGL/ShaderProgram/Shader.h"
+#include "Assets/Mesh/MeshGenerator.h"
+#include "Platform/OpenGL/ShaderProgram/Shader.h"
 
 class Texture2D;
 class TextureCube;

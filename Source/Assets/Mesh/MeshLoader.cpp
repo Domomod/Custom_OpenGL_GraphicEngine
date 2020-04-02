@@ -68,7 +68,7 @@ void MeshLoader::loadBasicMeshInfo(const aiMesh *aMesh)
     }
 }
 
-void MeshLoader::addBoneInfo(const std::map<std::__cxx11::string, int> &boneNameToIndexMap)
+void MeshLoader::addBoneInfo(const std::map<std::string, int> &boneNameToIndexMap)
 {
     /* At this point Model Loader should have already filled the
      * basic mesh info (positions, color, etc...). If not bone data

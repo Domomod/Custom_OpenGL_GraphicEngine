@@ -23,19 +23,19 @@
 TextureLoader::TextureLoader()
 {
     equirToCubemapShader.loadFromFile(Shader::VERTEX,
-                                       "../Shaders/CubeMaps/centered_cube_map_vertex.glsl");
+                                       "Shaders/CubeMaps/centered_cube_map_vertex.glsl");
     equirToCubemapShader.loadFromFile(Shader::FRAGMENT,
-                                       "../Shaders/CubeMaps/EquirSkyBox/fragment.glsl");
+                                       "Shaders/CubeMaps/EquirSkyBox/fragment.glsl");
     equirToCubemapShader.createAndLinkProgram();
 
-    diffuseMapShader.loadFromFile(Shader::VERTEX, "../Shaders/CubeMaps/centered_cube_map_vertex.glsl");
+    diffuseMapShader.loadFromFile(Shader::VERTEX, "Shaders/CubeMaps/centered_cube_map_vertex.glsl");
     diffuseMapShader.loadFromFile(Shader::FRAGMENT,
-                                   "../Shaders/CubeMaps/DiffuseIrradianceMap/fragment.glsl");
+                                   "Shaders/CubeMaps/DiffuseIrradianceMap/fragment.glsl");
     diffuseMapShader.createAndLinkProgram();
 
-    prefilteredMapShader.loadFromFile(Shader::VERTEX, "../Shaders/CubeMaps/centered_cube_map_vertex.glsl");
+    prefilteredMapShader.loadFromFile(Shader::VERTEX, "Shaders/CubeMaps/centered_cube_map_vertex.glsl");
     prefilteredMapShader.loadFromFile(Shader::FRAGMENT,
-                                       "../Shaders/CubeMaps/PrefilteredEnviromentMap/fragment.glsl");
+                                       "Shaders/CubeMaps/PrefilteredEnviromentMap/fragment.glsl");
     prefilteredMapShader.createAndLinkProgram();
 
     defaultTexture = std::shared_ptr<Texture2D>(loadTexture2D(defaultTexturePath));

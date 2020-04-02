@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="GameEngine" targetName="RenderV2" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8cf819ca-4721-45c2-8704-4b74d10f481d" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CMakeLists.txt" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="xirlam51" />
+  </component>
+  <component name="ProjectId" id="1ZxiVSEfKrU9ZwwXTZLWrLg5xdJ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Dependencies" />
+      <recent name="$PROJECT_DIR$/Dependencies/gl3w/include" />
+      <recent name="$PROJECT_DIR$/Dependencies/TinyXML2" />
+      <recent name="$PROJECT_DIR$/Source" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="RenderV2" type="CMakeRunConfiguration" factoryName="Application" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="GameEngine" TARGET_NAME="RenderV2" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="GameEngine" RUN_TARGET_NAME="RenderV2">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8cf819ca-4721-45c2-8704-4b74d10f481d" name="Default Changelist" comment="" />
+      <created>1585329273547</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1585329273547</updated>
+      <workItem from="1585329278423" duration="1178000" />
+      <workItem from="1585330501216" duration="450000" />
+      <workItem from="1585787177436" duration="609000" />
+      <workItem from="1585787840804" duration="2159000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1874" height="283" key="GridCell.Tab.0.bottom" timestamp="1585790000128">
+      <screen x="0" y="339" width="1920" height="741" />
+    </state>
+    <state width="1874" height="283" key="GridCell.Tab.0.bottom/1920.312.1366.768/0.339.1920.741@0.339.1920.741" timestamp="1585790000128" />
+    <state width="1874" height="283" key="GridCell.Tab.0.center" timestamp="1585790000128">
+      <screen x="0" y="339" width="1920" height="741" />
+    </state>
+    <state width="1874" height="283" key="GridCell.Tab.0.center/1920.312.1366.768/0.339.1920.741@0.339.1920.741" timestamp="1585790000128" />
+    <state width="1874" height="283" key="GridCell.Tab.0.left" timestamp="1585790000128">
+      <screen x="0" y="339" width="1920" height="741" />
+    </state>
+    <state width="1874" height="283" key="GridCell.Tab.0.left/1920.312.1366.768/0.339.1920.741@0.339.1920.741" timestamp="1585790000128" />
+    <state width="1874" height="283" key="GridCell.Tab.0.right" timestamp="1585790000128">
+      <screen x="0" y="339" width="1920" height="741" />
+    </state>
+    <state width="1874" height="283" key="GridCell.Tab.0.right/1920.312.1366.768/0.339.1920.741@0.339.1920.741" timestamp="1585790000128" />
+    <state width="1874" height="350" key="GridCell.Tab.1.bottom" timestamp="1585789993330">
+      <screen x="0" y="339" width="1920" height="741" />
+    </state>
+    <state width="1874" height="350" key="GridCell.Tab.1.bottom/1920.312.1366.768/0.339.1920.741@0.339.1920.741" timestamp="1585789993330" />
+    <state width="1874" height="350" key="GridCell.Tab.1.center" timestamp="1585789993330">
+      <screen x="0" y="339" width="1920" height="741" />
+    </state>
+    <state width="1874" height="350" key="GridCell.Tab.1.center/1920.312.1366.768/0.339.1920.741@0.339.1920.741" timestamp="1585789993330" />
+    <state width="1874" height="350" key="GridCell.Tab.1.left" timestamp="1585789993329">
+      <screen x="0" y="339" width="1920" height="741" />
+    </state>
+    <state width="1874" height="350" key="GridCell.Tab.1.left/1920.312.1366.768/0.339.1920.741@0.339.1920.741" timestamp="1585789993329" />
+    <state width="1874" height="350" key="GridCell.Tab.1.right" timestamp="1585789993330">
+      <screen x="0" y="339" width="1920" height="741" />
+    </state>
+    <state width="1874" height="350" key="GridCell.Tab.1.right/1920.312.1366.768/0.339.1920.741@0.339.1920.741" timestamp="1585789993330" />
+    <state x="2292" y="537" key="com.intellij.ide.util.TipDialog" timestamp="1585787188560">
+      <screen x="1920" y="312" width="1366" height="768" />
+    </state>
+    <state x="2292" y="537" key="com.intellij.ide.util.TipDialog/1920.312.1366.768/0.339.1920.741@1920.312.1366.768" timestamp="1585787188560" />
+  </component>
+</project>

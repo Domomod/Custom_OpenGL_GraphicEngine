@@ -41,7 +41,7 @@ namespace SkeletalSystem
 
         void loadSkeleton(aiMesh **assimpMeshTable, unsigned int tableSize);
 
-        const std::map<std::__cxx11::string, int> &getBoneNameToboneIdMap() const;
+        const std::map<std::string, int> &getBoneNameToboneIdMap() const;
 
         std::shared_ptr<SkeletalSystem::Skeleton> make();
 
