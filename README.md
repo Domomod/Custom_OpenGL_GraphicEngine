@@ -1,6 +1,7 @@
 # GameEngine
 
-To see a preview visit my github page: https://domomod.github.io/GameEngine/
+Please visit my github page to watch videos from this graphic engine.
+https://domomod.github.io/GameEngine/
 
 Engine encapsulates OpenGL in an object oriented interface, to keep RAII and initialize OpenGL structures properly, OpenGL encapsulated classes are stored using smart pointers. This way member classes can be restrained from initialization before OpenGL context state setup.
 
